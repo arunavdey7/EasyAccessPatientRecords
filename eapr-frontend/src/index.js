@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import Login from './pages/login/Login'
 import { ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import PatientHome from './pages/patienthome/PatientHome';
 
 const MainComponent = () => {
 
@@ -25,6 +26,9 @@ const MainComponent = () => {
         <Switch>
           <Route exact path='/'>
             <Login/>
+          </Route>
+          <Route exact path='/patienthome'>
+            <PatientHome/>
           </Route>
   
         </Switch>

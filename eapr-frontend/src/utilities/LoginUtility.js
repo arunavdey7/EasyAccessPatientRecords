@@ -1,8 +1,9 @@
-export const login = async (email,password) => {
+export const login = async (email,password,role) => {
 
     const credentials = {
         email,
-        password
+        password,
+        role
     }
     var requestOptions = {
         method: 'POST',
