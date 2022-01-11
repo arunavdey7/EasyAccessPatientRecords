@@ -1,13 +1,41 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter as Router, Route, Switch, useHistory, useLocation } from "react-router-dom";
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+import Login from './pages/login/Login'
+import { ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+const MainComponent = () => {
+
+  return(
+    <React.Fragment>
+    <ToastContainer
+      position="top-right"
+      autoClose={5000}
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+    />
+    <div>
+      <Router>
+        
+        <Switch>
+          <Route exact path='/'>
+            <Login/>
+          </Route>
+  
+        </Switch>
+      </Router>
+      </div>
+</React.Fragment>
+  )
+} 
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <MainComponent/>,
   document.getElementById('root')
 );
 
