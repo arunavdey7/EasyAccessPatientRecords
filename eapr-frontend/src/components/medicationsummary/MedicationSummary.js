@@ -1,6 +1,25 @@
-import React from 'react'
+import React,{useState} from 'react'
 import './styles.css'
 const MedicationSummary = () => {
+    // Medication
+    const [medicationItem, setMedicationItem] = useState("")
+    const [medicationName, setMedicationName] = useState("")
+    const [medicationForm, setMedicationForm] = useState("")
+    const [medicationCategory, setMedicationCategory] = useState("")
+
+    // Strength
+    const [strengthNumerator, setStrengthNumerator] = useState("")
+    const [strengthNumeratorUnit, setStrengthNumeratorUnit] = useState("")
+    const [strengthDenominator, setStrengthDenominator] = useState("")
+    const [strengthDenominatorUnit, setStrengthDenominatorUnit] = useState("")
+    const [unitOfPresentation, setUnitOfPresentation] = useState("")
+    const [strength, setStrength] = useState("")
+    const [manufacturer, setManufacturer] = useState("")
+    const [batchId, setBatchId] = useState("")
+    const [strengthDenominatorUnit, setStrengthDenominatorUnit] = useState("")
+
+
+
     return(
         <>
         <h1 className='main_heading'>Medication Summary</h1>
