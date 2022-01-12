@@ -1,3 +1,4 @@
+//changesinArunavBranch
 import React,{useState} from 'react'
 import './styles.css'
 const MedicationSummary = () => {
@@ -18,6 +19,7 @@ const MedicationSummary = () => {
     const [batchId, setBatchId] = useState("")
     const [expiry, setExpiry] = useState("")
     const [amount, setAmount] = useState("")
+    const [amountUnit, setAmountUnit] = useState("")
     const [alternateAmount, setAlternateAmount] = useState("")
     const [alternateAmountUnit, setAlternateAmountUnit] = useState("")
     const [role, setRole] = useState("");
@@ -41,8 +43,54 @@ const MedicationSummary = () => {
     const [timingDailyFrequencyUpper, setTimingDailyTimingFrequencyUpper] = useState("");
     const [timingDailyInterval, setTimingDailyTimingInterval] = useState("");
     const [timingDailySpecificTime, setTimingDailyTimingSpecificTime] = useState("");
+    const [timingDailyDescription, setTimingDailyDescription] = useState("");
+    const [timingDailyExactTimingCritical, setTimingDailyExactTimingCritical] = useState("");
+    const [timingDailyAsRequired, setTimingDailyAsRequired] = useState("");
+    const [timingDailyAsRequiredCriterion, setTimingDailyAsRequiredCriterion] = useState("");
+    const [timingDailySpecificEventEventName, setTimingDailySpecificEventEventName] = useState("");
+    const [timingDailySpecificEventTimeOffset, setTimingDailySpecificEventTimeOffset] = useState("");
+    const [timingDailyCycleOn, setTimingDailyCycleOn] = useState("");
+    const [timingDailyCycleOff, setTimingDailyCycleOff] = useState("");
+    const [timingDailyCycleRepetitions, setTimingDailyCycleRepetitions] = useState("");
+
+    // Administration details
+    const [administrationDetailsRoute, setAdministrationDetailsRoute] = useState("");
+    const [administrationDetailsBodySite, setAdministrationDetailsBodySite] = useState("");
 
     // Timing Non-Daily
+    const [timingNonDailyRepetitionInterval, setTimingNonDailyRepetitionInterval] = useState("");
+    const [timingNonDailyFrequency, setTimingNonDailyFrequency ]= useState("");
+    const [timingNonDailyFrequencyLower, setTimingNonDailyFrequencyLower] = useState("");
+    const [timingNonDailyFrequencyUpper, setTimingNonDailyFrequencyUpper] = useState("");
+    const [timingNonDailySpecificDate, setTimingNonDailySpecificDate] = useState("");
+    const [timingNonDailySpecificDateLower, setTimingNonDailySpecificDateLower] = useState("");
+    const [timingNonDailySpecificDateUpper, setTimingNonDailySpecificDateUpper] = useState("");
+    const [timingNonDailySpecificDayOfWeek, setTimingNonDailySpecificDayOfWeek] = useState("");
+    const [timingNonDailySpecificDayOfMonth, setTimingNonDailySpecificDayOfMonth] = useState("");
+    const [timingNonDailySpecificDayOfMonthLower, setTimingNonDailySpecificDayOfMonthLower] = useState("");
+    const [timingNonDailySpecificDayOfMonthUpper, setTimingNonDailySpecificDayOfMonthUpper] = useState("");
+    const [timingNonDailyTimingDescription, setTimingNonDailyTimingDescription] = useState("");
+    const [timingNonDailyCycleOn, setTimingNonDailyCycleOn] = useState("");
+    const [timingNonDailyCycleOff, setTimingNonDailyCycleOff] = useState("");
+    const [timingNonDailyCycleRepetitions, setTimingNonDailyCycleRepetitions] = useState("");
+    
+    // Medication Protocol
+    const [medicationProtocolOrderId, setMedicationProtocolOrderId] = useState("");
+
+    // Exclusion-Global Data
+    const [exclusionGlobalData, setExclusionGlobalData] = useState("");
+
+    // Absence of Information Data
+    const [absenceOfInformationDataAbsenceStatement, setAbsenceOfInformationDataAbsenceStatement] = useState("");
+
+    // Absence of Information Protocol
+    const [absenceOfInformationProtocolLastUpdated, setAbsenceOfInformationProtocolLastUpdated] = useState("");
+
+    
+
+
+
+
     
     return(
         <>
@@ -51,13 +99,13 @@ const MedicationSummary = () => {
             <h1>Medication Statement</h1>
             <h2>Description</h2>
             <label>Medication Item</label>
-            <input></input>
+            <input onChange={e => setMedicationItem(e.target.value)}></input>
             <h4>Medication</h4>
             <label>Name</label>
-            <input></input>
+            <input onChange={e => setMedicationName(e.target.value)}></input>
             <br/>
             <label>Form</label>
-            <input></input>
+            <input onChange={e => setMedicationForm(e.target.value)}></input>
             <label>Category</label>
             <select>
                 <option value='Ad-hoc mixture'>Ad-hoc mixture</option>
@@ -71,40 +119,40 @@ const MedicationSummary = () => {
             <input onChange={e => setStrengthNumerator(e.target.value)}></input>
             <br/>
             <label>Strength numerator unit</label>
-            <input></input>
+            <input onChange={e => setStrengthNumeratorUnit(e.target.value)}></input>
             <br/>
             <label>Strength denominator</label>
-            <input></input>
+            <input onChange={e => setStrengthDenominator(e.target.value)}></input>
             <br/>
             <label>Strength denominator unit</label>
-            <input></input>
+            <input onChange={e => setStrengthDenominatorUnit(e.target.value)}></input>
             <br/>
             <label>Unit of presentation</label>
-            <input></input>
+            <input onChange={e => setUnitOfPresentation(e.target.value)}></input>
             <br/>
             <label>Strength (concentration)</label>
-            <input></input>
+            <input onChange={e => setStrength(e.target.value)}></input>
             <br/>
             <label>Manufacturer</label>
-            <input></input>
+            <input onChange={e => setManufacturer(e.target.value)}></input>
             <br/>
             <label>Batch ID </label>
-            <input></input>
+            <input onChange={e => setBatchId(e.target.value)}></input>
             <br/>
             <label>Expiry </label>
-            <input></input>
+            <input onChange={e => setExpiry(e.target.value)}></input>
             <br/>
             <label>Amount </label>
-            <input></input>
+            <input onChange={e => setAmount(e.target.value)}></input>
             <br/>
             <label>Amount unit </label>
-            <input></input>
+            <input onChange={e => setAmountUnit(e.target.value)}></input>
             <br/>
             <label>Alternate amount</label>
-            <input></input>
+            <input onChange={e => setAlternateAmount(e.target.value)}></input>
             <br/>
             <label>Alternate amount unit</label>
-            <input></input>
+            <input onChange={e => setAlternateAmountUnit(e.target.value)}></input>
             <br/>
             <label>Role</label>
             <select>
@@ -114,34 +162,34 @@ const MedicationSummary = () => {
             </select>
             <br/>
             <label>Description</label>
-            <input></input>
+            <input onChange={e => setDescription(e.target.value)}></input>
             <br/>
             <h4>Dosage</h4>
             <label>Dose amount</label>
-            <input></input>
+            <input onChange={e => setDoseAmount(e.target.value)}></input>
             <br/>
             <label>Lower</label>
-            <input></input>
+            <input onChange={e => setDoseLower(e.target.value)}></input>
             <br/>
             <label>Upper</label>
-            <input></input>
+            <input onChange={e => setDoseUpper(e.target.value)}></input>
             <br/>
             <label>Dose unit</label>
-            <input></input>
+            <input onChange={e => setDoseUnit(e.target.value)}></input>
             <br/>
             <label>Dose formula</label>
-            <input></input>
+            <input onChange={e => setDoseFormula(e.target.value)}></input>
             <br/>
             <label>Dose description</label>
-            <input></input>
+            <input onChange={e => setDoseDescription(e.target.value)}></input>
             <br/>
             <h4>Timing</h4>
             <label>Dose description</label>
-            <input></input>
+            <input onChange={e => setTimingDoseDesrciption(e.target.value)}></input>
             <br/>
             <h4>Timing-daliy</h4>
             <label>Frequency</label>
-            <input></input>
+            <input onChange={e => setTimingDailyTimingFrequency(e.target.value)}></input>
             <select>
                 <option value='1/d'>1/d</option>
                 <option value='1/min'>1/min</option>
@@ -149,58 +197,58 @@ const MedicationSummary = () => {
                 <option value='1/h'>1/h</option>
             </select>
             <label>Lower</label>
-            <input></input>
+            <input onChange={e => setTimingDailyTimingFrequencyLower(e.target.value)}></input>
             <label>Upper</label>
-            <input></input>
+            <input onChange={e => setTimingDailyTimingFrequencyUpper(e.target.value)}></input>
             <br/>
             <label>Interval</label>
-            <input></input>
+            <input onChange={e => setTimingDailyTimingInterval(e.target.value)}></input>
             <br/>
             <label>Specific time</label>
-            <input type='time'></input>
+            <input type='time' onChange={e => setTimingDailyTimingSpecificTime(e.target.value)}></input>
             <br/>
             <label>Timing description</label>
-            <input></input>
+            <input onChange={e => setTimingDailyDescription(e.target.value)}></input>
             <br/>
             <label>Exact timing critical</label>
-            <input type='checkbox'></input>
+            <input type='checkbox' onChange={e => setTimingDailyExactTimingCritical(e.target.value)}></input>
             <br/>
             <label>As required</label>
-            <input type='checkbox'></input>
+            <input type='checkbox' onChange={e => setTimingDailyAsRequired(e.target.value)}></input>
             <br/>
             <label>As required criterion</label>
-            <input></input>
+            <input onChange={e => setTimingDailyAsRequiredCriterion(e.target.value)}></input>
             <br/>
             <h4>Specific Event</h4>
             <label>Event name</label>
-            <input></input>
+            <input onChange={e => setTimingDailySpecificEventEventName(e.target.value)}></input>
             <br/>
             <label>Time offset</label>
-            <input></input>
+            <input onChange={e => setTimingDailySpecificEventTimeOffset(e.target.value)}></input>
             <br/>
             <h4>On/Off cycle</h4>
             <label>On</label>
-            <input></input>
+            <input onChange={e => setTimingDailyCycleOn(e.target.value)}></input>
             <br/>
             <label>Off</label>
-            <input></input>
+            <input onChange={e => setTimingDailyCycleOff(e.target.value)}></input>
             <br/>
             <label>Repetitions</label>
-            <input></input>
+            <input onChange={e => setTimingDailyCycleRepetitions(e.target.value)}></input>
             <br/>
             <h4>Administration Details</h4>
             <label>Route</label>
-            <input></input>
+            <input onChange={e => setAdministrationDetailsRoute(e.target.value)}></input>
             <br/>
             <label>Body site</label>
-            <input></input>
+            <input onChange={e => setAdministrationDetailsBodySite(e.target.value)}></input>
             <br/>
             <h4>Timing - non-daily</h4>
             <label>Repetition Interval</label>
-            <input></input>
+            <input onChange={e => setTimingNonDailyRepetitionInterval(e.target.value)}></input>
             <br/>
             <label>Frequency</label>
-            <input></input>
+            <input onChange={e => setTimingNonDailyFrequency(e.target.value)}></input>
             <select>
                 <option value='1/wk'>1/wk</option>
                 <option value='1/mo'>1/mo</option>
@@ -208,10 +256,10 @@ const MedicationSummary = () => {
             </select>
             <br/>
             <label>Lower</label>
-            <input></input>
+            <input onChange={e => setTimingNonDailyFrequencyLower(e.target.value)}></input>
             <br/>
             <label>Upper</label>
-            <input></input>
+            <input onChange={e => setTimingNonDailyFrequencyUpper(e.target.value)}></input>
             <br/>
             <label>Specific Day of the week</label>
             <select>
@@ -225,37 +273,37 @@ const MedicationSummary = () => {
             </select>
             <br/>
             <label>Specific Day of month</label>
-            <input></input>
+            <input onChange={e => setTimingNonDailySpecificDayOfMonth(e.target.value)}></input>
             <br/>
             <label>Lower</label>
-            <input></input>
+            <input onChange={e => setTimingNonDailySpecificDayOfMonthLower(e.target.value)}></input>
             <br/>
             <label>Upper</label>
-            <input></input>
+            <input onChange={e => setTimingNonDailySpecificDayOfMonthUpper(e.target.value)}></input>
             <br/>
             <label>Timing description</label>
-            <input></input>
+            <input onChange={e => setTimingNonDailyTimingDescription(e.target.value)}></input>
             <br/>
             <h4>Specific event</h4>
             <label>Event name</label>
-            <input></input>
+            <input onChange={e => setTimingNonDailyFrequencyUpper(e.target.value)}></input>
             <br/>
             <label>Time offset</label>
-            <input></input>
+            <input onChange={e => setTimingNonDailyFrequencyUpper(e.target.value)}></input>
             <br/>
             <h4>On/Off cycle</h4>
             <label>On</label>
-            <input></input>
+            <input onChange={e => setTimingNonDailyCycleOn(e.target.value)}></input>
             <br/>
             <label>Off</label>
-            <input></input>
+            <input onChange={e => setTimingNonDailyCycleOff(e.target.value)}></input>
             <br/>
             <label>Repetitions</label>
-            <input></input>
+            <input onChange={e => setTimingNonDailyCycleRepetitions(e.target.value)}></input>
             <br/>
             <h2>Protocol</h2>
             <label>Order ID</label>
-            <input></input>
+            <input onChange={e => setMedicationProtocolOrderId(e.target.value)}></input>
             <br/>
             <h1>Exclusion Global</h1>
             <h2>Data</h2>
@@ -272,7 +320,7 @@ const MedicationSummary = () => {
             </select>
             <br/>
             <label>Last Updated</label>
-            <input type='datetime-local'></input>
+            <input type='datetime-local' onChange={e => setAbsenceOfInformationProtocolLastUpdated(e.target.value)}></input>
             <br/>
             <button>Temporary save</button>
             <button>Final save</button>
