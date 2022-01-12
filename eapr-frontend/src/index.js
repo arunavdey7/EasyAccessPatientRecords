@@ -7,6 +7,8 @@ import Login from './pages/login/Login'
 import { ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import PatientHome from './pages/patienthome/PatientHome';
+import AddPatientData from './pages/addpatientdata/AddPatientData';
+import MedicationStatement from './components/medicationsummary/MedicationSummary';
 
 const MainComponent = () => {
 
@@ -29,6 +31,12 @@ const MainComponent = () => {
           </Route>
           <Route exact path='/patienthome'>
             <PatientHome/>
+          </Route>
+          <Route exact path='/addpatientdata'>
+            <AddPatientData/>
+          </Route>
+          <Route exact path='/medicationsummary'>
+            <MedicationStatement/>
           </Route>
   
         </Switch>

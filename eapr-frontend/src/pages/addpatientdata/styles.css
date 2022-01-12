@@ -1,0 +1,24 @@
+.international_patient_summary
+{
+    display: flex;
+    flex-direction: column;
+    height: 50vh;
+    overflow-y: scroll;
+}
+.ips_heading
+{
+    margin: 1%;
+    border: 1px solid black;
+    height: 5vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 50%;
+
+}
+.ips_heading:hover
+{
+    cursor: pointer;
+    color: slateblue;
+
+}

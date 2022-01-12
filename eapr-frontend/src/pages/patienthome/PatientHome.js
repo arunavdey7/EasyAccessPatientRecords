@@ -3,7 +3,7 @@ import CollapsibleDiv from '../../components/collapsiblediv/CollapsibleDiv'
 
 const PatientHome = () => {
     return(
-        <CollapsibleDiv/>
+        <div></div>
     )
 }
 export default PatientHome;
