@@ -238,8 +238,8 @@ const Prescription = () => {
         <label>Identifier</label>
         <input></input>
         <br/>
-        <button>Temporary Save</button>
-        <button>Final save</button>
+        <button>Add</button>
+        <button>Add more</button>
     </div>
     )
 

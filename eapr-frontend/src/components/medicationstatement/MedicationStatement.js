@@ -1,8 +1,11 @@
 //changesinArunavBranch
 import React,{useState} from 'react'
+import { toast } from 'react-toastify'
+import { addMedicationStatement } from '../../utilities/MedicationStatementUtility'
 import './styles.css'
 const MedicationSummary = () => {
     // Medication
+    
     const [medicationItem, setMedicationItem] = useState("")
     const [medicationName, setMedicationName] = useState("")
     const [medicationForm, setMedicationForm] = useState("")
@@ -85,13 +88,82 @@ const MedicationSummary = () => {
 
     // Absence of Information Protocol
     const [absenceOfInformationProtocolLastUpdated, setAbsenceOfInformationProtocolLastUpdated] = useState("");
-
     
+    const saveMedicationStatement = () =>{
+        var data = {
+            patientUid:localStorage.getItem('patientUid'),
+            medicationItem,
+            medicationName,
+            medicationForm,
+            medicationCategory,
+            strengthNumerator,
+            strengthNumeratorUnit,
+            strengthDenominator,
+            strengthDenominatorUnit,
+            unitOfPresentation,
+            strength,
+            manufacturer,
+            batchId,
+            expiry,
+            amount,
+            amountUnit,
+            alternateAmount,
+            alternateAmountUnit,
+            role,
+            description,
+            doseAmount,
+            doseLower,
+            doseUpper,
+            doseUnit,
+            doseFormula,
+            doseDescription,
+            timingDoseDescription,
+            timingDailyFrequency,
+            timingDailyFrequencyLower,
+            timingDailyFrequencyUpper,
+            timingDailyInterval,
+            timingDailySpecificTime,
+            timingDailyDescription,
+            timingDailyExactTimingCritical,
+            timingDailyAsRequired,
+            timingDailyAsRequiredCriterion,
+            timingDailySpecificEventEventName,
+            timingDailySpecificEventTimeOffset,
+            timingDailyCycleOn,
+            timingDailyCycleOff,
+            timingDailyCycleRepetitions,
+            administrationDetailsRoute,
+            administrationDetailsBodySite,
+            timingNonDailyRepetitionInterval,
+            timingNonDailyFrequency,
+            timingNonDailyFrequencyLower,
+            timingNonDailyFrequencyUpper,
+            timingNonDailySpecificDate,
+            timingNonDailySpecificDateLower,
+            timingNonDailySpecificDateUpper,
+            timingNonDailySpecificDayOfWeek,
+            timingNonDailySpecificDayOfMonth,
+            timingNonDailySpecificDayOfMonthLower,
+            timingNonDailySpecificDayOfMonthUpper,
+            timingNonDailyTimingDescription,
+            timingNonDailyCycleOn,
+            timingNonDailyCycleOff,
+            timingNonDailyCycleRepetitions,
+            medicationProtocolOrderId,
+            exclusionGlobalData,
+            absenceOfInformationDataAbsenceStatement,
+            absenceOfInformationProtocolLastUpdated,
+            timingDailySpecificTime
+        }
+        var result = addMedicationStatement(data)
+        console.log(JSON.stringify(data))
+        console.log(result)
+        if(result)
+            toast("Medication Statement added successfully")
+        else
+            toast("Medication Statement cannot be successfully")
+    }
 
-
-
-
-    
     return(
         <>
         <h1 className='main_heading'>Medication Summary</h1>
@@ -323,7 +395,7 @@ const MedicationSummary = () => {
             <input type='datetime-local' onChange={e => setAbsenceOfInformationProtocolLastUpdated(e.target.value)}></input>
             <br/>
             <button>Temporary save</button>
-            <button>Final save</button>
+            <button onClick={saveMedicationStatement}>Final save</button>
         </div>
         </>
     )
