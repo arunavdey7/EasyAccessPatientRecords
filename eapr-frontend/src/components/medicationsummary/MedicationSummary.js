@@ -16,7 +16,7 @@ const MedicationSummary = () => {
     const [strength, setStrength] = useState("")
     const [manufacturer, setManufacturer] = useState("")
     const [batchId, setBatchId] = useState("")
-    const [strengthDenominatorUnit, setStrengthDenominatorUnit] = useState("")
+    //const [strengthDenominatorUnit, setStrengthDenominatorUnit] = useState("")
 
 
 
