@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import PatientHome from './pages/patienthome/PatientHome';
 import AddPatientData from './pages/addpatientdata/AddPatientData';
 import MedicationStatement from './components/medicationsummary/MedicationSummary';
+import Prescription from './components/prescription/Prescription';
 
 const MainComponent = () => {
 
@@ -38,7 +39,9 @@ const MainComponent = () => {
           <Route exact path='/medicationsummary'>
             <MedicationStatement/>
           </Route>
-  
+          <Route exact path='/prescription'>
+            <Prescription/>
+          </Route>
         </Switch>
       </Router>
       </div>
