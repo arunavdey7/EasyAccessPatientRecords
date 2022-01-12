@@ -16,10 +16,34 @@ const MedicationSummary = () => {
     const [strength, setStrength] = useState("")
     const [manufacturer, setManufacturer] = useState("")
     const [batchId, setBatchId] = useState("")
-    const [strengthDenominatorUnit, setStrengthDenominatorUnit] = useState("")
+    const [expiry, setExpiry] = useState("")
+    const [amount, setAmount] = useState("")
+    const [alternateAmount, setAlternateAmount] = useState("")
+    const [alternateAmountUnit, setAlternateAmountUnit] = useState("")
+    const [role, setRole] = useState("");
+    const [description, setDescription] = useState("");
 
+    // Dosage
+    const [doseAmount, setDoseAmount] = useState("");
+    const [doseLower, setDoseLower] = useState("");
+    const [doseUpper, setDoseUpper] = useState("");
+    const [doseUnit, setDoseUnit] = useState("");
+    const [doseFormula, setDoseFormula] = useState("");
+    const [doseDescription, setDoseDescription] = useState("");
 
+    // Timing
 
+    const [timingDoseDescription, setTimingDoseDesrciption] = useState("");
+    
+    // Timing Daily
+    const [timingDailyFrequency, setTimingDailyTimingFrequency] = useState("");
+    const [timingDailyFrequencyLower, setTimingDailyTimingFrequencyLower] = useState("");
+    const [timingDailyFrequencyUpper, setTimingDailyTimingFrequencyUpper] = useState("");
+    const [timingDailyInterval, setTimingDailyTimingInterval] = useState("");
+    const [timingDailySpecificTime, setTimingDailyTimingSpecificTime] = useState("");
+
+    // Timing Non-Daily
+    
     return(
         <>
         <h1 className='main_heading'>Medication Summary</h1>
@@ -44,7 +68,7 @@ const MedicationSummary = () => {
             </select>
             <h4>Strength</h4>
             <label>Strength Numerator</label>
-            <input></input>
+            <input onChange={e => setStrengthNumerator(e.target.value)}></input>
             <br/>
             <label>Strength numerator unit</label>
             <input></input>
