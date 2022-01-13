@@ -3,20 +3,39 @@ from flask_sqlalchemy import SQLAlchemy
 import datetime
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:pass@localhost/testdb"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:pass@localhost/capstonedb"
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
+
+#Model for patient Details
+
+class Patient_details(db.Model):
+    __tablename__ ='patient_details'
+    id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
+    name = db.Column(db.Text, unique=False, nullable=False)
+    age = db.Column(db.Integer,unique=False,nullable = False)
+
+#Model for Doctor Details
+
+class doctor_details(db.Model):
+    __tablename__ ='doctor_details'
+    id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
+    name = db.Column(db.Text, unique=False, nullable=False)
+    category = db.Column(db.Text,unique=False,nullable = False)
+
+# Models for Prescription
 
 class Prescription(db.Model):
     __tablename__ = 'prescription'
     prescriptionId = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
-    patientId = db.Column(db.Integer, db.ForeignKey('patient.id'),nullable=False)
-    doctorId = db.Column(db.Integer, db.ForeignKey('doctor.id'),nullable=False)
+    patientId = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
+    doctorId = db.Column(db.Integer, db.ForeignKey('doctor_details.id'),nullable=False)
 
 
 class Medication_Order(db.Model):
-    __tablename__ = 'medication'
+    __tablename__ = 'medication_order'
     medId = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
-    prescriptionId = db.Column(db.Integer, db.ForeignKey('prescription.id'),nullable=False)
+    prescriptionId = db.Column(db.Integer, db.ForeignKey('prescription.prescriptionId'),nullable=False)
     medicationItem = db.Column(db.Text, unique=False, nullable=False)
     route = db.Column(db.String(300), unique=False, nullable=False)    
     dosageInstruction = db.Column(db.Text, unique = False, nullable=False)
@@ -38,20 +57,20 @@ class Medication_Order(db.Model):
     comment = db.Column(db.Text, unique=False, nullable=False)
 
 
-class Dose_Pattern(db.Models):
-    __tablename__ = 'dosepattern'
+class Dose_Pattern(db.Model):
+    __tablename__ = 'dose_pattern'
     dosePatternId = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
-    medicationId =  db.Column(db.Integer, db.ForeignKey('medication.id'),nullable=False)
+    medicationId =  db.Column(db.Integer, db.ForeignKey('medication_order.medId'),nullable=False)
     dose_unit   =  db.Column(db.Integer, unique=False, nullable=False)
     dose_frequency = db.Column(db.Text, unique=False, nullable=False)
     dose_timing   = db.Column(db.DateTime)
     dose_duration = db.Column(db.Text, unique=False, nullable=False)
 
 
-class Dose_Repetition(db.Models):
-    __tablename__ = 'doserepetition'
+class Dose_Repetition(db.Model):
+    __tablename__ = 'dose_repetition'
     doseRepetitionId = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
-    dosePatternId = db.Column(db.Integer, db.ForeignKey('dosepattern.id'),nullable=False)
+    dosePatternId = db.Column(db.Integer, db.ForeignKey('dose_pattern.dosePatternId'),nullable=False)
     repetition_interval = db.Column(db.Text, unique=False, nullable=False)
     Specific_date = db.Column(db.DateTime)
     specific_day_of_week = db.Column(db.Text, unique=False, nullable=True)
@@ -60,10 +79,10 @@ class Dose_Repetition(db.Models):
 
 
 
-class Preparation(db.Models):
+class Preparation(db.Model):
     __tablename__ = 'preparation'
     preparationId = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
-    medicationId = db.Column(db.Integer, db.ForeignKey('medication.id'),nullable=False)
+    medicationId = db.Column(db.Integer, db.ForeignKey('medication_order.medId'),nullable=False)
     substance_name = db.Column(db.Text, unique=False, nullable=True)
     form = db.Column(db.Text, unique=False, nullable=True)
     strength = db.Column(db.Integer, unique=False, nullable=False)
@@ -74,10 +93,6 @@ class Preparation(db.Models):
     
     
 # Models for medication
-class Patient_details(db.Model):
-    __tablename__ ='patient_details'
-    id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
-    name = db.Column(db.Text, unique=False, nullable=False)
 
 
 class Medication_summary(db.Model):
