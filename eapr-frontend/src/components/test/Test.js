@@ -3,9 +3,10 @@ import React,{useState} from 'react';
 const Test = () => {
 
     const [data, setData] = useState({
-        a:'',
-        b:'',
-        c:''
+        medicationItem:'',
+        medicationName:'',
+        medicationForm:'',
+            
     })
     const handleChange = e => {
         setData({
@@ -17,9 +18,9 @@ const Test = () => {
     return(
         <>
             <h1>Test</h1>
-            <input name='a' value={data.a || ''} onChange={handleChange}></input>
-            <input name='b' value={data.b || ''} onChange={handleChange}></input>
-            <input name='c' value={data.c || ''} onChange={handleChange}></input>
+            <input name='medicationItem' value={data.medicationItem || ''} onChange={handleChange}></input>
+            <input name='medicationName' value={data.medicationName || ''} onChange={handleChange}></input>
+            <input name='medicationForm' value={data.medicationForm || ''} onChange={handleChange}></input>
         </>
     )
 }

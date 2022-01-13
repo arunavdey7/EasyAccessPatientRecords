@@ -106,7 +106,7 @@ const ShowMedicationStatement = () => {
             <label>Category :</label>
             
             <h4>Strength</h4>
-            <label>Strength Numerator</label>
+            <label>Strength Numerator : <span className='values'>{data["medication"]["medication_strength_numerator"]}</span></label>
             
             <br/>
             <label>Strength numerator unit</label>
