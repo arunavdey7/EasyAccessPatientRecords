@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 import datetime
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:pass@localhost/capstonedb"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:12345@localhost/capstonedb"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
 
@@ -419,3 +419,102 @@ class Medical_devices(db.Model):
     date_of_expiry = db.Column(db.Date)
     other_identifier = db.Column(db.Text, unique=False, nullable=False)
     comment = db.Column(db.Text, unique=False, nullable=False)
+
+#Model for allergies_and_intolerances
+class allergies_and_intolerances(db.Model):
+    __tablename__ = 'allergies_and_intolerances'
+    id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
+    global_exclusion_of_adverse_reactions = db.Column(db.Text, unique=False, nullable=True)
+    absence_of_information_statement = db.Column(db.Text, unique=False, nullable=True)
+    absence_of_information_protocol_last_updated = db.Column(db.Text, unique=False, nullable=True)
+
+class allergy(db.Model):
+    __tablename__= 'allergy'
+    id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient_details.id'), nullable=False)
+    substance = db.Column(db.Text, unique=False, nullable=False)
+    verification_status = db.Column(db.Text, unique=False, nullable=False)
+    critically = db.Column(db.Text, unique=False, nullable=False)
+    type = db.Column(db.Text, unique=False, nullable=False)
+    comment = db.Column(db.Text, unique=False, nullable=True)
+    reaction_manifestation = db.Column(db.Text, unique=False, nullable=True)
+    onset = db.Column(db.Text, unique=False, nullable=True)
+    severity = db.Column(db.Text, unique=False, nullable=False)
+    protocol_last_updated = db.Column(db.Date, unique=False, nullable=False)
+
+#Model for diagnostic_lab_test_result
+class diagnostic_lab_test_result(db.Model):
+    __tablename__ = 'diagnostic_lab_test_result'
+    id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
+    test_name = db.Column(db.Text, unique=False, nullable=False)
+    specimen_type = db.Column(db.Text, unique=False, nullable=True)
+    specimen_method = db.Column(db.Text, unique=False, nullable=True)
+    specimen_bodysite = db.Column(db.Text, unique=False, nullable=False)
+    diagnostic_service_category = db.Column(db.Text, unique=False, nullable=False)
+    laboratory_analyte_result_analyte_name = db.Column(db.Text, unique=False, nullable=False)
+    interpretation = db.Column(db.Text, unique=False, nullable=False)
+    multimedia_source_resource_name = db.Column(db.Text, unique=False, nullable=False)
+    multimedia_source_content = db.Column(db.Text, unique=False, nullable=False)
+
+#Models for diagnostic_imaging_examination_result
+class diagnostic_imaging_examination_result(db.Model):
+    __tablename__ = 'diagnostic_imaging_examination_result'
+    id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
+    test_name = db.Column(db.Text, unique=False, nullable=False)
+    modality = db.Column(db.Text, unique=False, nullable=False)
+    anatomical_site = db.Column(db.Text, unique=False, nullable=False)
+    imaging_finding_name = db.Column(db.Text, unique=False, nullable=False)
+    anatomical_location = db.Column(db.Text, unique=False, nullable=False)
+    presence = db.Column(db.Text, unique=False, nullable=False)
+    description = db.Column(db.Text, unique=False, nullable=True)
+    comparison_to_previous = db.Column(db.Text, unique=False, nullable=True)
+    comment = db.Column(db.Text, unique=False, nullable=True)
+    comparison_with_previous = db.Column(db.Text, unique=False, nullable=True)
+    conclusion = db.Column(db.Text, unique=False, nullable=True)
+    imaging_differential_diagnosis = db.Column(db.Text, unique=False, nullable=True)
+    imaging_diagnosis = db.Column(db.Text, unique=False, nullable=True)
+    multimedia_resource_name = db.Column(db.Text, unique=False, nullable=True)
+    multimedia_content = db.Column(db.Text, unique=False, nullable=True)
+    technique = db.Column(db.Text, unique=False, nullable=True)
+    imaging_quality = db.Column(db.Text, unique=False, nullable=True)
+    examination_requester_order_identifier = db.Column(db.Text, unique=False, nullable=False)
+    examination_requested_name = db.Column(db.Text, unique=False, nullable=False)
+    examination_receiver_order_identifier = db.Column(db.Text, unique=False, nullable=False)
+    dicom_study_identifier = db.Column(db.Text, unique=False, nullable=False)
+    examination_report_identifier = db.Column(db.Text, unique=False, nullable=False)
+    #In APIs related to this model add a reported_images 
+
+class reported_images(db.Model):
+    __tablename__= 'reported_images'
+    id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
+    image_identifier = db.Column(db.Text, unique=True, nullable=True)
+    diagnostic_imaging_examination_result_id = db.Column(db.Integer, db.ForeignKey('diagnostic_imaging_examination_result.id'),nullable=False)
+    dicom_series_identifier = db.Column(db.Text, unique=False, nullable=False)
+    view = db.Column(db.Text, unique=False, nullable=False)
+    position = db.Column(db.Text, unique=False, nullable=False)
+    image_datetime = db.Column(db.DateTime, unique=False, nullable=False)
+    image = db.Column(db.Text, unique=True, nullable=False)
+
+#vital_signs
+class vital_signs(db.Model):
+    __tablename__ = 'vital_signs'
+    id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
+    body_weight = db.Column(db.Integer, unique=False, nullable=False)
+    body_weight_unit = db.Column(db.Text, unique=False, nullable=False)
+    height = db.Column(db.Integer, unique=False, nullable=False)
+    height_unit = db.Column(db.Text, unique=False, nullable=False)
+    respiration_rate = db.Column(db.Integer, unique=False, nullable=False)
+    pulse_rate = db.Column(db.Integer, unique=False, nullable=False)
+    body_temperature = db.Column(db.Integer, unique=False, nullable=False)
+    body_temperature_unit = db.Column(db.Text, unique=False, nullable=False)
+    head_circumference = db.Column(db.Integer, unique=False, nullable=False)
+    head_circumference_unit = db.Column(db.Text, unique=False, nullable=False)
+    pulse_oximetry = db.Column(db.Integer, unique=False, nullable=False)
+    body_mass_index = db.Column(db.Integer, unique=False, nullable=False)
+    body_mass_index_unit = db.Column(db.Text, unique=False, nullable=False)
+    blood_pressure_systolic = db.Column(db.Integer, unique=False, nullable=False)
+    blood_pressure_diastolic = db.Column(db.Integer, unique=False, nullable=False)
