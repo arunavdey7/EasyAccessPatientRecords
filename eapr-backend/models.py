@@ -281,5 +281,71 @@ class Past_history_of_illnesses(db.Model):
     occurrence = db.Column(db.Text, unique=False, nullable=False)
     diagnostic_certainity = db.Column(db.Text, unique=False, nullable=False) 
     protocol_last_updated = db.Column(db.Date, unique=False, nullable=False,default=datetime.datetime.utcnow)
+
+# Model for tobacco smoking
    
-             
+class Tobacco_smoking(db.Model):
+    __tablename__ = 'tobacco_smoking'
+    id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
+    patient_uid = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
+    status = db.Column(db.Text, unique=False, nullable=False)
+
+# Model for alcohol consumption
+class Alcohol_consumption(db.Model):
+    __tablename__ = 'alcohol_consumption'
+    id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
+    patient_uid = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
+    status = db.Column(db.Text, unique=False, nullable=False)
+    typical_consumption_alcohol_unit = db.Column(db.Integer, unique=False, nullable=False)
+
+# Model for care plan
+class Care_plan(db.Model):
+    __tablename__ = 'care_plan'
+    care_plan_id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
+    patient_uid = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
+    care_plan_name = db.Column(db.Text, unique=False, nullable=False)
+    care_plan_description = db.Column(db.Text, unique=False, nullable=False)
+    care_plan_reason = db.Column(db.Text, unique=False, nullable=False)
+    care_plan_expiry_date= db.Column(db.Date, unique=False, nullable=False)
+
+# Model for service request
+class Service_request(db.Model):
+    __tablename__ = 'service_request'
+    id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
+    patient_uid = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
+    service_name = db.Column(db.Text, unique=False, nullable=False)
+    service_type = db.Column(db.Text, unique=False, nullable=False)
+    description = db.Column(db.Text, unique=False, nullable=False)
+    reason_for_request= db.Column(db.Text, unique=False, nullable=False)
+    reason_description = db.Column(db.Text, unique=False, nullable=False)
+    clinical_indication = db.Column(db.Text, unique=False, nullable=False)
+    intent = db.Column(db.Text, unique=False, nullable=False)
+    urgency= db.Column(db.Text, unique=False, nullable=False)
+    service_due= db.Column(db.Date, unique=False, nullable=False)
+    service_period_start = db.Column(db.Date, unique=False, nullable=False)
+    service_period_expiry = db.Column(db.Date, unique=False, nullable=False)
+    indefinite = db.Column(db.Text, unique=False, nullable=False)
+    supplementary_information= db.Column(db.Text, unique=False, nullable=False)
+    information_description= db.Column(db.Text, unique=False, nullable=False)
+    comment= db.Column(db.Text, unique=False, nullable=False)
+    requester_order_identifier = db.Column(db.Text, unique=False, nullable=False)
+    receiver_order_identifier = db.Column(db.Text, unique=False, nullable=False)
+    request_status = db.Column(db.Text, unique=False, nullable=False)
+
+#Model for functional status
+class Functional_status(db.Model):
+    __tablename__ = 'functional_status'
+    id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
+    patient_uid = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
+    diagnosis_name = db.Column(db.Text, unique=False, nullable=False)
+    body_site = db.Column(db.Text, unique=False, nullable=False)
+    date_of_onset = db.Column(db.Date, unique=False, nullable=False)
+    severity= db.Column(db.Text, unique=False, nullable=False)
+    date_of_abatement = db.Column(db.Date, unique=False, nullable=False)
+    active_inactive = db.Column(db.Text, unique=False, nullable=False)
+    resolution_phase = db.Column(db.Text, unique=False, nullable=False)
+    remission_status= db.Column(db.Text, unique=False, nullable=False)
+    occurrence= db.Column(db.Text, unique=False, nullable=False)
+    diagnostic_certainty = db.Column(db.Text, unique=False, nullable=False)
+    protocol_last_updated = db.Column(db.Date, unique=False, nullable=False)
+    clinical_impression = db.Column(db.Text, unique=False, nullable=False)
