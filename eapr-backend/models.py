@@ -16,6 +16,7 @@ class Patient_details(db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(500), unique = False, nullable=False)
     contact = db.Column(db.Text, unique=False, nullable=False)
+    gender = db.Column(db.Text, unique=False, nullable=False)
     address=db.Column(db.String(100), unique=False, nullable=False)
 
 #Model for Doctor Details
