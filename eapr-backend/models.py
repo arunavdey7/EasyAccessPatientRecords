@@ -109,9 +109,9 @@ class Medication_summary(db.Model):
     __tablename__ = 'medication_summary'
     medication_summary_id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
     patient_id = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
-    global_exclusion_of_medication_use = db.Column(db.Text, unique=False, nullable=True)
-    absence_of_info_statement = db.Column(db.Text, unique=False, nullable=True)
-    absence_of_info_protocol_last_updated = db.Column(db.Text, unique=False, nullable=True)
+    global_exclusion_of_medication_use = db.Column(db.Text, unique=False, nullable=False)
+    absence_of_info_statement = db.Column(db.Text, unique=False, nullable=False)
+    absence_of_info_protocol_last_updated = db.Column(db.Text, unique=False, nullable=False)
 
 
 class Medication_statement(db.Model):
@@ -199,4 +199,87 @@ class Timing_non_daily(db.Model):
     on = db.Column(db.TIME, unique=False, nullable=False)
     off = db.Column(db.TIME, unique=False, nullable=False)
     repetetions = db.Column(db.Integer, unique=False, nullable=False)
+    
+ # Model for Advance care Directive
+class Advance_care_directive(db.Model):
+    __tablename__ = 'advance_care_directive'
+    id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
+    type_of_directive = db.Column(db.Text, unique=False, nullable=False)
+    status = db.Column(db.Text, unique=False, nullable=False)
+    description = db.Column(db.Text, unique=False, nullable=False)
+    condition = db.Column(db.Text, unique=False, nullable=False)
+    directive_location = db.Column(db.Text, unique=False, nullable=False)
+    comment = db.Column(db.Text, unique=False, nullable=False)
+    valid_period_start = db.Column(db.Date, unique=False, nullable=False,default=datetime.datetime.utcnow)
+    valid_period_end = db.Column(db.Date, unique=False, nullable=False,default=datetime.datetime.utcnow)
+    review_due_date = db.Column(db.Date, unique=False, nullable=False,default=datetime.datetime.utcnow)
+    last_updated = db.Column(db.Date, unique=False, nullable=False,default=datetime.datetime.utcnow) 
+    mandate = db.Column(db.Text, unique=False, nullable=False)      
+
+
+# Model for Limitation of Treatment
+
+class Limitation_of_treatment(db.Model):
+    __tablename__ ='limitation_of_treatment'
+    id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
+    status = db.Column(db.Text, unique=False, nullable=False)
+    type_of_limitation =db.Column(db.Text, unique=False, nullable=False)
+    decision = db.Column(db.Text, unique=False, nullable=False)
+    qualification = db.Column(db.Text, unique=False, nullable=False)
+    rationale = db.Column(db.Text, unique=False, nullable=False)
+    patient_awareness = db.Column(db.Text, unique=False, nullable=False)
+    carer_awareness =db.Column(db.Text, unique=False, nullable=False)
+    comment = db.Column(db.Text, unique=False, nullable=False)
+    element = db.Column(db.Date, unique=False, nullable=False,default=datetime.datetime.utcnow)
+    protocol_review_date = db.Column(db.Date, unique=False, nullable=False,default=datetime.datetime.utcnow) 
+    
+
+# Model For Problem List
+
+class Problem_list(db.Model):
+    __tablename__ = 'problem_list'
+    id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
+    global_exclusion_of_adverse_reactions = db.Column(db.Text, unique=False, nullable=False)
+    absence_of_information_statement = db.Column(db.Text, unique=False, nullable=False)
+    absence_of_information_protocol_last_updated = db.Column(db.Text, unique=False, nullable=False)
+
+# Model for Problem
+
+class Problem(db.Model):
+    __tablename__ = 'problem'
+    id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
+    problem_name = db.Column(db.Text, unique=False, nullable=False)
+    body_site = db.Column(db.Text, unique=False, nullable=False)
+    datetime_of_onset = db.Column(db.Date, unique=False, nullable=False,default=datetime.datetime.utcnow)
+    severity = db.Column(db.Text, unique=False, nullable=False) 
+    date_of_abatebent = db.Column(db.Date, unique=False, nullable=False,default=datetime.datetime.utcnow)
+    active_or_inactive = db.Column(db.Text, unique=False, nullable=False) 
+    resolution_phase = db.Column(db.Text, unique=False, nullable=False) 
+    remission_status = db.Column(db.Text, unique=False, nullable=False) 
+    occurrence = db.Column(db.Text, unique=False, nullable=False)
+    diagnostic_certainity = db.Column(db.Text, unique=False, nullable=False) 
+    protocol_last_updated = db.Column(db.Date, unique=False, nullable=False,default=datetime.datetime.utcnow)  
+    
+# Model for past history of illnesses
+
+class Past_history_of_illnesses(db.Model):
+    __tablename__ = 'past_history_of_illnesses'
+    id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
+    problem_name = db.Column(db.Text, unique=False, nullable=False)
+    body_site = db.Column(db.Text, unique=False, nullable=False)
+    datetime_of_onset = db.Column(db.Date, unique=False, nullable=False)
+    severity = db.Column(db.Text, unique=False, nullable=False) 
+    date_of_abatebent = db.Column(db.Date, unique=False, nullable=False,default=datetime.datetime.utcnow)
+    active_or_inactive = db.Column(db.Text, unique=False, nullable=False) 
+    resolution_phase = db.Column(db.Text, unique=False, nullable=False) 
+    remission_status = db.Column(db.Text, unique=False, nullable=False) 
+    occurrence = db.Column(db.Text, unique=False, nullable=False)
+    diagnostic_certainity = db.Column(db.Text, unique=False, nullable=False) 
+    protocol_last_updated = db.Column(db.Date, unique=False, nullable=False,default=datetime.datetime.utcnow)
+   
              
