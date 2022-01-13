@@ -14,6 +14,9 @@ import Test from './components/test/Test';
 import DoctorDashboard from './components/doctordashboard/DoctorDashboard';
 import IpsContainer from './components/ipscontainer/IpsContainer'
 import ShowMedicationStatement from './components/showmedicationstatement/ShowMedicationStatement'
+import DoctorPatientDashboard from './components/doctorpatientdashboard/DoctorPatientDashboard';
+import Registration from './pages/registeration/Registration';
+
 const MainComponent = () => {
 
   return (
@@ -51,11 +54,20 @@ const MainComponent = () => {
             <Route exact path='/ips'>
               <IpsContainer/>
             </Route>
-            <Route exact path='/doctorpatientdashboard'>
+            <Route exact path='/doctorsdashboard'>
               <DoctorDashboard/>
+            </Route>
+            <Route exact path='/doctorpatientdashboard'>
+              <DoctorPatientDashboard/>
             </Route>
             <Route exact path='/showmedicationstatement'>
               <ShowMedicationStatement/>
+            </Route>
+            <Route exact path='/register'>
+              <Registration/>
+            </Route>
+            <Route exact path='/login'>
+              <Login/>
             </Route>
           </Switch>
         </Router>

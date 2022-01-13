@@ -5,27 +5,12 @@ import 'react-toastify/dist/ReactToastify.css';
 import './styles.css'
 import {login} from '../../utilities/LoginUtility'
 
-const Login = () => {
+const Registration = () => {
 
     const [email,setEmail] = useState("");
     const [password,setPassword] = useState("");
     const [role, setRole] = useState("No role selected")
 
-    const handleLogin = async () =>
-    {
-        var result = await login(email,password,role)
-        if(result)
-        {
-            toast("Login Successfull !")
-            localStorage.getItem('user')
-        }
-        else
-        {
-            console.log("Login Failure")
-            toast("Login Failed !")
-        }
-            
-    }
     const handleRole = (event) => {
         var selected = event.target.id
         if(selected === 'role_doctor')
@@ -35,11 +20,12 @@ const Login = () => {
         else
             setRole('Admin')
     }
-
+    console.log(role)
     const handleSignup = () =>
     {
         // Not required for now.
     }
+
     return(
         <>
         <div className='header_background'></div>
@@ -56,7 +42,7 @@ const Login = () => {
                    <div className="inner-container-y">
                        
                         <div className="login_form_container">
-                        <div className="selected_role">
+                            <div className="selected_role">
                                 <p>Selected Role: </p><h2>{role}</h2>
                             </div>
                             <div className='credential_labels'>
@@ -73,7 +59,9 @@ const Login = () => {
                             </div>
                             <div className="login_btn_container">
                                 <div>
-                                    <button className="login_btn">Login</button>
+                                    <button className="login_btn">Register
+                                    
+                                    </button>
                                 </div>
                             </div>
                         </div>          
@@ -85,4 +73,4 @@ const Login = () => {
     )
 }
 
-export default Login;
+export default Registration;

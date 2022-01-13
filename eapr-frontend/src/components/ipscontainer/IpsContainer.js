@@ -15,55 +15,47 @@ const IpsContainer = () => {
             gotoUrl:'/allergiesandintolerances'
         },
         {
-            fieldName:'Medication Summary',
+            fieldName:'Problem List',
             gotoUrl:'/medicationstatements'
         },
         {
-            fieldName:'Medication Summary',
+            fieldName:'Immunizations',
             gotoUrl:'/medicationstatements'
         },
         {
-            fieldName:'Medication Summary',
+            fieldName:'History of Procedures',
             gotoUrl:'/medicationstatements'
         },
         {
-            fieldName:'Medication Summary',
+            fieldName:'Medical Devices',
             gotoUrl:'/medicationstatements'
         },
         {
-            fieldName:'Medication Summary',
+            fieldName:'Vital Signs',
             gotoUrl:'/medicationstatements'
         },
         {
-            fieldName:'Medication Summary',
+            fieldName:'Past History of Illnesses',
             gotoUrl:'/medicationstatements'
         },
         {
-            fieldName:'Medication Summary',
+            fieldName:'Pregnancy',
             gotoUrl:'/medicationstatements'
         },
         {
-            fieldName:'Medication Summary',
+            fieldName:'Social History',
             gotoUrl:'/medicationstatements'
         },
         {
-            fieldName:'Medication Summary',
+            fieldName:'Plan of Care',
             gotoUrl:'/medicationstatements'
         },
         {
-            fieldName:'Medication Summary',
+            fieldName:'Functional Status',
             gotoUrl:'/medicationstatements'
         },
         {
-            fieldName:'Medication Summary',
-            gotoUrl:'/medicationstatements'
-        },
-        {
-            fieldName:'Medication Summary',
-            gotoUrl:'/medicationstatements'
-        },
-        {
-            fieldName:'Medication Summary',
+            fieldName:'Advanced Directives',
             gotoUrl:'/medicationstatements'
         }
 
@@ -71,9 +63,11 @@ const IpsContainer = () => {
 
     return(
         <div className='ips_container'>
-            {
-                headings.map((data) => <IpsItem {...data}/>)
-            }
+            <div className='ips_inner_container'>
+                {
+                    headings.map((data) => <IpsItem {...data}/>)
+                }
+            </div>
         </div>
     )
 }

@@ -2,4 +2,7 @@
 {
     height: 80vh;
     overflow-y: scroll;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
 }
