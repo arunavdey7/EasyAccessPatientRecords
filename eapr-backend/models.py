@@ -8,23 +8,33 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
 
 #Model for patient Details
-
 class Patient_details(db.Model):
     __tablename__ ='patient_details'
     id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
     name = db.Column(db.Text, unique=False, nullable=False)
     age = db.Column(db.Integer,unique=False,nullable = False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    password = db.Column(db.String(500), unique = False, nullable=False)
+    contact = db.Column(db.Text, unique=False, nullable=False)
+    address=db.Column(db.String(100), unique=False, nullable=False)
 
 #Model for Doctor Details
-
 class doctor_details(db.Model):
     __tablename__ ='doctor_details'
     id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
     name = db.Column(db.Text, unique=False, nullable=False)
     category = db.Column(db.Text,unique=False,nullable = False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    password = db.Column(db.String(500), unique = False, nullable=False)
+
+#Model for Admin Login
+class Admin_Login(db.Model):
+    __tablename__='admin_login'
+    id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False) 
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    password = db.Column(db.String(500), unique = False, nullable=False)
 
 # Models for Prescription
-
 class Prescription(db.Model):
     __tablename__ = 'prescription'
     prescriptionId = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
@@ -189,4 +199,4 @@ class Timing_non_daily(db.Model):
     on = db.Column(db.TIME, unique=False, nullable=False)
     off = db.Column(db.TIME, unique=False, nullable=False)
     repetetions = db.Column(db.Integer, unique=False, nullable=False)
-        
+             
