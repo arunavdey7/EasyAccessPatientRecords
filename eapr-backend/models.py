@@ -349,3 +349,73 @@ class Functional_status(db.Model):
     diagnostic_certainty = db.Column(db.Text, unique=False, nullable=False)
     protocol_last_updated = db.Column(db.Date, unique=False, nullable=False)
     clinical_impression = db.Column(db.Text, unique=False, nullable=False)
+
+# Pregnancy Table
+class Pregnancy(db.Model):
+    __tablename__ ='pregnancy'
+    id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
+    patient_uid = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
+    pregnancy_status = db.Column(db.Text, unique=False, nullable=False)
+    pregnancy_outcome = db.Column(db.Text, unique=False, nullable=False)
+    estimated_date_of_delivery_by_date_of_conseption = db.Column(db.Date)
+    estimated_date_of_delivery_by_cycle = db.Column(db.Date)
+    estimated_date_of_delivery_by_ultrasound = db.Column(db.Date)
+    agreed_date =   db.Column(db.Date)
+    protocol_last_updated = db.Column(db.Date)
+    exclusion_of_pregnancy_statement = db.Column(db.Text, unique=False, nullable=False)
+
+
+# history_of_procedures
+class history_of_procedures(db.Model):
+    __tablename__ = 'history_of_procedures'
+    id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
+    patient_uid = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
+    absence_of_info_absence_statement = db.Column(db.Text, unique=False, nullable=False)
+    absence_of_info_protocol_last_updated = db.Column(db.Date)
+    global_exclusion_of_procedures = db.Column(db.Text, unique=False, nullable=False)
+
+# procedure table
+class Procedure(db.Model):
+    __tablename__ = 'procedure'
+    id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
+    patient_uid = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
+    procedure_name = db.Column(db.Text, unique=False, nullable=False)
+    body_site = db.Column(db.Text, unique=False, nullable=False)
+
+# innunizations table
+class Immunizations(db.Model):
+    __tablename__ = 'immunizations'
+    id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
+    patient_uid = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
+    absence_of_info_absence_statement = db.Column(db.Text, unique=False, nullable=False)
+    absence_of_info_protocol_last_updated = db.Column(db.Date)
+
+# immunization table
+class Immunization(db.Model):
+    __tablename__ = "immunization"
+    id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
+    patient_uid = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
+    administration_details_route = db.Column(db.Text, unique=False, nullable=False)
+    administration_details_target_site = db.Column(db.Text, unique=False, nullable=False)
+    sequence_number = db.Column(db.Integer, unique=False, nullable=False)
+
+# medical device  table
+class Medical_devices(db.Model):
+    __tablename__ = "medical_devices"
+    id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
+    patient_uid = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
+    device_name = db.Column(db.Text, unique=False, nullable=False)
+    body_site = db.Column(db.Text, unique=False, nullable=False)
+    type = db.Column(db.Text, unique=False, nullable=False)
+    description = db.Column(db.Text, unique=False, nullable=False)
+    UDI = db.Column(db.Text, unique=False, nullable=False)
+    manufacturer = db.Column(db.Text, unique=False, nullable=False)
+    date_of_manufacture = db.Column(db.Date)
+    serial_number =db.Column(db.Text, unique=False, nullable=False)
+    catalogue_number =db.Column(db.Text, unique=False, nullable=False)
+    model_number = db.Column(db.Text, unique=False, nullable=False)
+    batch_number = db.Column(db.Text, unique=False, nullable=False)
+    software_version = db.Column(db.Text, unique=False, nullable=False)
+    date_of_expiry = db.Column(db.Date)
+    other_identifier = db.Column(db.Text, unique=False, nullable=False)
+    comment = db.Column(db.Text, unique=False, nullable=False)
