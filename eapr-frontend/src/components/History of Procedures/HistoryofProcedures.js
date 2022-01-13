@@ -32,11 +32,11 @@ const HistoryofProcedures = () => {
             <h1>Procedure</h1>
             <h2>Description</h2>
             <label>Procedure name</label>
-            <input><input name='isdImmunizationItem' value={data.isdImmunizationItem || ''} onChange={handleChange}></input></input>
+            <input><input name='hpProcedureName' value={data.hpProcedureName || ''} onChange={handleChange}></input></input>
             <br/>
             <h2>Body site</h2>
             <label>Route</label>
-            <input><input name='isdRoute' value={data.isdRoute || ''} onChange={handleChange}></input></input>
+            <input><input name='hpBodySite' value={data.hpBodySite || ''} onChange={handleChange}></input></input>
             <br/>
             <h1>Absence of Information</h1>
             <h2>Data</h2>
