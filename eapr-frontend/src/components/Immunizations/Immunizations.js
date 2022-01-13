@@ -33,17 +33,17 @@ const Immunizations = () => {
             <h1>Immunization satement</h1>
             <h2>Description</h2>
             <label>Immunization item</label>
-            <input><input name='isdImmunizationItem' value={data.isdImmunizationItem || ''} onChange={handleChange}></input></input>
+            <input name='isdImmunizationItem' value={data.isdImmunizationItem || ''} onChange={handleChange}></input>
             <br/>
             <h2>Administration details</h2>
             <label>Route</label>
-            <input><input name='isdRoute' value={data.isdRoute || ''} onChange={handleChange}></input></input>
+            <input name='isdRoute' value={data.isdRoute || ''} onChange={handleChange}></input>
             <br/>
             <label>Target site</label>
-            <input><input name='isdTargetSite' value={data.isdTargetSite || ''} onChange={handleChange}></input></input>
+            <input name='isdTargetSite' value={data.isdTargetSite || ''} onChange={handleChange}></input>
             <br/>
             <label>Sequence number</label>
-            <input><input name='isdSequenceNumber' value={data.isdSequenceNumber || ''} onChange={handleChange}></input></input>
+            <input name='isdSequenceNumber' value={data.isdSequenceNumber || ''} onChange={handleChange}></input>
             <br/>
             <h1>Absence of Information</h1>
             <h2>Data</h2>

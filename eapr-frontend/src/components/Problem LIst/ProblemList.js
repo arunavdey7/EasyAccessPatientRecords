@@ -45,13 +45,13 @@ const ProblemList = () => {
             <h1>Problem/Diagnosis</h1>
             <h2>Data</h2>
             <label>Problem/Diagnosis name</label>
-            <input><input name='pdName' value={data.pdName || ''} onChange={handleChange}></input></input>
+            <input name='pdName' value={data.pdName || ''} onChange={handleChange}></input>
             <br/>
             <label>Body site</label>
-            <input><input name='pdBodySite' value={data.pdBodySite || ''} onChange={handleChange}></input></input>
+            <input name='pdBodySite' value={data.pdBodySite || ''} onChange={handleChange}></input>
             <br/>
             <label>Date/time of onset</label>
-            <input><input name='pdDateTimeofOnset' value={data.pdDateTimeofOnset || ''} onChange={handleChange}></input></input>
+            <input name='pdDateTimeofOnset' value={data.pdDateTimeofOnset || ''} onChange={handleChange}></input>
             <br/>
             <label>Severity</label>
             <select>
@@ -61,7 +61,7 @@ const ProblemList = () => {
             </select>
             <br/>
             <label>Date of abatement</label>
-            <input><input name='pdDateofAbatement' value={data.pdDateofAbatement || ''} onChange={handleChange}></input></input>
+            <input name='pdDateofAbatement' value={data.pdDateofAbatement || ''} onChange={handleChange}></input>
             <br/>
             <h2>Problem/Diagnosis qualifier</h2>
             <label>Active/Inactive?</label>
