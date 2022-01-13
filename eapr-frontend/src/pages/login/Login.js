@@ -35,11 +35,7 @@ const Login = () => {
         else
             setRole('Admin')
     }
-
-    const handleSignup = () =>
-    {
-        // Not required for now.
-    }
+    
     return(
         <>
         <div className='header_background'></div>
@@ -76,6 +72,7 @@ const Login = () => {
                                     <button className="login_btn">Login</button>
                                 </div>
                             </div>
+                            <a href='/register'>Not Registered? Register now</a>
                         </div>          
                    </div>
             </div>

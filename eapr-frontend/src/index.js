@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{ useState, createContext, useContext } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Switch, useHistory, useLocation } from "react-router-dom";
 import './index.css';
@@ -16,63 +16,71 @@ import IpsContainer from './components/ipscontainer/IpsContainer'
 import ShowMedicationStatement from './components/showmedicationstatement/ShowMedicationStatement'
 import DoctorPatientDashboard from './components/doctorpatientdashboard/DoctorPatientDashboard';
 import Registration from './pages/registeration/Registration';
+import SessionContext from './utilities/SessionContext'
 
 const MainComponent = () => {
 
+  const [sessionData, setSessionData] = useState({
+    'a':'Arunav Manu',
+    'b':'Dey'
+  })
   return (
-    <React.Fragment>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
-      <div>
-        <Router>
-
-          <Switch>
-            <Route exact path='/'>
-              <Login />
-            </Route>
-            <Route exact path='/patienthome'>
-              <PatientHome />
-            </Route>
-            <Route exact path='/addpatientdata'>
-              <AddPatientData />
-            </Route>
-            <Route exact path='/medicationstatement'>
-              <MedicationStatement />
-            </Route>
-            <Route exact path='/prescription'>
-              <Prescription />
-            </Route>
-            <Route exact path='/test'>
-              <Test />
-            </Route>
-            <Route exact path='/ips'>
-              <IpsContainer/>
-            </Route>
-            <Route exact path='/doctorsdashboard'>
-              <DoctorDashboard/>
-            </Route>
-            <Route exact path='/doctorpatientdashboard'>
-              <DoctorPatientDashboard/>
-            </Route>
-            <Route exact path='/showmedicationstatement'>
-              <ShowMedicationStatement/>
-            </Route>
-            <Route exact path='/register'>
-              <Registration/>
-            </Route>
-            <Route exact path='/login'>
-              <Login/>
-            </Route>
-          </Switch>
-        </Router>
-      </div>
-    </React.Fragment>
+    
+        <React.Fragment>
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
+          <div>
+          <SessionContext.Provider value = {sessionData}>
+            <Router>
+              <Switch>
+                <Route exact path='/'>
+                  <Login />
+                </Route>
+                <Route exact path='/patienthome'>
+                  <PatientHome />
+                </Route>
+                <Route exact path='/addpatientdata'>
+                  <AddPatientData />
+                </Route>
+                <Route exact path='/medicationstatement'>
+                  <MedicationStatement />
+                </Route>
+                <Route exact path='/prescription'>
+                  <Prescription />
+                </Route>
+                <Route exact path='/test'>
+                  <Test />
+                </Route>
+                <Route exact path='/ips'>
+                  <IpsContainer/>
+                </Route>
+                <Route exact path='/doctorsdashboard'>
+                  <DoctorDashboard/>
+                </Route>
+                <Route exact path='/doctorpatientdashboard'>
+                  <DoctorPatientDashboard/>
+                </Route>
+                <Route exact path='/showmedicationstatement'>
+                  <ShowMedicationStatement/>
+                </Route>
+                <Route exact path='/register'>
+                  <Registration/>
+                </Route>
+                <Route exact path='/login'>
+                  <Login/>
+                </Route>
+              </Switch>
+            </Router>
+            </SessionContext.Provider>
+          </div>
+        </React.Fragment>
+    
   )
 }
 
@@ -85,3 +93,4 @@ ReactDOM.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+

@@ -1,10 +1,10 @@
-import React from 'react' 
+import React,{useContext} from 'react' 
 import IpsItem from '../ipsitem/IpsItem'
-
+import SessionContext from '../../utilities/SessionContext'
 import './styles.css'
 
 const IpsContainer = () => {
-
+    const sessionData = useContext(SessionContext);
     const headings = [
         {
             fieldName:'Medication Summary',
@@ -60,9 +60,10 @@ const IpsContainer = () => {
         }
 
     ]
-
+    console.log(sessionData)
     return(
         <div className='ips_container'>
+            <h1>{sessionData.a}</h1>
             <div className='ips_inner_container'>
                 {
                     headings.map((data) => <IpsItem {...data}/>)
