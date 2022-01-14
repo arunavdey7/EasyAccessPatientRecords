@@ -1,30 +1,50 @@
-import React,{useState} from "react";
+import React,{useState, useContext} from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import SessionContext from "../../utilities/SessionContext";
 import './styles.css'
-import {login} from '../../utilities/LoginUtility'
+import {loginAdmin, loginDoctor, loginPatient} from '../../utilities/LoginUtility'
 
-const Login = () => {
+const Login = ({
+    setSessionData
+}) => {
 
     const [email,setEmail] = useState("");
     const [password,setPassword] = useState("");
     const [role, setRole] = useState("No role selected")
+    const sessionData = useContext(SessionContext);
 
     const handleLogin = async () =>
     {
-        var result = await login(email,password,role)
+        var result = null;
+        if(role === 'Doctor')
+        {
+            result = await loginDoctor(email,password)
+        }
+        else if(role === 'Patient')
+        {
+            result = await loginPatient(email,password)
+        }
+        else if(role === 'Admin')
+        {
+            result = await loginAdmin(email,password)
+        } 
         if(result)
         {
-            toast("Login Successfull !")
-            localStorage.getItem('user')
+            toast(role+" login sucessfull.")
+            setSessionData({
+                ...sessionData,
+                isUserLoggedIn:true
+            })
         }
         else
         {
-            console.log("Login Failure")
-            toast("Login Failed !")
-        }
-            
+            toast(role+" login failure.")
+            setSessionData({
+                ...sessionData,
+                isUserLoggedIn:false
+            })
+        }   
     }
     const handleRole = (event) => {
         var selected = event.target.id
@@ -69,7 +89,7 @@ const Login = () => {
                             </div>
                             <div className="login_btn_container">
                                 <div>
-                                    <button className="login_btn">Login</button>
+                                    <button onClick={handleLogin} className="login_btn">Login</button>
                                 </div>
                             </div>
                             <a href='/register'>Not Registered? Register now</a>

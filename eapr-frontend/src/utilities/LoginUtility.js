@@ -1,9 +1,8 @@
-export const login = async (email,password,role) => {
+export const loginDoctor = async (email,password) => {
 
     const credentials = {
         email,
-        password,
-        role
+        password
     }
     var requestOptions = {
         method: 'POST',
@@ -14,17 +13,86 @@ export const login = async (email,password,role) => {
         }
       }
       
-    const response = await fetch("/api/login/", requestOptions)
+    const response = await fetch("/api/doctorlogin", requestOptions)
     const {
         success,
         token,
-        user
+        doctor_info
+
     } = await response.json()
 
     if(success)
     {
         localStorage.setItem('token',token)
-        localStorage.setItem('user', user)
+        localStorage.setItem('user', doctor_info)
+        return true
+    }
+    else
+    {
+        return false
+    }
+}
+
+export const loginPatient = async (email,password) => {
+
+    const credentials = {
+        email,
+        password
+    }
+    var requestOptions = {
+        method: 'POST',
+        body: JSON.stringify(credentials),
+        mode:'cors',
+        headers:{
+            'Content-type':'Application/json'
+        }
+      }
+      
+    const response = await fetch("/api/patientlogin", requestOptions)
+    const {
+        success,
+        token,
+        patient_info
+
+    } = await response.json()
+
+    if(success)
+    {
+        localStorage.setItem('token',token)
+        localStorage.setItem('user', patient_info)
+        return true
+    }
+    else
+    {
+        return false
+    }
+}
+
+export const loginAdmin = async (email,password) => {
+
+    const credentials = {
+        email,
+        password
+    }
+    var requestOptions = {
+        method: 'POST',
+        body: JSON.stringify(credentials),
+        mode:'cors',
+        headers:{
+            'Content-type':'Application/json'
+        }
+      }
+      
+    const response = await fetch("/api/adminlogin", requestOptions)
+    const {
+        success,
+        token
+
+    } = await response.json()
+
+    if(success)
+    {
+        localStorage.setItem('token',token)
         return true
     }
     else

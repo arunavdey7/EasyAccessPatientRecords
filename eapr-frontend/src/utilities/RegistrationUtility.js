@@ -9,17 +9,13 @@ export const registerDoctor = async (requestData) => {
         }
       }
       
-    const response = await fetch("/api/register/", requestOptions)
+    const response = await fetch("/api/doctorregister", requestOptions)
     const {
-        success,
-        token,
-        user
+        success
     } = await response.json()
 
     if(success)
     {
-        localStorage.setItem('token',token)
-        localStorage.setItem('user', user)
         return true
     }
     else
@@ -39,17 +35,14 @@ export const registerPatient = async (requestData) => {
         }
       }
       
-    const response = await fetch("/api/register/", requestOptions)
+    const response = await fetch("/api/patientregister", requestOptions)
     const {
-        success,
-        token,
-        user
+        success
+
     } = await response.json()
 
     if(success)
     {
-        localStorage.setItem('token',token)
-        localStorage.setItem('user', user)
         return true
     }
     else

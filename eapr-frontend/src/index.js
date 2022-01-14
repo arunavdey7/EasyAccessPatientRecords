@@ -17,12 +17,12 @@ import ShowMedicationStatement from './components/showmedicationstatement/ShowMe
 import DoctorPatientDashboard from './components/doctorpatientdashboard/DoctorPatientDashboard';
 import Registration from './pages/registeration/Registration';
 import SessionContext from './utilities/SessionContext'
+import MedicationSummary from './components/ipscollectives/medicationsummary/MedicationSummary';
 
 const MainComponent = () => {
 
   const [sessionData, setSessionData] = useState({
-    'a':'Arunav Manu',
-    'b':'Dey'
+    isUserLoggedIn: false
   })
   return (
     
@@ -40,7 +40,7 @@ const MainComponent = () => {
             <Router>
               <Switch>
                 <Route exact path='/'>
-                  <Login />
+                  <Login setSessionData={setSessionData}/>
                 </Route>
                 <Route exact path='/patienthome'>
                   <PatientHome />
@@ -74,6 +74,9 @@ const MainComponent = () => {
                 </Route>
                 <Route exact path='/login'>
                   <Login/>
+                </Route>
+                <Route exact path='/preview'>
+                  <MedicationSummary/>
                 </Route>
               </Switch>
             </Router>
