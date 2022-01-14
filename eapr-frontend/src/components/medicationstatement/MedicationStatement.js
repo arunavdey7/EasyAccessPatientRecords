@@ -91,7 +91,7 @@ const MedicationSummary = () => {
     
     const saveMedicationStatement = () =>{
         var data = {
-            patientUid:localStorage.getItem('patientUid'),
+            patientuid:localStorage.getItem('patientuid'),
             medicationItem,
             medicationName,
             medicationForm,
