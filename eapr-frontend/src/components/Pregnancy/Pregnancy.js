@@ -13,7 +13,7 @@ const Pregnancy = () => {
 
     const saveMedicationStatement = () =>{
         var data = {
-            patient_uid:localStorage.getItem('patientUid'),
+            patient_uid:localStorage.getItem('patientuid'),
 		    pregnancy_status,
 		    pregnancy_outcome,
 		    estimated_date_of_delivery_by_date_of_conseption,
