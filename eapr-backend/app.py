@@ -655,7 +655,7 @@ def getPrescriptionByIdForPat():
             
             data = request.get_json()
             presId = data['prescriptionId']
-            patverfify = Prescription.query.filter_by(prescriptionId=presId, doctorId =patRes.id).first()
+            patverfify = Prescription.query.filter_by(prescriptionId=presId, patientId =patRes.id).first()
             if patverfify:
                 result = Medication_Order.query.filter_by(prescriptionId = presId).all()
                 if len(result):
