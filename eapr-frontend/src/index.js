@@ -18,6 +18,8 @@ import DoctorPatientDashboard from './components/doctorpatientdashboard/DoctorPa
 import Registration from './pages/registeration/Registration';
 import SessionContext from './utilities/SessionContext'
 import MedicationSummary from './components/ipscollectives/medicationsummary/MedicationSummary';
+import MedicationOrders from './components/prescriptioncollectives/medicationorders/MedicationOrders';
+import Prescriptions from './components/prescriptioncollectives/prescriptions/Prescriptions'
 
 const MainComponent = () => {
 
@@ -76,7 +78,7 @@ const MainComponent = () => {
                   <Login/>
                 </Route>
                 <Route exact path='/preview'>
-                  <MedicationSummary/>
+                  <Prescriptions/>
                 </Route>
               </Switch>
             </Router>

@@ -12,7 +12,7 @@ const MedSummaryItem = ({
     return(
         <div onClick={handleClick} className='container'>
             <div className='name_container'>
-                <h3>Medication Name</h3>
+                <h3>meducation devices</h3>
             </div>
         </div>
     )
