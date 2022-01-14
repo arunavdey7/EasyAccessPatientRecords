@@ -1,14 +1,14 @@
 import React from 'react' 
-import MedSummaryItem from './MedSummaryItem';
+import FunctionalStatusItem from './FunctionalStatusItem';
 
-const MedicationSummary = () => {
+const FunctionalStatus = () => {
     // Load All medication Statements
     return(
         <div>
-            <MedSummaryItem/>
-            <MedSummaryItem/>
-            <MedSummaryItem/>
+            <FunctionalStatusItem/>
+            <FunctionalStatusItem/>
+            <FunctionalStatusItem/>
         </div>
     )
 }
-export default MedicationSummary;
+export default FunctionalStatus;

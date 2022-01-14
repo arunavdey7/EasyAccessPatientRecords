@@ -1,14 +1,14 @@
 import React from 'react' 
-import MedSummaryItem from './MedSummaryItem';
+import AdvancedDirectivesItem from './AdvancedDirectivesItem';
 
-const MedicationSummary = () => {
+const AdvancedDirectives = () => {
     // Load All medication Statements
     return(
         <div>
-            <MedSummaryItem/>
-            <MedSummaryItem/>
-            <MedSummaryItem/>
+            <AdvancedDirectivesItem/>
+            <AdvancedDirectivesItem/>
+            <AdvancedDirectivesItem/>
         </div>
     )
 }
-export default MedicationSummary;
+export default AdvancedDirectives;

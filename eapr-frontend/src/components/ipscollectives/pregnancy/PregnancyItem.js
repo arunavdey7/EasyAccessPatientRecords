@@ -1,8 +1,8 @@
 import React from 'react' 
-import MedicationSummary from './MedicationSummary'
+import Pregnancy from './Pregnancy'
 
 import './medSummaryItemStyles.css'
-const MedSummaryItem = ({
+const PregnancyItem = ({
     orderId,
     medicationName
 }) => {
@@ -17,4 +17,4 @@ const MedSummaryItem = ({
         </div>
     )
 }
-export default MedSummaryItem;
+export default PregnancyItem;

@@ -1,14 +1,14 @@
 import React from 'react' 
-import MedSummaryItem from './MedSummaryItem';
+import PastHoiItem from './PastHoiItem';
 
-const MedicationSummary = () => {
+const PastHoi = () => {
     // Load All medication Statements
     return(
         <div>
-            <MedSummaryItem/>
-            <MedSummaryItem/>
-            <MedSummaryItem/>
+            <PastHoiItem/>
+            <PastHoiItem/>
+            <PastHoiItem/>
         </div>
     )
 }
-export default MedicationSummary;
+export default PastHoi;
