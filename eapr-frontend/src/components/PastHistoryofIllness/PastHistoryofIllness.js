@@ -39,10 +39,10 @@ const PastHistoryofIllness = () => {
             <h1>Problem/Diagnosis</h1>
             <h2>Data</h2>
             <label>Problem/Diagnosis name</label>
-            <input name='ltrTestName' value={data.ltrTestName || ''} onChange={handleChange}></input>
+            <input name='hiProblemName' value={data.hiProblemName || ''} onChange={handleChange}></input>
             <br/>
             <label>Body site</label>
-            <input name='ltrTestName' value={data.ltrTestName || ''} onChange={handleChange}></input>
+            <input name='hiBodySite' value={data.hiBodySite || ''} onChange={handleChange}></input>
             <br/>
             <label>Date/Time of onset</label>
             <input type="date"></input><input type="time"></input>
