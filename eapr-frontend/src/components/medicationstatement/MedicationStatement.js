@@ -89,8 +89,9 @@ const MedicationSummary = () => {
     // Absence of Information Protocol
     const [absenceOfInformationProtocolLastUpdated, setAbsenceOfInformationProtocolLastUpdated] = useState("");
     
-    const saveMedicationStatement = () =>{
+    const saveMedicationStatement = () => {
         var data = {
+<<<<<<< HEAD
             patientuid:localStorage.getItem('patientuid'),
             medicationItem,
             medicationName,
@@ -154,6 +155,93 @@ const MedicationSummary = () => {
             absenceOfInformationDataAbsenceStatement,
             absenceOfInformationProtocolLastUpdated,
             timingDailySpecificTime
+=======
+            "medication_statement":{
+                    "patient_uid":1,
+                    "order_id":1,
+                    "global_exclusion_of_medication_use":"",
+                    "absence_of_info_statement":"",
+                    "absence_of_info_protocol_last_updated":""
+                },
+        
+        
+                "medication":{
+                    "order_id":1,
+                    "medication_item":medicationItem,
+                    "medication_name":"",
+                    "medication_form":"tablet",
+                    "medication_category":"ad-hoc mixture",
+                    "medication_strength_numerator":9,
+                    "medication_strength_numerator_unit":"mg",
+                    "medication_strength_denominator":0.3,
+                    "medication_strength_denominator_unit":"g",
+                    "unit_of_presentation":"capsule",
+                    "strength(concentration)":"10 mg/ml",
+                    "manufacturer":"abbott",
+                    "batch_id":1,
+                    "expiry":"2023-09-12",
+                    "amount":"1",
+                    "amount_unit":"mg",
+                    "alternate_amount":"5",
+                    "alternate_amount_unit":"ml",
+                    "role":"therapeutic",
+                    "description":"therapy related medication"
+                },
+        
+        
+                "dosage":{
+                    "order_id":1,
+                    "dose_amount":"1",
+                    "dose_unit":"mg",
+                    "dose_formula":"",
+                    "dose_description":"2 to 3 times a day",
+                    "frequency_lower":"2",
+                    "frequency_lower_rate":"1/d",
+                    "frequency_higher":"3",
+                    "frequency_higher_rate":"1/d",
+                    "interval":"3h",
+                    "specific_time":"",
+                    "specific_time_lower":"10:00",
+                    "specific_time_upper":"20:00",
+                    "timing_description":"every day",
+                    "exact_timing_critical?":"FALSE",
+                    "as_required":"TRUE",
+                    "as_required_criterion":"for stress relieve",
+                    "event_name":"after every meal",
+                    "time_offset":"meal + 10 minutes",
+                    "on":"",
+                    "off":"",
+                    "repetetions":""
+                },
+        
+                "administration_details":{
+                    "order_id":1,
+                    "route":"oral",
+                    "body_site":"head"
+                },
+                    
+        
+                "timing_non_daily":{
+                    "order_id":1,
+                    "repetetion_interval":"",
+                    "frequency_lower":"",
+                    "frequency_lower_rate":"",
+                    "frequency_higher":"",
+                    "frequency_higher_rate":"",
+                    "specific_date":"",
+                    "specific_date_lower":"",
+                    "specific_date_upper":"",
+                    "specific_day_of_week":"",
+                    "specific_day_of_month":"",
+                    "timing_description":"",
+                    "event_name":"",
+                    "event_time_offset":"",
+                    "on":"",
+                    "off":"",
+                    "repetetions":""
+                }
+        
+>>>>>>> efec78f (Implementation of Context API)
         }
         //var result = addMedicationStatement(data)
         console.log({...JSON.stringify(data)})
