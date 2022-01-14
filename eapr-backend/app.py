@@ -461,5 +461,351 @@ def addmedicationstatement():
         return jsonify({'success':False,'message':'Request misses token/json data'}), 400
 
 
+# APIS FOR PRESCRIPTION
+# ADD prescription POST 
+@app.route('/api/addPrescription', methods=['POST'])
+def addPrescription():
+    try:
+        token = request.headers['token']    #doctor token
+        value = jwt.decode(token, options={"verify_signature": False})
+        email = value["email"]
+        password = value["password"]
+
+        docResult = doctor_details.query.filter_by(email=email,password=password).first()
+        if docResult:
+            docId = docResult.id
+            data = request.get_json()
+            # patId = data['patient_id']
+            result = Patient_details.query.filter_by(email = data['patient_email']).first()
+            if result:
+                patId = result.id
+                entry = Prescription(patientId = patId,doctorId = docId)
+                db.session.add(entry)
+                db.session.commit()
+                id = Prescription.query.filter_by(patientId = patId,doctorId = docId).order_by(Prescription.prescriptionId.desc()).first().prescriptionId
+                for medOrd in data['medOrders']:
+                    entry_med_ord = Medication_Order(
+                    prescriptionId = id,
+                    medicationItem = medOrd['medicationItem'],
+                    route = medOrd['route'],
+                    dosageInstruction = medOrd['dosageInstruction'],
+                    maximumAmount = medOrd['maximumAmount'],
+                    maximumAmountDoseUnit = medOrd['maximumAmountDoseUnit'],
+                    allowedPeriod = medOrd['allowedPeriod'],
+                    overrideReason = medOrd['overrideReason'],
+                    additionalInstructions = medOrd['additionalInstructions'],
+                    reasons = medOrd['reasons'],
+                    status=medOrd['status'],
+                    dateDiscontinued = medOrd['dateDiscontinued'],
+                    dateWritten = medOrd['dateWritten'],
+                    numOfRepeatsAllowed = medOrd['numOfRepeatsAllowed'],
+                    validityPeriod = medOrd['validityPeriod'],
+                    dispenseInstrution =  medOrd['dispenseInstrution'],
+                    dispenseAmountDescription = medOrd['dispenseAmountDescription'],
+                    dispenseAmount = medOrd['dispenseAmount'],
+                    dispenseAmountUnit = medOrd['dispenseAmountUnit'],
+                    comment = medOrd['comment'],
+                    dose_unit   =  medOrd['dose_unit'],
+                    dose_frequency = medOrd['dose_frequency'],
+                    dose_timing   = medOrd['dose_timing'],
+                    dose_duration = medOrd['dose_duration'],
+
+                    repetition_interval = medOrd['repetition_interval'],
+                    Specific_date = medOrd['Specific_date'],
+                    specific_day_of_week = medOrd['specific_day_of_week'],
+                    Specific_day_of_month = medOrd['Specific_day_of_month'],
+                    specific_Event = medOrd['specific_Event'],
+
+                    substance_name = medOrd['substance_name'],
+                    form = medOrd['form'],
+                    strength = medOrd['strength'],
+                    strengthUnit =medOrd['strengthUnit'],
+                    diluentAmount = medOrd['diluentAmount'],
+                    diluentunit = medOrd['diluentunit'],
+                    description = medOrd['description']
+                    )
+                    db.session.add(entry_med_ord)
+
+                db.session.commit()
+                return jsonify({'success':True,'message':'Prescription Created Successfully'})
+            else:
+                return jsonify({'success':False,'message':'Invalid Patient'}),404
+        else:
+            return jsonify({'success':False,'message':'Not Authorised'}),404
+
+    except Exception as e :
+        return jsonify({'success':False,'message':'not recieved JSON/Token data'}),400 
+
+        
+# GET API for prescription
+@app.route('/api/getAllPrescriptionsForPatient', methods=['GET'])
+def getAllPrescriptionsForPatient():
+    try:
+        token = request.headers['token']    #patient token
+        value = jwt.decode(token, options={"verify_signature": False})
+        email = value["email"]
+        password = value["password"]
+
+        
+        patRes = Patient_details.query.filter_by(email=email,password=password).first()
+        if patRes:
+            patId = patRes.id
+            prescriptions = Prescription.query.filter_by(patientId=patId).all()
+            result = []
+            for prescription in prescriptions:
+                obj = {}
+                docName = doctor_details.query.filter_by(id = prescription.doctorId).first().name
+                obj['doctorName'] = docName
+                obj['prescriptionId'] = prescription.prescriptionId
+                result.append(obj)
+            return jsonify({'allPrescriptions':result})        
+            
+        else:
+            return jsonify({'success':False,'message':'Not Authorised'}),404
+
+    except Exception as e:
+        print(e)
+        return jsonify({'success':False,'message':'not recieved JSON/Token data'}),400 
+
+
+# For doctor
+
+@app.route('/api/getAllPrescriptionsForDoctor', methods=['GET'])
+def getAllPrescriptionsForDoctor():
+
+    try:
+        token = request.headers['token']    #doctor token
+        value = jwt.decode(token, options={"verify_signature": False})
+        email = value["email"]
+        password = value["password"]
+        
+        docRes = doctor_details.query.filter_by(email=email,password=password).first()
+        if docRes:
+            docId = docRes.id
+            prescriptions = Prescription.query.filter_by(doctorId=docId).all()
+            result = []
+            for prescription in prescriptions:
+                obj = {}
+                patName = Patient_details.query.filter_by(id = prescription.patientId).first().name
+                obj['patientName'] = patName
+                obj['prescriptionId'] = prescription.prescriptionId
+                result.append(obj)
+            return jsonify({'allPrescriptions':result})
+            
+            
+        else:
+            return jsonify({'success':False,'message':'Not Authorised'}),404
+
+    except Exception as e:
+        print(e)
+        return jsonify({'success':False,'message':'not recieved JSON/Token data'}),400 
+
+
+
+
+# getPrescription by ID
+@app.route('/api/getPrescriptionByIdForDoctor', methods=['GET'])
+def getPrescriptionByIdForDoct():
+    try:
+        token = request.headers['token']    #doctor token
+        value = jwt.decode(token, options={"verify_signature": False})
+        email = value["email"]
+        password = value["password"]
+
+        docRes = doctor_details.query.filter_by(email=email,password=password).first()
+        
+        if docRes:
+            
+            data = request.get_json()
+            presId = data['prescriptionId']
+            docverfify = Prescription.query.filter_by(prescriptionId=presId, doctorId =docRes.id).first()
+            if docverfify:
+                result = Medication_Order.query.filter_by(prescriptionId = presId).all()
+                if len(result):
+                    output = []
+                    for item in result:
+                        detail = {}
+                        detail['medicationItem'] = item.medicationItem
+                        detail['medId'] = item.medId
+                        output.append(detail)
+                    return jsonify({'Prescription':output})
+                else:
+                    return jsonify({'success':False,'message':'Invalid prescription id'}),404
+            else:
+                return jsonify({'success':False,'message':'Not Authorised'}),404
+        else:
+            return jsonify({'success':False,'message':'Not Authorised, Not a Doctor'}),404
+
+    except Exception as e:
+        print(e)
+        return jsonify({'success':False,'message':'not recieved JSON/Token data'}),400 
+
+# getprescription by id
+@app.route('/api/getPrescriptionByIdForPatient', methods=['GET'])
+def getPrescriptionByIdForPat():
+    try:
+        token = request.headers['token']    #doctor token
+        value = jwt.decode(token, options={"verify_signature": False})
+        email = value["email"]
+        password = value["password"]
+
+        patRes = Patient_details.query.filter_by(email=email,password=password).first()
+        
+        if patRes:
+            
+            data = request.get_json()
+            presId = data['prescriptionId']
+            patverfify = Prescription.query.filter_by(prescriptionId=presId, doctorId =patRes.id).first()
+            if patverfify:
+                result = Medication_Order.query.filter_by(prescriptionId = presId).all()
+                if len(result):
+                    output = []
+                    for item in result:
+                        detail = {}
+                        detail['medicationItem'] = item.medicationItem
+                        detail['medId'] = item.medId
+                        output.append(detail)
+                    return jsonify({'Prescription':output})
+                else:
+                    return jsonify({'success':False,'message':'Invalid prescription id'}),404
+            else:
+                return jsonify({'success':False,'message':'Not Authorised'}),404
+        else:
+            return jsonify({'success':False,'message':'Not Authorised, Not a Patient'}),404
+
+    except Exception as e:
+        print(e)
+        return jsonify({'success':False,'message':'not recieved JSON/Token data'}),400
+
+#getmedication order by id API
+@app.route('/api/getMedicationOrderByIdForDoctor', methods=['GET'])
+def getMedicationOrderByIdForDoctor():
+    try:
+        token = request.headers['token']    #doctor token
+        value = jwt.decode(token, options={"verify_signature": False})
+        email = value["email"]
+        password = value["password"]
+
+        docRes = doctor_details.query.filter_by(email=email,password=password).first()
+        if docRes:
+
+            data = request.get_json()
+            medId = data['medId']
+            result = Medication_Order.query.filter_by(medId = medId).first()
+            if result:
+                output = {}
+                output['medicationItem'] = result.medicationItem
+                output['route'] =  result.route
+                output['dosageInstruction'] = result.dosageInstruction
+                output['maximumAmount'] = result.maximumAmount 
+                output['maximumAmountDoseUnit'] =result.maximumAmountDoseUnit
+                output['allowedPeriod'] =  result.allowedPeriod
+                output['overrideReason'] = result.overrideReason
+                output['additionalInstructions'] =result.additionalInstructions
+                output['reasons'] =result.reasons
+                output['status'] =result.status
+                output['dateDiscontinued']=result.dateDiscontinued
+                output['dateWritten']=result.dateWritten
+                output['numOfRepeatsAllowed']=result.numOfRepeatsAllowed
+                output['validityPeriod']=result.validityPeriod
+                output['dispenseInstrution']=result.dispenseInstrution
+                output['dispenseAmountDescription']=result.dispenseAmountDescription
+                output['dispenseAmount']=result.dispenseAmount
+                output['dispenseAmountUnit']=result.dispenseAmountUnit
+                output['comment']=result.comment
+                output['dose_unit']=result.dose_unit
+                output['dose_frequency']=result.dose_frequency
+                output['dose_timing']=result.dose_timing
+                output['dose_duration']=result.dose_duration
+                output['repetition_interval']=result.repetition_interval
+                output['Specific_date']=result.Specific_date
+                output['specific_day_of_week']=result.specific_day_of_week
+                output['Specific_day_of_month']=result.Specific_day_of_month
+                output['specific_Event']=result.specific_Event
+                output['substance_name']=result.substance_name
+                output['form']=result.form
+                output['strength']=result.strength
+                output['strengthUnit']=result.strengthUnit
+                output['diluentAmount']=result.diluentAmount
+                output['diluentunit']=result.diluentunit
+                output['description']=result.description
+                return jsonify(output)
+            else:
+                return jsonify({'success':False,'message':'Invalid Med Id'}),404
+        else:
+            return jsonify({'success':False,'message':'Not Authorised, Not a Doctor'}),404
+
+    except Exception as e:
+        print(e)
+        return jsonify({'success':False,'message':'not recieved JSON/Token data'}),400 
+    
+
+
+#getmedication order by id API
+@app.route('/api/getMedicationOrderByIdForPatient', methods=['GET'])
+def getMedicationOrderByIdForPatient():
+    try:
+        token = request.headers['token']    #doctor token
+        value = jwt.decode(token, options={"verify_signature": False})
+        email = value["email"]
+        password = value["password"]
+
+        patRes = Patient_details.query.filter_by(email=email,password=password).first()
+        if patRes:
+
+            data = request.get_json()
+            medId = data['medId']
+            result = Medication_Order.query.filter_by(medId = medId).first()
+            if result:
+                output = {}
+                output['medicationItem'] = result.medicationItem
+                output['route'] =  result.route
+                output['dosageInstruction'] = result.dosageInstruction
+                output['maximumAmount'] = result.maximumAmount 
+                output['maximumAmountDoseUnit'] =result.maximumAmountDoseUnit
+                output['allowedPeriod'] =  result.allowedPeriod
+                output['overrideReason'] = result.overrideReason
+                output['additionalInstructions'] =result.additionalInstructions
+                output['reasons'] =result.reasons
+                output['status'] =result.status
+                output['dateDiscontinued']=result.dateDiscontinued
+                output['dateWritten']=result.dateWritten
+                output['numOfRepeatsAllowed']=result.numOfRepeatsAllowed
+                output['validityPeriod']=result.validityPeriod
+                output['dispenseInstrution']=result.dispenseInstrution
+                output['dispenseAmountDescription']=result.dispenseAmountDescription
+                output['dispenseAmount']=result.dispenseAmount
+                output['dispenseAmountUnit']=result.dispenseAmountUnit
+                output['comment']=result.comment
+                output['dose_unit']=result.dose_unit
+                output['dose_frequency']=result.dose_frequency
+                output['dose_timing']=result.dose_timing
+                output['dose_duration']=result.dose_duration
+                output['repetition_interval']=result.repetition_interval
+                output['Specific_date']=result.Specific_date
+                output['specific_day_of_week']=result.specific_day_of_week
+                output['Specific_day_of_month']=result.Specific_day_of_month
+                output['specific_Event']=result.specific_Event
+                output['substance_name']=result.substance_name
+                output['form']=result.form
+                output['strength']=result.strength
+                output['strengthUnit']=result.strengthUnit
+                output['diluentAmount']=result.diluentAmount
+                output['diluentunit']=result.diluentunit
+                output['description']=result.description
+                return jsonify(output)
+            else:
+                return jsonify({'success':False,'message':'Invalid Med Id'}),404
+        else:
+            return jsonify({'success':False,'message':'Not Authorised, Not a Patient'}),404
+
+    except Exception as e:
+        print(e)
+        return jsonify({'success':False,'message':'not recieved JSON/Token data'}),400 
+
+
+
+
+
 if __name__ == "__main__":
     app.run(debug=True, port=7000)
