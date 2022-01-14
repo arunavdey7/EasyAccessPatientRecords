@@ -35,10 +35,6 @@ const MedicationSummary = () => {
     const [doseUnit, setDoseUnit] = useState("");
     const [doseFormula, setDoseFormula] = useState("");
     const [doseDescription, setDoseDescription] = useState("");
-
-    // Timing
-
-    const [timingDoseDescription, setTimingDoseDesrciption] = useState("");
     
     // Timing Daily
     const [timingDailyFrequency, setTimingDailyTimingFrequency] = useState("");
@@ -76,6 +72,10 @@ const MedicationSummary = () => {
     const [timingNonDailyCycleOn, setTimingNonDailyCycleOn] = useState("");
     const [timingNonDailyCycleOff, setTimingNonDailyCycleOff] = useState("");
     const [timingNonDailyCycleRepetitions, setTimingNonDailyCycleRepetitions] = useState("");
+
+    // Specific Event
+    const [specificEventEventName, setSpecificEventEventName] = useState("");
+    const [specificEventTimeOffset, setSpecificEventTimeOffset] = useState("");
     
     // Medication Protocol
     const [medicationProtocolOrderId, setMedicationProtocolOrderId] = useState("");
@@ -91,69 +91,74 @@ const MedicationSummary = () => {
     
     const saveMedicationStatement = () =>{
         var data = {
-            patientuid:localStorage.getItem('patientuid'),
-            medicationItem,
-            medicationName,
-            medicationForm,
-            medicationCategory,
-            strengthNumerator,
-            strengthNumeratorUnit,
-            strengthDenominator,
-            strengthDenominatorUnit,
-            unitOfPresentation,
-            strength,
-            manufacturer,
-            batchId,
-            expiry,
-            amount,
-            amountUnit,
-            alternateAmount,
-            alternateAmountUnit,
-            role,
-            description,
-            doseAmount,
-            doseLower,
-            doseUpper,
-            doseUnit,
-            doseFormula,
-            doseDescription,
-            timingDoseDescription,
-            timingDailyFrequency,
-            timingDailyFrequencyLower,
-            timingDailyFrequencyUpper,
-            timingDailyInterval,
-            timingDailySpecificTime,
-            timingDailyDescription,
-            timingDailyExactTimingCritical,
-            timingDailyAsRequired,
-            timingDailyAsRequiredCriterion,
-            timingDailySpecificEventEventName,
-            timingDailySpecificEventTimeOffset,
-            timingDailyCycleOn,
-            timingDailyCycleOff,
-            timingDailyCycleRepetitions,
-            administrationDetailsRoute,
-            administrationDetailsBodySite,
-            timingNonDailyRepetitionInterval,
-            timingNonDailyFrequency,
-            timingNonDailyFrequencyLower,
-            timingNonDailyFrequencyUpper,
-            timingNonDailySpecificDate,
-            timingNonDailySpecificDateLower,
-            timingNonDailySpecificDateUpper,
-            timingNonDailySpecificDayOfWeek,
-            timingNonDailySpecificDayOfMonth,
-            timingNonDailySpecificDayOfMonthLower,
-            timingNonDailySpecificDayOfMonthUpper,
-            timingNonDailyTimingDescription,
-            timingNonDailyCycleOn,
-            timingNonDailyCycleOff,
-            timingNonDailyCycleRepetitions,
-            medicationProtocolOrderId,
-            exclusionGlobalData,
-            absenceOfInformationDataAbsenceStatement,
-            absenceOfInformationProtocolLastUpdated,
-            timingDailySpecificTime
+            patient_id:localStorage.getItem('patient_id'),
+            medication_item:medicationItem,
+		    medication_name:medicationName,
+		    medication_form:medicationForm,
+            strength:"",
+            exact_timing_critical:"",
+		    medication_category:medicationCategory,
+		    medication_strength_numerator:strengthNumerator,
+		    medication_strength_numerator_unit:strengthNumeratorUnit,
+		    medication_strength_denominator:strengthDenominator,
+		    medication_strength_denominator_unit:strengthDenominatorUnit,
+		    unit_of_presentation:unitOfPresentation,
+		    strength_concentration:strength,
+		    manufacturer:manufacturer,
+		    batch_id:batchId,
+		    expiry:expiry,
+		    amount:amount,
+		    amount_unit:amountUnit,
+		    alternate_amount:alternateAmount,
+		    alternate_amount_unit:alternateAmountUnit,
+		    role:role,
+		    description:description,
+
+            dose_amount:doseAmount,
+		    dose_unit:doseUnit,
+		    dose_formula:doseFormula,
+		    dose_description:doseDescription,
+		    dose_frequency_lower:timingDailyFrequencyLower,
+		    dose_frequency_lower_rate:"",
+		    dose_frequency_higher:timingDailyFrequencyUpper,
+		    dose_frequency_higher_rate:"",
+		    dose_interval:timingDailyInterval,
+		    dose_specific_time:timingDailySpecificTime,
+		    dose_specific_time_lower:"",
+		    dose_specific_time_upper:"",
+		    dose_timing_description:timingDailyDescription,
+		    dose_exact_timing_critical:timingDailyExactTimingCritical,
+		    as_required:timingDailyAsRequired,
+		    as_required_criterion:timingDailyAsRequiredCriterion,
+		    dose_event_name:timingDailySpecificEventEventName,
+		    dose_time_offset:timingDailySpecificEventTimeOffset,
+		    dose_on:timingDailyCycleOn,
+		    dose_off:timingDailyCycleOff,
+		    dose_repetetions:timingDailyCycleRepetitions,
+
+            route:administrationDetailsRoute,
+		    body_site:administrationDetailsBodySite,
+
+            time_repetetion_interval:timingNonDailyRepetitionInterval,
+            time_frequency_lower:timingNonDailyFrequencyLower,
+		    time_frequency_lower_rate:"",
+		    time_frequency_higher:timingNonDailyFrequencyUpper,
+		    time_frequency_higher_rate:"",
+		    time_specific_date:timingNonDailySpecificDate,
+		    time_specific_date_lower:timingNonDailySpecificDateLower,
+		    time_specific_date_upper:timingNonDailySpecificDateUpper,
+		    time_specific_day_of_week:timingNonDailySpecificDayOfWeek,
+		    time_specific_day_of_month:timingNonDailySpecificDayOfMonth,
+		    time_event_time_offset:specificEventTimeOffset,
+            timing_description:timingNonDailyTimingDescription,
+		    time_event_name:specificEventEventName,
+		    timing_on:timingNonDailyCycleOn,
+		    timing_off:timingNonDailyCycleOff,
+		    timing_repetetions:timingNonDailyCycleRepetitions,
+
+            global_exclusion_of_adverse_reactions:exclusionGlobalData,
+            absence_of_information_statement:absenceOfInformationDataAbsenceStatement,
+            absence_of_information_protocol_last_updated:absenceOfInformationProtocolLastUpdated
         }
         var result = addMedicationStatement(data)
         console.log(JSON.stringify(data))
@@ -255,10 +260,6 @@ const MedicationSummary = () => {
             <label>Dose description</label>
             <input onChange={e => setDoseDescription(e.target.value)}></input>
             <br/>
-            <h4>Timing</h4>
-            <label>Dose description</label>
-            <input onChange={e => setTimingDoseDesrciption(e.target.value)}></input>
-            <br/>
             <h4>Timing-daliy</h4>
             <label>Frequency</label>
             <input onChange={e => setTimingDailyTimingFrequency(e.target.value)}></input>
@@ -358,10 +359,10 @@ const MedicationSummary = () => {
             <br/>
             <h4>Specific event</h4>
             <label>Event name</label>
-            <input onChange={e => setTimingNonDailyFrequencyUpper(e.target.value)}></input>
+            <input onChange={e => setSpecificEventEventName(e.target.value)}></input>
             <br/>
             <label>Time offset</label>
-            <input onChange={e => setTimingNonDailyFrequencyUpper(e.target.value)}></input>
+            <input onChange={e => setSpecificEventTimeOffset(e.target.value)}></input>
             <br/>
             <h4>On/Off cycle</h4>
             <label>On</label>
