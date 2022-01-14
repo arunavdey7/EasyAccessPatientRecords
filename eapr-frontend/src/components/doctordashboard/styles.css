@@ -1,88 +1,15 @@
-.patientUid
+.main_container
 {
-    border-radius: 4px;
-    height: 3vh;
-    border-width:2.5px;
-    border-color: lightblue;
-    border-style: solid;
-    font-family: 'Open Sans', sans-serif;
-    color: lightslategrey;
-    font-size: 1.5rem;
-    padding: 1%;
-    width: 100%;
-    margin: 1%;
+    border:1px solid red;
+
 }
-.main_heading
+.heading_picture
 {
-    text-align: center;
-    color: slategrey;
-    padding:0px;
-    margin: 0px;
-}
-.search_btn
-{
-    border-radius: 4px;
-    height: 3vh;
-    border-width:2.5px;
-    border-color: lightblue;
-    border-style: solid;
-    font-family: 'Open Sans', sans-serif;
-    color: darkolivegreen;
-    font-size: 1.5em;
-    padding: 1%;
-    background-color: lightskyblue;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    margin: 1%;
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-}
-.search_btn:hover
-{
-    cursor: pointer;
-    background-color: darkturquoise;
-}
-.inner_btn_container
-{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-.container-x
-{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 50vh;
-}
-.input_field_container
-{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-}
-.btn_outer_container
-{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-}
-.header-pic
-{
+    border:1px solid red;
+    height: 40vh;
     background-image: url('../../assets/3698931.jpeg');
-    background-size: contain;
+    background-position: center;
+    background-size: cover;
     background-repeat: no-repeat;
-    background-position-x: center;
-    background-position-y:center;
-    height:50%;
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-    border-radius: 4px;
-    background-color: #d1eefe;
-}
-.content
-{
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-    border-radius: 4px;
-    margin-left: 5%;
-    margin-right: 5%;
+
 }

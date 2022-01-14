@@ -20,6 +20,7 @@ import SessionContext from './utilities/SessionContext'
 import MedicationSummary from './components/ipscollectives/medicationsummary/MedicationSummary';
 import MedicationOrders from './components/prescriptioncollectives/medicationorders/MedicationOrders';
 import Prescriptions from './components/prescriptioncollectives/prescriptions/Prescriptions'
+import CreatePrescription from './pages/createprescription/CreatePrescription';
 
 const MainComponent = () => {
 
@@ -79,6 +80,9 @@ const MainComponent = () => {
                 </Route>
                 <Route exact path='/preview'>
                   <Prescriptions/>
+                </Route>
+                <Route exact path='/createprescription'>
+                  <CreatePrescription/>
                 </Route>
               </Switch>
             </Router>

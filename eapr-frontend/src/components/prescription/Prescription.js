@@ -2,6 +2,17 @@ import React from 'react'
 import './styles.css'
 const Prescription = () => {
 
+    var medOrders = JSON.parse(localStorage.getItem('tempMedOrders')) || []
+    var currCount = JSON.parse(localStorage.getItem('currCount')) || [0]
+    const handleAddMore = () => {
+        
+        medOrders.push({
+            order_id:currCount + 1
+        })
+        localStorage.setItem('tempMedOrders',JSON.stringify(medOrders))
+        localStorage.setItem('currCount',JSON.stringify(currCount))
+        window.location.href = '/createprescription'
+    }
     return(
     <div className='prescription_container'>
         <h1 className='prescription_heading'>Prescription</h1>
@@ -238,8 +249,8 @@ const Prescription = () => {
         <label>Identifier</label>
         <input></input>
         <br/>
-        <button>Add</button>
-        <button>Add more</button>
+        <button onClick={handleAddMore}>Add More</button>
+        <button>Finalize</button>
     </div>
     )
 

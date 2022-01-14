@@ -10,29 +10,22 @@ const DoctorDashboard = () => {
         console.log('Search Button Clicked')
     }
     return(
-        <>
-        <div className='container-x'>
-            <div className='header-pic'></div>
-            <div className='content'>
-                <div className='main_heading'>
-                    <h1>Enter Patient's UID</h1>
+        <div className='main_container'>
+            <div className='heading_picture'>
+            </div>
+            <div className='search_form_container'>
+                <div>
+                    <h1>Enter patient's UID</
+                    h1>
                 </div>
-                <div className='input_field_container'>
-                    <div>
-                        <input type='number' className='patientUid'></input>
-                    </div>
+                <div>
+                    <input></input>
                 </div>
-                <div className='btn_outer_container'>
-                    <div onClick={handleClick} className='search_btn'>
-                        <div className='inner_btn_container'>
-                        <div>Search</div>
-                        </div>
-                    </div>
+                <div>
+                    <button className='search_btn'>Search</button>
                 </div>
             </div>
-           
         </div>
-         </>
     )
 }
 export default DoctorDashboard;
