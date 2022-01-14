@@ -1,8 +1,8 @@
 import React from 'react' 
-import MedicationSummary from './MedicationSummary'
+import DiagnosticResults from './DiagnosticResults'
 
 import './medSummaryItemStyles.css'
-const MedSummaryItem = ({
+const DiagnosticResultsItem = ({
     orderId,
     medicationName
 }) => {
@@ -12,9 +12,9 @@ const MedSummaryItem = ({
     return(
         <div onClick={handleClick} className='container'>
             <div className='name_container'>
-                <h3>Medication Name</h3>
+                <h3>Diagnostic Results</h3>
             </div>
         </div>
     )
 }
-export default MedSummaryItem;
+export default DiagnosticResultsItem;
