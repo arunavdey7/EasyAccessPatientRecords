@@ -1,4 +1,4 @@
-export const addMedicationStatement = async (data) => {
+export const addPrescription = async (data) => {
     var requestData = data
     var requestOptions = {
         method: 'POST',
@@ -24,7 +24,7 @@ export const addMedicationStatement = async (data) => {
     }
 }
 
-export const getAllMedicationStatements = async () => {
+export const getAllPrescriptions = async () => {
     var requestOptions = {
         method: 'GET',
         mode:'cors',
@@ -49,7 +49,7 @@ export const getAllMedicationStatements = async () => {
     }
 }
 
-export const getMedicationStatement = async (orderId) => {
+export const getPrescription = async (orderId) => {
     var requestData = {
         order_id:orderId
     }

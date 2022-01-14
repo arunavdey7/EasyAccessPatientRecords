@@ -6,89 +6,87 @@ import './styles.css'
 const ShowMedicationStatement = () => {
     
     var data = 
-    {
-        "medication_statement":{
-            "patient_uid":1,
-            "order_id":1
+    {                 
+        "data": {
+            "administration_details": {
+                "body_site": "head",
+                "id": 3,
+                "order_id": 3,
+                "route": "oral"
+            },
+            "dosage": {
+                "as_required": "TRUE",
+                "as_required_criterion": "for stress relieve",
+                "dose_amount": 1,
+                "dose_description": "2 to 3 times a day",
+                "dose_formula": "12",
+                "dose_unit": "mg",
+                "event_name": "after every meal",
+                "exact_timing_critical": "FALSE",
+                "frequency_higher": 3,
+                "frequency_higher_rate": "1",
+                "frequency_lower": 2,
+                "frequency_lower_rate": "1",
+                "id": 3,
+                "interval": "03:00",
+                "off": "03:00",
+                "on": "03:00",
+                "order_id": 3,
+                "repetetions": 6,
+                "specific_time": "03:00",
+                "specific_time_lower": "10:00",
+                "specific_time_upper": "20:00",
+                "time_offset": "03:00",
+                "timing_description": "every day"
+            },
+            "medication": {
+                "alternate_amount": 5,
+                "alternate_amount_unit": "ml",
+                "amount": 1,
+                "amount_unit": "mg",
+                "batch_id": "1",
+                "description": "therapy related medication",
+                "expiry": "2023-09-12",
+                "manufacturer": "abbott",
+                "medication_category": "ad-hoc mixture",
+                "medication_form": "tablet",
+                "medication_item": "atenolol 100mg",
+                "medication_name": "cefuroxim",
+                "medication_strength_denominator": 0,
+                "medication_strength_denominator_unit": "g",
+                "medication_strength_numerator": 9,
+                "medication_strength_numerator_unit": "mg",
+                "order_id": 3,
+                "role": "therapeutic",
+                "strength": "1",
+                "unit_of_presentation": "capsule"
+            },
+            "medication_statement": {
+                "order_id": 3,
+                "patient_id": 1
+            },
+            "timing_non-daily": {
+                "event_name": "after meal",
+                "event_time_offset": "01:00",
+                "frequency_higher": 3,
+                "frequency_higher_rate": "3",
+                "frequency_lower": 2,
+                "frequency_lower_rate": "1",
+                "id": 3,
+                "off": "08:00",
+                "on": "03:00",
+                "order_id": 3,
+                "repetetion_interval": 1,
+                "repetetions": 9,
+                "specific_date": "2020-01-01",
+                "specific_date_lower": "2020-01-01",
+                "specific_date_upper": "2020-01-01",
+                "specific_day_of_month": 1,
+                "specific_day_of_week": "1",
+                "timing_description": "every day"
+            }
         },
-    
-    
-        "medication":{
-            "order_id":1,
-            "medication_item":"atenolol 100mg",
-            "medication_name":"cefuroxim",
-            "medication_form":"tablet",
-            "medication_category":"ad-hoc mixture",
-            "medication_strength_numerator":9,
-            "medication_strength_numerator_unit":"mg",
-            "medication_strength_denominator":0.3,
-            "medication_strength_denominator_unit":"g",
-            "unit_of_presentation":"capsule",
-            "strength(concentration)":"10 mg/ml",
-            "manufacturer":"abbott",
-            "batch_id":1,
-            "expiry":"2023-09-12",
-            "amount":"1",
-            "amount_unit":"mg",
-            "alternate_amount":"5",
-            "alternate_amount_unit":"ml",
-            "role":"therapeutic",
-            "description":"therapy related medication"
-        },
-    
-    
-        "dosage":{
-            "order_id":1,
-            "dose_amount":"1",
-            "dose_unit":"mg",
-            "dose_formula":"",
-            "dose_description":"2 to 3 times a day",
-            "frequency_lower":"2",
-            "frequency_lower_rate":"1/d",
-            "frequency_higher":"3",
-            "frequency_higher_rate":"1/d",
-            "interval":"3h",
-            "specific_time":"",
-            "specific_time_lower":"10:00",
-            "specific_time_upper":"20:00",
-            "timing_description":"every day",
-            "exact_timing_critical?":"FALSE",
-            "as_required":"TRUE",
-            "as_required_criterion":"for stress relieve",
-            "event_name":"after every meal",
-            "time_offset":"meal + 10 minutes",
-            "on":"",
-            "off":"",
-            "repetetions":""
-        },
-    
-        "administration_details":{
-            "order_id":1,
-            "route":"oral",
-            "body_site":"head"
-        },
-            
-    
-        "timing_non_daily":{
-            "order_id":1,
-            "repetetion_interval":"",
-            "frequency_lower":"",
-            "frequency_lower_rate":"",
-            "frequency_higher":"",
-            "frequency_higher_rate":"",
-            "specific_date":"",
-            "specific_date_lower":"",
-            "specific_date_upper":"",
-            "specific_day_of_week":"",
-            "specific_day_of_month":"",
-            "timing_description":"",
-            "event_name":"",
-            "event_time_offset":"",
-            "on":"",
-            "off":"",
-            "repetetions":""
-        },
-    
+        "success": true
     }
 
     return(
