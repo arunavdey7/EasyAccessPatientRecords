@@ -37,7 +37,7 @@ const Prescription = () => {
     const [diluentAmount, setDiluentAmount] = useState("");
     const [diluentunit, setDiluentunit] = useState("");
     const [description, setDescription] = useState("");
- 
+     
         
     var medOrders = JSON.parse(localStorage.getItem('tempMedOrders')) || []
     var currCount = JSON.parse(localStorage.getItem('currCount')) || [0]
@@ -59,6 +59,7 @@ const Prescription = () => {
         <h4>Order</h4>
         <label>Medication Item</label>
         <input onChange={e => setMedicationItem(e.target.value)}></input>
+        <br/>
         <h4>Preparation</h4>
         <label>Substance name</label>
         <input onChange={e => setSubstance_name(e.target.value)}></input>
