@@ -804,7 +804,7 @@ def getMedicationOrderByIdForPatient():
         return jsonify({'success':False,'message':'not recieved JSON/Token data'}),400 
 
 
-# APIs FOR FEATURE
+# Ajay
 
 # API for POST PREGNANCY 
 @app.route('/api/addPregnancyDetails',methods=['POST'])
@@ -1242,6 +1242,577 @@ def getMedicalDeviceForDoctor():
     except:
         return jsonify({'success':False,'message':'not recieved JSON data'}),400      
 
+#prashast
+#apis for allergies
+#add allergy
+@app.route('/api/add_allergies_and_intolerances', methods=['POST'])
+def add_allergies_and_intolerances():
+    try:
+        token=request.headers['token']
+        value = jwt.decode(token, options={"verify_signature": False})
+        admin = Admin_Login.query.filter_by(email=value['email'], password=value['password']).first()
+        if admin:
+            data = request.get_json()
+            result = Patient_details.query.filter_by(id = data['patient_id']).first()
+            if result:
+                result_allergies = allergies_and_intolerances.query.filter_by(patient_id = data['patient_id']).first()
+                if result_allergies:
+                    result_allergies.global_exclusion_of_adverse_reactions = data['global_exclusion_of_adverse_reactions']
+                    result_allergies.absence_of_information_statement = data['absence_of_information_statement']
+                    result_allergies.absence_of_information_protocol_last_updated = data['absence_of_information_protocol_last_updated']
+                else:
+                    entry_allergies = allergies_and_intolerances(patient_id = data['patient_id'], global_exclusion_of_adverse_reactions = data['global_exclusion_of_adverse_reactions'], absence_of_information_statement = data['absence_of_information_statement'], absence_of_information_protocol_last_updated = data['absence_of_information_protocol_last_updated'])
+                    db.session.add(entry_allergies)
+                entry_allergy = Allergy(patient_id=data['patient_id'], substance=data['substance'], verification_status=data['verification_status'], critically=data['critically'], type=data['type'], comment=data['comment'], reaction_manifestation = data['reaction_manifestation'], onset = data['onset'], severity = data['severity'], protocol_last_updated = data['protocol_last_updated'])
+                db.session.add(entry_allergy)
+                db.session.commit()
+                return jsonify({'success':True, 'message':'data added'}), 200
+            else:
+                return jsonify({'success':False,'message':'patient with this id doesent exist'}), 404
+        else:
+            return jsonify({'success':False,'message':'Not Authorised, not Admin'}), 404
+    except Exception as e:
+        print(e)
+        return jsonify({'success':False,'message':'not recieved JSON data'}),400 
+
+#get all allergies
+    #for doctor
+@app.route('/api/get_all_allergies_and_intolerances_for_doctor', methods=['GET'])
+def getallAllergiesForDoctor():
+    try:
+        token = request.headers['token']    #doctor token
+        value = jwt.decode(token, options={"verify_signature": False})
+        email = value["email"]
+        password = value["password"]
+        
+        doctor = doctor_details.query.filter_by(email=email,password=password).first()
+        if doctor:
+            data = request.get_json()
+            patient_id = data['patient_id']
+            result = allergies_and_intolerances.query.filter_by(patient_id = patient_id).first()
+            if result:
+                output = {}
+                output['global_exclusion_of_adverse_reactions'] = result.global_exclusion_of_adverse_reactions
+                output['absence_of_information_statement'] = result.absence_of_information_statement
+                output['absence_of_information_protocol_last_updated'] = result.absence_of_information_protocol_last_updated
+                
+                allergy_list = []
+                allergies = Allergy.query.filter_by(patient_id = patient_id).all()
+                for allergy in allergies:
+                    obj = {}
+                    obj['substance']= allergy.substance
+                    obj['allergy_id']= allergy.id
+                    allergy_list.append(obj)
+                output['allergy_list'] = allergy_list
+
+                return jsonify({'all_allergies_and_intolerances':output}), 200
+            else:
+                return jsonify({'success':False,'message':'no record for this id'}), 404
+        else:
+            return jsonify({'success':False,'message':'Not Authorised, not a Doctor'}), 404
+
+    except Exception as e:
+        print(e)
+        return jsonify({'success':False,'message':'not recieved JSON data'}),400 
+
+
+#get all allergies
+    #for patient
+@app.route('/api/get_all_allergies_and_intolerances_for_patient', methods=['GET'])
+def getallAllergiesForPatient():
+    try:
+        #patient verification
+        token = request.header['token']
+        value = jwt.decode(token, options={"verify_signature": False})
+        email = value["email"]
+        password = value["password"]
+
+        patient = Patient_details.query.filter_by(email=email,password=password).first()
+        if patient:
+            result = allergies_and_intolerances.query.filter_by(patient_id = patient.id).first()
+            if result:
+                output = {}
+                output['global_exclusion_of_adverse_reactions'] = result.global_exclusion_of_adverse_reactions
+                output['absence_of_information_statement'] = result.absence_of_information_statement
+                output['absence_of_information_protocol_last_updated'] = result.absence_of_information_protocol_last_updated
+                
+                allergy_list = []
+                allergies = Allergy.query.filter_by(patient_id = patient.id).all()
+                for allergy in allergies:
+                    obj = {}
+                    obj['substance']= allergy.substance
+                    obj['allergy_id']= allergy.id
+                    allergy_list.append(obj)
+                output['allergy_list'] = allergy_list
+
+                return jsonify({'all_allergies_and_intolerances':output}), 200
+            else:
+                return jsonify({'success':False,'message':'no record for this id'}), 404
+        else:
+            return jsonify({'success':False,'message':'Not Authorised, not a Patient'}), 404
+    except Exception as e:
+        print(e)
+        return jsonify({'success':False,'message':'not recieved JSON data'}),400 
+
+
+#get allergy by id
+    #for doctor
+@app.route('/api/get_allergy_by_id_for_doctor', methods = ['GET'])
+def getAllergyByIdForDoctor():
+    try:
+        token = request.headers['token']    #doctor token
+        value = jwt.decode(token, options={"verify_signature": False})
+        email = value["email"]
+        password = value["password"]
+        
+        doctor = doctor_details.query.filter_by(email=email,password=password).first()
+        if doctor:
+            data = request.get_json()
+            allergy_id = data['allergy_id']
+
+            result = Allergy.query.filter_by(id = allergy_id).first()
+            if result:
+                output = {}
+                output['substance'] = result.substance
+                output['verification_status'] = result.verification_status
+                output['critically'] = result.critically
+                output['type'] = result.type
+                output['comment'] = result.comment
+                output['reaction_manifestation'] = result.reaction_manifestation
+                output['onset'] = result.onset
+                output['severity'] = result.severity
+                output['protocol_last_updated'] = result.protocol_last_updated
+
+                return jsonify({'allergy':output}), 200
+            else:
+                return jsonify({'success':False, "message":"Allergy does not exist for patient"}), 404
+    except Exception as e:
+        print(e)
+        return jsonify({'success':False,'message':'not recieved JSON data'}),400 
+
+
+#get allergy by id
+    #for patient
+@app.route('/api/get_allergy_by_id_for_patient', methods = ['GET'])
+def getAllergyByIdForPatient():
+    try:
+        token = request.headers['token']    #patient token
+        value = jwt.decode(token, options={"verify_signature": False})
+        email = value["email"]
+        password = value["password"]
+        
+        patient = Patient_details.query.filter_by(email=email,password=password).first()
+        if patient:
+            data = request.get_json()
+            allergy_id = data['allergy_id']
+
+            result = Allergy.query.filter_by(id = allergy_id, patient_id=patient.id).first()
+            if result:
+                output = {}
+                output['substance'] = result.substance
+                output['verification_status'] = result.verification_status
+                output['critically'] = result.critically
+                output['type'] = result.type
+                output['comment'] = result.comment
+                output['reaction_manifestation'] = result.reaction_manifestation
+                output['onset'] = result.onset
+                output['severity'] = result.severity
+                output['protocol_last_updated'] = result.protocol_last_updated
+
+                return jsonify({'allergy':output}), 200
+            else:
+                return jsonify({'success':False, "message":"This Allergy does not exist for this patient"}), 404
+        else:
+            return jsonify({'success':False,'message':'Not Authorised, not a Patient'}), 404
+    except Exception as e:
+        print(e)
+        return jsonify({'success':False,'message':'not recieved JSON data'}),400 
+
+
+#APIs for vital signs
+#add/update vital signs
+@app.route('/api/add_vital_signs', methods=['POST'])
+def add_vital_signs():
+    try:
+        #Admin verification
+        token=request.headers['token']
+        value = jwt.decode(token, options={"verify_signature": False})
+        admin = Admin_Login.query.filter_by(email=value['email'], password=value['password']).first()
+        if admin:
+            data = request.get_json()
+            result = Patient_details.query.filter_by(id = data['patient_id']).first()
+            if result:
+                result_vitals = vital_signs.query.filter_by(patient_id= data['patient_id']).first()
+                if result_vitals:
+                    result_vitals.body_weight = data['body_weight']
+                    result_vitals.body_weight_unit = data['body_weight_unit']
+                    result_vitals.height = data['height']
+                    result_vitals.height_unit = data['height_unit']
+                    result_vitals.respiration_rate = data['respiration_rate']
+                    result_vitals.pulse_rate = data['pulse_rate']
+                    result_vitals.body_temperature = data['body_temperature']
+                    result_vitals.body_temperature_unit = data['body_temperature_unit']
+                    result_vitals.head_circumference = data['head_circumference']
+                    result_vitals.head_circumference_unit = data['head_circumference_unit']
+                    result_vitals.pulse_oximetry = data['pulse_oximetry']
+                    result_vitals.body_mass_index = data['body_mass_index']
+                    result_vitals.body_mass_index_unit = data['body_mass_index_unit']
+                    result_vitals.blood_pressure_systolic = data['blood_pressure_systolic']
+                    result_vitals.blood_pressure_diastolic = data['blood_pressure_diastolic']
+                else:
+                    entry = vital_signs(patient_id = data['patient_id'], body_weight = data['body_weight'], body_weight_unit = data['body_weight_unit'], height = data['height'],height_unit = data['height_unit'],respiration_rate = data['respiration_rate'],pulse_rate = data['pulse_rate'],body_temperature = data['body_temperature'],body_temperature_unit = data['body_temperature_unit'],head_circumference = data['head_circumference'],head_circumference_unit = data['head_circumference_unit'],pulse_oximetry = data['pulse_oximetry'],body_mass_index = data['body_mass_index'],body_mass_index_unit = data['body_mass_index_unit'],blood_pressure_systolic = data['blood_pressure_systolic'],blood_pressure_diastolic = data['blood_pressure_diastolic'])
+                    db.session.add(entry)
+                db.session.commit()
+                return jsonify({'success':True, 'message':'data added'}), 200
+            else:
+                return jsonify({'success':False,'message':'patient with this id doesent exist'}), 404
+        else:
+            return jsonify({'success':False,'message':'Not Authorised, not Admin'}), 404
+    except Exception as e:
+        print(e)
+        return jsonify({'success':False,'message':'not recieved JSON data'}),400 
+
+#get vital signs
+    #for doctor
+@app.route('/api/get_vital_signs_for_doctor', methods=['GET'])
+def get_vital_signs_for_doctor():
+    try:
+        token = request.headers['token']    #doctor token
+        value = jwt.decode(token, options={"verify_signature": False})
+        email = value["email"]
+        password = value["password"]
+        
+        doctor = doctor_details.query.filter_by(email=email,password=password).first()
+        if doctor:
+            data = request.get_json()
+            p_id = data['patient_id']
+            patient = Patient_details.query.filter_by(id = p_id).first()
+            if patient:
+                result_vitals = vital_signs.query.filter_by(patient_id = patient.id).first()
+                if result_vitals:
+                    obj = {}
+                    obj['body_weight']=result_vitals.body_weight 
+                    obj['body_weight_unit']=result_vitals.body_weight_unit 
+                    obj['height']=result_vitals.height
+                    obj['height_unit']=result_vitals.height_unit 
+                    obj['respiration_rate']=result_vitals.respiration_rate 
+                    obj['pulse_rate']=result_vitals.pulse_rate 
+                    obj['body_temperature']=result_vitals.body_temperature 
+                    obj['body_temperature_unit']=result_vitals.body_temperature_unit 
+                    obj['head_circumference']=result_vitals.head_circumference 
+                    obj['head_circumference_unit']=result_vitals.head_circumference_unit 
+                    obj['pulse_oximetry']=result_vitals.pulse_oximetry
+                    obj['body_mass_index']=result_vitals.body_mass_index 
+                    obj['body_mass_index_unit']=result_vitals.body_mass_index_unit 
+                    obj['blood_pressure_systolic']=result_vitals.blood_pressure_systolic 
+                    obj['blood_pressure_diastolic']=result_vitals.blood_pressure_diastolic
+                    return jsonify({'data':obj}), 200
+                else:
+                    return jsonify({'success':False,'message':'no vital signs recorded for patient id'}), 404
+            else:
+                return jsonify({'success':False,'message':'wrong patient id'}), 404
+        else:
+            return jsonify({'success':False,'message':'Not Authorised, not a doctor'}), 404
+    except Exception as e:
+        print(e)
+        return jsonify({'success':False,'message':'not recieved JSON data'}),400 
+
+
+#get vital signs
+    #for patient
+@app.route('/api/get_vital_signs', methods=['GET'])
+def get_vital_signs():
+    try:
+        token = request.headers['token']    #patient token
+        value = jwt.decode(token, options={"verify_signature": False})
+        email = value["email"]
+        password = value["password"]
+        
+        patient = Patient_details.query.filter_by(email=email,password=password).first()
+        if patient:
+            result_vitals = vital_signs.query.filter_by(patient_id = patient.id).first()
+            if result_vitals:
+                obj = {}
+                obj['body_weight']=result_vitals.body_weight 
+                obj['body_weight_unit']=result_vitals.body_weight_unit 
+                obj['height']=result_vitals.height
+                obj['height_unit']=result_vitals.height_unit 
+                obj['respiration_rate']=result_vitals.respiration_rate 
+                obj['pulse_rate']=result_vitals.pulse_rate 
+                obj['body_temperature']=result_vitals.body_temperature 
+                obj['body_temperature_unit']=result_vitals.body_temperature_unit 
+                obj['head_circumference']=result_vitals.head_circumference 
+                obj['head_circumference_unit']=result_vitals.head_circumference_unit 
+                obj['pulse_oximetry']=result_vitals.pulse_oximetry
+                obj['body_mass_index']=result_vitals.body_mass_index 
+                obj['body_mass_index_unit']=result_vitals.body_mass_index_unit 
+                obj['blood_pressure_systolic']=result_vitals.blood_pressure_systolic 
+                obj['blood_pressure_diastolic']=result_vitals.blood_pressure_diastolic
+                return jsonify({'data':obj}), 200
+            else:
+                return jsonify({'success':False,'message':'no vital signs recorded'}), 404
+        else:
+            return jsonify({'success':False,'message':'Not Authorised, not a patient'}), 404
+    except Exception as e:
+        print(e)
+        return jsonify({'success':False,'message':'not recieved JSON data'}),400 
+
+#APIs for dignostics
+#add dignosis
+@app.route('/api/add_dignostics_results', methods=['POST'])
+def add_dignostics_results():
+    try:
+        #Admin verification
+        token=request.headers['token']
+        value = jwt.decode(token, options={"verify_signature": False})
+        admin = Admin_Login.query.filter_by(email=value['email'], password=value['password']).first()
+        if admin:
+            data = request.get_json()
+            patient = Patient_details.query.filter_by(id = data['patient_id']).first()
+            if patient:
+                #diagnostic_lab_test_result
+                entry = dignostic_test_result(
+                    patient_id = data['patient_id'],
+                    lab_test_name = data['lab_test_name'],
+                    specimen_type = data['specimen_type'],
+                    specimen_method = data['specimen_method'],
+                    specimen_bodysite = data['specimen_bodysite'],
+                    diagnostic_service_category = data['diagnostic_service_category'],
+                    laboratory_analyte_result_analyte_name = data['laboratory_analyte_result_analyte_name'],
+                    interpretation = data['interpretation'],
+                    multimedia_source_resource_name = data['multimedia_source_resource_name'],
+                    multimedia_source_content = data['multimedia_source_content'],
+                    patient_id = data['patient_id'],
+                    imaging_test_name = data['imaging_test_name'],
+                    modality = data['modality'],
+                    anatomical_site = data['anatomical_site'],
+                    imaging_finding_name = data['imaging_finding_name'],
+                    anatomical_location = data['anatomical_location'],
+                    presence = data['presence'],
+                    description = data['description'],
+                    comparison_to_previous = data['comparison_to_previous'],
+                    comment = data['comment'],
+                    comparison_with_previous = data['comparison_with_previous'],
+                    conclusion = data['conclusion'],
+                    imaging_differential_diagnosis = data['imaging_differential_diagnosis'],
+                    imaging_diagnosis = data['imaging_diagnosis'],
+                    multimedia_resource_name = data['multimedia_resource_name'],
+                    multimedia_content = data['multimedia_content'],
+                    technique = data['technique'],
+                    imaging_quality = data['imaging_quality'],
+                    examination_requester_order_identifier = data['examination_requester_order_identifier'],
+                    examination_requested_name = data['examination_requested_name'],
+                    examination_receiver_order_identifier = data['examination_receiver_order_identifier'],
+                    dicom_study_identifier = data['dicom_study_identifier'],
+                    examination_report_identifier = data['examination_report_identifier'],
+                    image_identifier = data['image_identifier'],
+                    dicom_series_identifier = data['dicom_series_identifier'],
+                    view = data['view'],
+                    position = data['position'],
+                    image_datetime = data['image_datetime'],
+                    image = data['image']
+                )
+                db.session.add(entry)
+                db.session.commit()
+                return jsonify({'success':True, 'message':'data added'}), 200    
+            else:
+                return jsonify({'success':False,'message':'patient with this id doesent exist'}), 404
+        else:
+            return jsonify({'success':False,'message':'Not Authorised, not Admin'}), 404
+    except Exception as e:
+        print(e)
+        return jsonify({'success':False,'message':'not recieved JSON data'}),400 
+
+
+#get all dignosis
+    #for doctor
+@app.route('/api/get_dignosis_results_for_doctor', methods=['GET'])
+def getDignosisResultsForDoctor():
+    try:
+        token = request.headers['token']    #doctor token
+        value = jwt.decode(token, options={"verify_signature": False})
+        email = value["email"]
+        password = value["password"]
+        
+        doctor = doctor_details.query.filter_by(email=email,password=password).first()
+        if doctor:
+            data = request.get_json()
+            patient_id = data['patient_id']
+            patient = Patient_details.query.filter_by(id = patient_id).first()
+            if patient:
+                results = dignostic_test_result.query.filter_by(patient_id=patient.id).all()
+                output =[]
+                for result in results:
+                    obj ={}
+                    obj['dignostic_id']= result.id
+                    obj['lab_test_name'] = result.lab_test_name
+                    obj['imaging_test_name'] = result.imaging_test_name
+                    output.append(obj)
+                return jsonify({'dignostic_test_result':output}), 200
+            else:
+                return jsonify({'success':False,'message':'wrong patient id'}), 404
+        else:
+            return jsonify({'success':False,'message':'Not Authorised, not a doctor'}), 404
+
+    except Exception as e:
+        print(e)
+        return jsonify({'success':False,'message':'not recieved JSON data'}),400 
+
+
+#get all dignosis
+    #for patient
+@app.route('/api/get_dignosis_results_for_patient', methods=['GET'])
+def getDignosisResultsForPatient():
+    try:
+        token = request.headers['token']    #patient token
+        value = jwt.decode(token, options={"verify_signature": False})
+        email = value["email"]
+        password = value["password"]
+        
+        patient = Patient_details.query.filter_by(email=email,password=password).first()
+        if patient:
+            results = dignostic_test_result.query.filter_by(patient_id=patient.id).all()
+            output =[]
+            for result in results:
+                obj ={}
+                obj['dignosis_id']= result.id
+                obj['lab_test_name'] = result.lab_test_name
+                obj['imaging_test_name'] = result.imaging_test_name
+                output.append(obj)
+            return jsonify({'dignostic_test_result':output}), 200
+        else:
+            return jsonify({'success':False,'message':'Not Authorised, not a patient'}), 404
+
+    except Exception as e:
+        print(e)
+        return jsonify({'success':False,'message':'not recieved JSON data/token'}),400 
+
+#get dignostics_by_id
+    #for doctor
+@app.route('/api/get_dognostics_by_id_for_doctor', methods='GET')
+def getDignosticsByIdForDoctor():
+    try:
+        token = request.headers['token']    #doctor token
+        value = jwt.decode(token, options={"verify_signature": False})
+        email = value["email"]
+        password = value["password"]
+        
+        doctor = doctor_details.query.filter_by(email=email,password=password).first()
+        if doctor:
+            data = request.get_json()
+            dignostic_id = data['dignostic_id']
+            result = dignostic_test_result.query.filter_by(id = dignostic_id).first()
+            if result:
+                obj = {}
+                obj['lab_test_name'] = result.test_name
+                obj['specimen_type'] = result.specimen_type
+                obj['specimen_method'] = result.specimen_method
+                obj['specimen_bodysite'] = result.specimen_bodysite
+                obj['diagnostic_service_category'] = result.diagnostic_service_category
+                obj['laboratory_analyte_result_analyte_name'] = result.laboratory_analyte_result_analyte_name
+                obj['interpretation'] = result.interpretation
+                obj['multimedia_source_resource_name'] = result.multimedia_source_resource_name
+                obj['multimedia_source_content'] = result.multimedia_source_content
+                obj['imaging_test_name'] = result.test_name
+                obj['modality'] = result.modality
+                obj['anatomical_site'] = result.anatomical_site
+                obj['imaging_finding_name'] = result.imaging_finding_name
+                obj['anatomical_location'] = result.anatomical_location
+                obj['presence'] = result.presence
+                obj['description'] = result.description
+                obj['comparison_to_previous'] = result.comparison_to_previous
+                obj['comment'] = result.comment
+                obj['comparison_with_previous'] = result.comparison_with_previous
+                obj['conclusion'] = result.conclusion
+                obj['imaging_differential_diagnosis'] = result.imaging_differential_diagnosis
+                obj['imaging_diagnosis'] = result.imaging_diagnosis
+                obj['multimedia_resource_name'] = result.multimedia_resource_name
+                obj['multimedia_content'] = result.multimedia_content
+                obj['technique'] = result.technique
+                obj['imaging_quality'] = result.imaging_quality
+                obj['examination_requester_order_identifier'] = result.examination_requester_order_identifier
+                obj['examination_requested_name'] = result.examination_requested_name
+                obj['examination_receiver_order_identifier'] = result.examination_receiver_order_identifier
+                obj['dicom_study_identifier'] = result.dicom_study_identifier
+                obj['examination_report_identifier'] = result.examination_report_identifier
+                obj['image_identifier'] = result.image_identifier
+                obj['dicom_series_identifier'] = result.dicom_series_identifier
+                obj['view'] = result.view
+                obj['position'] = result.position
+                obj['image_datetime'] = result.image_datetime
+                obj['image'] = result.image
+                return jsonify({'dignostic':obj})
+            else:
+                return jsonify({'success':False,'message':'Wrong dignostic id'}), 404
+        else:
+            return jsonify({'success':False,'message':'Not Authorised, not a doctor'}), 404
+    except Exception as e:
+        print(e)
+        return jsonify({'success':False,'message':'not recieved JSON data/token'}),400 
+
+
+#get dignostics_by_id
+    #for patient
+@app.route('/api/get_dognostics_by_id_for_patient', methods='GET')
+def getDignosticsByIdForPatient():
+    try:
+        token = request.headers['token']    #doctor token
+        value = jwt.decode(token, options={"verify_signature": False})
+        email = value["email"]
+        password = value["password"]
+        
+        patient = Patient_details.query.filter_by(email=email,password=password).first()
+        if patient:
+            data = request.get_json()
+            dignostic_id = data['dignostic_id']
+            result = dignostic_test_result.query.filter_by(id = dignostic_id, patient_id = patient.id).first()
+            if result:
+                obj = {}
+                obj['lab_test_name'] = result.test_name
+                obj['specimen_type'] = result.specimen_type
+                obj['specimen_method'] = result.specimen_method
+                obj['specimen_bodysite'] = result.specimen_bodysite
+                obj['diagnostic_service_category'] = result.diagnostic_service_category
+                obj['laboratory_analyte_result_analyte_name'] = result.laboratory_analyte_result_analyte_name
+                obj['interpretation'] = result.interpretation
+                obj['multimedia_source_resource_name'] = result.multimedia_source_resource_name
+                obj['multimedia_source_content'] = result.multimedia_source_content
+                obj['imaging_test_name'] = result.test_name
+                obj['modality'] = result.modality
+                obj['anatomical_site'] = result.anatomical_site
+                obj['imaging_finding_name'] = result.imaging_finding_name
+                obj['anatomical_location'] = result.anatomical_location
+                obj['presence'] = result.presence
+                obj['description'] = result.description
+                obj['comparison_to_previous'] = result.comparison_to_previous
+                obj['comment'] = result.comment
+                obj['comparison_with_previous'] = result.comparison_with_previous
+                obj['conclusion'] = result.conclusion
+                obj['imaging_differential_diagnosis'] = result.imaging_differential_diagnosis
+                obj['imaging_diagnosis'] = result.imaging_diagnosis
+                obj['multimedia_resource_name'] = result.multimedia_resource_name
+                obj['multimedia_content'] = result.multimedia_content
+                obj['technique'] = result.technique
+                obj['imaging_quality'] = result.imaging_quality
+                obj['examination_requester_order_identifier'] = result.examination_requester_order_identifier
+                obj['examination_requested_name'] = result.examination_requested_name
+                obj['examination_receiver_order_identifier'] = result.examination_receiver_order_identifier
+                obj['dicom_study_identifier'] = result.dicom_study_identifier
+                obj['examination_report_identifier'] = result.examination_report_identifier
+                obj['image_identifier'] = result.image_identifier
+                obj['dicom_series_identifier'] = result.dicom_series_identifier
+                obj['view'] = result.view
+                obj['position'] = result.position
+                obj['image_datetime'] = result.image_datetime
+                obj['image'] = result.image
+                return jsonify({'dignostic':obj})
+            else:
+                return jsonify({'success':False,'message':'This dignostic result is not available for this patient'}), 404
+        else:
+            return jsonify({'success':False,'message':'Not Authorised, not a doctor'}), 404
+    except Exception as e:
+        print(e)
+        return jsonify({'success':False,'message':'not recieved JSON data/token'}),400 
 
 
 if __name__ == "__main__":
