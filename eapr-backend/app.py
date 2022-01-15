@@ -126,15 +126,14 @@ def getallmedicationstatements():
         print(e)
         return jsonify({'success':False,'message':'Request misses token/json data'}), 400
 
-@app.route('/api/ips/medicationsummary/getallmedicationstatementsfordoctor',methods=['GET'])
-def getallmedicationstatementsfordoctor():
+@app.route('/api/ips/medicationsummary/getallmedicationstatementsfordoctor/<int:patient_id>',methods=['GET'])
+def getallmedicationstatementsfordoctor(patient_id):
     try:
         token=request.headers['token']
         value = jwt.decode(token, options={"verify_signature": False})
         res = doctor_details.query.filter_by(email=value['email'], password=value['password']).first()
         if res:
-            data=request.get_json()
-            Patient_Id=data['patient_id']
+            Patient_Id=patient_id
 
             
             res2=Medication_statement.query.filter_by(patient_id=Patient_Id).all()
@@ -160,17 +159,14 @@ def getallmedicationstatementsfordoctor():
         return jsonify({'success':False,'message':'Request misses token/json data'}), 400
 
 
-@app.route('/api/ips/medicationsummary/getmedicationstatementforpatient',methods=['GET'])
-def getmedicationstatement():
+@app.route('/api/ips/medicationsummary/getmedicationstatementforpatient/<int:Order_Id>',methods=['GET'])
+def getmedicationstatement(Order_Id):
     try:
         token=request.headers['token']
         value = jwt.decode(token, options={"verify_signature": False})
         res = Patient_details.query.filter_by(email=value['email'], password=value['password']).first()
 
         if res:
-            Ord=request.get_json()
-            Order_Id=Ord['order_id']
-
             res1=db.session.query(Medication_statement).filter(Order_Id==Medication_statement.order_id,res.id==Medication_statement.patient_id).all()
             if res1:
 
@@ -279,21 +275,13 @@ def getmedicationstatement():
         return jsonify({'success':False,'message':'Request misses token/json data'}), 400
 
 
-@app.route('/api/ips/medicationsummary/getmedicationstatementfordoctor',methods=['GET'])
-def getmedicationstatementfordoctor():
+@app.route('/api/ips/medicationsummary/getmedicationstatementfordoctor/<int:Order_Id>',methods=['GET'])
+def getmedicationstatementfordoctor(Order_Id):
     try:
         token=request.headers['token']
         value = jwt.decode(token, options={"verify_signature": False})
         res = doctor_details.query.filter_by(email=value['email'], password=value['password']).first()
-        data=request.get_json()
-        
-    
-        
         if res:
-            
-            Order_Id=data['order_id']
-            
-
             res1=db.session.query(Medication_statement).filter(Order_Id==Medication_statement.order_id).all()
             if res1:
                 result = db.session.query(Medication_summary,Medication,Dosage,Administration_details,Timing_non_daily).filter(res1[0].patient_id==Medication_summary.patient_id,Order_Id==Medication.order_id,Order_Id==Dosage.order_id,Order_Id==Administration_details.order_id,Order_Id==Timing_non_daily.order_id).all()
@@ -613,8 +601,8 @@ def getAllPrescriptionsForDoctor():
 
 
 # getPrescription by ID
-@app.route('/api/getPrescriptionByIdForDoctor', methods=['GET'])
-def getPrescriptionByIdForDoct():
+@app.route('/api/getPrescriptionByIdForDoctor/<int:presId>', methods=['GET'])
+def getPrescriptionByIdForDoct(presId):
     try:
         token = request.headers['token']    #doctor token
         value = jwt.decode(token, options={"verify_signature": False})
@@ -624,9 +612,6 @@ def getPrescriptionByIdForDoct():
         docRes = doctor_details.query.filter_by(email=email,password=password).first()
         
         if docRes:
-            
-            data = request.get_json()
-            presId = data['prescriptionId']
             docverfify = Prescription.query.filter_by(prescriptionId=presId, doctorId =docRes.id).first()
             if docverfify:
                 result = Medication_Order.query.filter_by(prescriptionId = presId).all()
@@ -650,8 +635,8 @@ def getPrescriptionByIdForDoct():
         return jsonify({'success':False,'message':'not recieved JSON/Token data'}),400 
 
 # getprescription by id
-@app.route('/api/getPrescriptionByIdForPatient', methods=['GET'])
-def getPrescriptionByIdForPat():
+@app.route('/api/getPrescriptionByIdForPatient/<int:presId>', methods=['GET'])
+def getPrescriptionByIdForPat(presId):
     try:
         token = request.headers['token']    #doctor token
         value = jwt.decode(token, options={"verify_signature": False})
@@ -661,9 +646,6 @@ def getPrescriptionByIdForPat():
         patRes = Patient_details.query.filter_by(email=email,password=password).first()
         
         if patRes:
-            
-            data = request.get_json()
-            presId = data['prescriptionId']
             patverfify = Prescription.query.filter_by(prescriptionId=presId, patientId =patRes.id).first()
             if patverfify:
                 result = Medication_Order.query.filter_by(prescriptionId = presId).all()
@@ -687,8 +669,8 @@ def getPrescriptionByIdForPat():
         return jsonify({'success':False,'message':'not recieved JSON/Token data'}),400
 
 #getmedication order by id API
-@app.route('/api/getMedicationOrderByIdForDoctor', methods=['GET'])
-def getMedicationOrderByIdForDoctor():
+@app.route('/api/getMedicationOrderByIdForDoctor/<int:medId>', methods=['GET'])
+def getMedicationOrderByIdForDoctor(medId):
     try:
         token = request.headers['token']    #doctor token
         value = jwt.decode(token, options={"verify_signature": False})
@@ -697,9 +679,6 @@ def getMedicationOrderByIdForDoctor():
 
         docRes = doctor_details.query.filter_by(email=email,password=password).first()
         if docRes:
-
-            data = request.get_json()
-            medId = data['medId']
             result = Medication_Order.query.filter_by(medId = medId).first()
             pres_id = result.prescriptionId
             print(pres_id)
@@ -758,8 +737,8 @@ def getMedicationOrderByIdForDoctor():
 
 
 #getmedication order by id API
-@app.route('/api/getMedicationOrderByIdForPatient', methods=['GET'])
-def getMedicationOrderByIdForPatient():
+@app.route('/api/getMedicationOrderByIdForPatient/<int:medId>', methods=['GET'])
+def getMedicationOrderByIdForPatient(medId):
     try:
         token = request.headers['token']    #doctor token
         value = jwt.decode(token, options={"verify_signature": False})
@@ -768,9 +747,6 @@ def getMedicationOrderByIdForPatient():
 
         patRes = Patient_details.query.filter_by(email=email,password=password).first()
         if patRes:
-
-            data = request.get_json()
-            medId = data['medId']
             result = Medication_Order.query.filter_by(medId = medId).first()
             pres_id = result.prescriptionId
             patverify =Prescription.query.filter_by(prescriptionId = pres_id,patientId=patRes.id).first()
@@ -889,15 +865,14 @@ def getPregnancyRecordForPatient():
     
 
 # Api for Get past history of PAtient BY Doctor 
-@app.route('/api/getPregnancyRecordForDoctor',methods=['GET'])
-def getPregnancyRecordForDoctor():
+@app.route('/api/getPregnancyRecordForDoctor/<int:patient_id>',methods=['GET'])
+def getPregnancyRecordForDoctor(patient_id):
     try:
         token=request.headers['token']
         value = jwt.decode(token, options={"verify_signature": False})
         res = doctor_details.query.filter_by(email=value['email'], password=value['password']).first()
         if res:
-            data=request.get_json()
-            result = db.session.query(Pregnancy).filter(Pregnancy.patient_uid==data['patient_id']).all()
+            result = db.session.query(Pregnancy).filter(Pregnancy.patient_uid==patient_id).all()
             output=[]     
             for value in result:
                 pat = {}
@@ -959,15 +934,14 @@ def historyOfProcedure():
 
 
 # GET API FOR Historyofprocedure for Doctor
-@app.route('/api/getHistoryOfProcedureforDoctor',methods=['GET'])
-def getHistoryOfProcedureForDoctor():
+@app.route('/api/getHistoryOfProcedureforDoctor/<int:patient_id>',methods=['GET'])
+def getHistoryOfProcedureForDoctor(patient_id):
     try:
         token = request.headers['token']
         decoded = jwt.decode(token, options={"verify_signature": False})
         doctor_check= doctor_details.query.filter_by(email=decoded["email"], password=decoded['password']).first()
         if doctor_check:
-            all_data=request.get_json()
-            patient_uid = all_data['patient_id']
+            patient_uid = patient_id
             result1 = db.session.query(history_of_procedures).filter(history_of_procedures.patient_uid==patient_uid).first()
             result2 = db.session.query(Procedure).filter(Procedure.patient_uid==patient_uid).all()   
             pat = {}
@@ -1095,8 +1069,8 @@ def getImmunizationsForPatient():
         return jsonify({'success':False,'message':'not recieved JSON data'}),400
 
 # GET API FOR Immunizations for Doctor
-@app.route('/api/getImmunizationsForDoctor',methods=['GET'])
-def getImmunizationsForDoctor():
+@app.route('/api/getImmunizationsForDoctor/<int:patient_id>',methods=['GET'])
+def getImmunizationsForDoctor(patient_id):
 
     try:
         token = request.headers['token']
@@ -1105,8 +1079,7 @@ def getImmunizationsForDoctor():
         
         if doctor_check:
             
-            all_data=request.get_json()
-            patient_uid = all_data['patient_id']
+            patient_uid = patient_id
             result1 = db.session.query(Immunizations).filter(Immunizations.patient_uid==patient_uid).first()
             result2 = db.session.query(Immunization).filter(Immunization.patient_uid==patient_uid).all()   
             if result1:
@@ -1207,15 +1180,14 @@ def getMedicalDeviceForPatient():
         return jsonify({'success':False,'message':'not recieved JSON data'}),400      
 
 # Api for Get MedicalDevice For Doctor 
-@app.route('/api/getMedicalDeviceForDoctor',methods=['GET'])
-def getMedicalDeviceForDoctor():
+@app.route('/api/getMedicalDeviceForDoctor/<int:patient_id>',methods=['GET'])
+def getMedicalDeviceForDoctor(patient_id):
     try:
         token=request.headers['token']
         value = jwt.decode(token, options={"verify_signature": False})
         res = doctor_details.query.filter_by(email=value['email'], password=value['password']).first()
         if res:
-            data=request.get_json()
-            result = db.session.query(Medical_devices).filter(Medical_devices.patient_uid==data['patient_id']).all()
+            result = db.session.query(Medical_devices).filter(Medical_devices.patient_uid==patient_id).all()
             output=[]   
             for value in result:
                 pat = {}
@@ -1277,8 +1249,8 @@ def add_allergies_and_intolerances():
 
 #get all allergies
     #for doctor
-@app.route('/api/get_all_allergies_and_intolerances_for_doctor', methods=['GET'])
-def getallAllergiesForDoctor():
+@app.route('/api/get_all_allergies_and_intolerances_for_doctor/<int:patient_id>', methods=['GET'])
+def getallAllergiesForDoctor(patient_id):
     try:
         token = request.headers['token']    #doctor token
         value = jwt.decode(token, options={"verify_signature": False})
@@ -1287,8 +1259,7 @@ def getallAllergiesForDoctor():
         
         doctor = doctor_details.query.filter_by(email=email,password=password).first()
         if doctor:
-            data = request.get_json()
-            patient_id = data['patient_id']
+            
             result = allergies_and_intolerances.query.filter_by(patient_id = patient_id).first()
             if result:
                 output = {}
@@ -1474,8 +1445,8 @@ def add_vital_signs():
 
 #get vital signs
     #for doctor
-@app.route('/api/get_vital_signs_for_doctor', methods=['GET'])
-def get_vital_signs_for_doctor():
+@app.route('/api/get_vital_signs_for_doctor/<int:patient_id>', methods=['GET'])
+def get_vital_signs_for_doctor(patient_id):
     try:
         token = request.headers['token']    #doctor token
         value = jwt.decode(token, options={"verify_signature": False})
@@ -1484,8 +1455,7 @@ def get_vital_signs_for_doctor():
         
         doctor = doctor_details.query.filter_by(email=email,password=password).first()
         if doctor:
-            data = request.get_json()
-            p_id = data['patient_id']
+            p_id = patient_id
             patient = Patient_details.query.filter_by(id = p_id).first()
             if patient:
                 result_vitals = vital_signs.query.filter_by(patient_id = patient.id).first()
@@ -1625,8 +1595,8 @@ def add_dignostics_results():
 
 #get all dignosis
     #for doctor
-@app.route('/api/get_dignosis_results_for_doctor', methods=['GET'])
-def getDignosisResultsForDoctor():
+@app.route('/api/get_dignosis_results_for_doctor/<int:patient_id>', methods=['GET'])
+def getDignosisResultsForDoctor(patient_id):
     try:
         token = request.headers['token']    #doctor token
         value = jwt.decode(token, options={"verify_signature": False})
@@ -1635,8 +1605,6 @@ def getDignosisResultsForDoctor():
         
         doctor = doctor_details.query.filter_by(email=email,password=password).first()
         if doctor:
-            data = request.get_json()
-            patient_id = data['patient_id']
             patient = Patient_details.query.filter_by(id = patient_id).first()
             if patient:
                 results = dignostic_test_result.query.filter_by(patient_id=patient.id).all()
@@ -1688,8 +1656,8 @@ def getDignosisResultsForPatient():
 
 #get dignostics_by_id
     #for doctor
-@app.route('/api/get_dognostics_by_id_for_doctor', methods=['GET'])
-def getDignosticsByIdForDoctor():
+@app.route('/api/get_dognostics_by_id_for_doctor/<int:dignostic_id>', methods=['GET'])
+def getDignosticsByIdForDoctor(dignostic_id):
     try:
         token = request.headers['token']    #doctor token
         value = jwt.decode(token, options={"verify_signature": False})
@@ -1698,8 +1666,6 @@ def getDignosticsByIdForDoctor():
         
         doctor = doctor_details.query.filter_by(email=email,password=password).first()
         if doctor:
-            data = request.get_json()
-            dignostic_id = data['dignostic_id']
             result = dignostic_test_result.query.filter_by(id = dignostic_id).first()
             if result:
                 obj = {}
@@ -1824,8 +1790,7 @@ def getPatientForDoctor():
         
         doctor = doctor_details.query.filter_by(email=email,password=password).first()
         if doctor:
-            data = request.get_json()
-            pat_email = data['patient_email']
+            pat_email=request.args.get('email').strip("'").strip('"')
             patient = Patient_details.query.filter_by(email = pat_email).first()
             if patient:
                 obj = {}
@@ -1856,8 +1821,7 @@ def getPatientForAdmin():
         
         admin = Admin_Login.query.filter_by(email=email,password=password).first()
         if admin:
-            data = request.get_json()
-            pat_email = data['patient_email']
+            pat_email=request.args.get('email').strip("'").strip('"')
             patient = Patient_details.query.filter_by(email = pat_email).first()
             if patient:
                 obj = {}
@@ -1915,15 +1879,13 @@ def getPastHistoryPatient():
         return jsonify({'success':False,'message':'not recieved JSON data'}),400 
 
 # Api for Get past history of Patient BY Doctor
-@app.route('/api/getpasthistoryofpatientfordoctor',methods=['GET'])
-def getPastHistoryDoctor():
+@app.route('/api/getpasthistoryofpatientfordoctor/<int:patient_id>',methods=['GET'])
+def getPastHistoryDoctor(patient_id):
     try:
         token=request.headers['token'] #patient token
         value = jwt.decode(token, options={"verify_signature": False})
         res = doctor_details.query.filter_by(email=value['email'], password=value['password']).first()
         if res:
-            data = request.get_json()
-            patient_id = data['patient_id']
             result = db.session.query(Past_history_of_illnesses).filter(Past_history_of_illnesses.patient_id==patient_id).all()
             output=[]     
             for value in result:
@@ -2022,15 +1984,13 @@ def getProblemListByPatient():
         return jsonify({'success':False,'message':'not recieved JSON data'}),400     
 
 # Api for Get prblem List of Patient by doctor
-@app.route('/api/getproblemlistbydoctor',methods=['GET'])
-def getProblemListByDoctor():
+@app.route('/api/getproblemlistbydoctor/<int:patient_id>',methods=['GET'])
+def getProblemListByDoctor(patient_id):
     try:
         token=request.headers['token']   #Doctor Token
         value = jwt.decode(token, options={"verify_signature": False})
         res = doctor_details.query.filter_by(email=value['email'], password=value['password']).first()
         if res:
-            data = request.get_json()
-            patient_id = data['patient_id']
             result1 = db.session.query(Problem_list).filter(Problem_list.patient_id==patient_id).first()
             result2 = db.session.query(Problem).filter(Problem.patient_id==patient_id).all()
             output = {}
@@ -2138,15 +2098,13 @@ def getAdvanceDirectivesByPatient():
 
 
 # Api for get advance directives by doctor
-@app.route('/api/getadvanceddirectivesbydoctor',methods=['GET'])
-def getAdvanceDirectivesByDoctor():
+@app.route('/api/getadvanceddirectivesbydoctor/<int:patient_id>',methods=['GET'])
+def getAdvanceDirectivesByDoctor(patient_id):
     try:
         token=request.headers['token']  #Patient Token
         value = jwt.decode(token, options={"verify_signature": False})
         res = doctor_details.query.filter_by(email=value['email'], password=value['password']).first()
         if res:
-            data = request.get_json()
-            patient_id = data['patient_id']
             result1 = db.session.query(Advance_care_directive).filter(Advance_care_directive.patient_id==patient_id).first()
             result2 = db.session.query(Limitation_of_treatment).filter(Limitation_of_treatment.patient_id==patient_id).all()
             output={}      
@@ -2220,8 +2178,6 @@ def getSocialHistoryPatient():
         value = jwt.decode(token, options={"verify_signature": False})
         res = Patient_details.query.filter_by(email=value['email'], password=value['password']).first()
         if res:
-            #all_data=request.get_json()
-            #patient_uid = all_data['patient_uid']
             result1 = db.session.query(Tobacco_smoking).filter(Tobacco_smoking.patient_uid==res.id).all()
             result2 = db.session.query(Alcohol_consumption).filter(Alcohol_consumption.patient_uid==res.id).all()
             output=[]     
@@ -2241,15 +2197,14 @@ def getSocialHistoryPatient():
         print(e)
         return jsonify({'success':False,'message':'not recieved JSON data'}),400 
 
-@app.route('/api/getsocialhistoryfordoctor',methods=['GET'])
-def getSocialHistoryDoctor():
+@app.route('/api/getsocialhistoryfordoctor/<int:patient_id>',methods=['GET'])
+def getSocialHistoryDoctor(patient_id):
     try:
         token=request.headers['token']
         value = jwt.decode(token, options={"verify_signature": False})
         res = doctor_details.query.filter_by(email=value['email'], password=value['password']).first()
         if res:
-            all_data=request.get_json()
-            patient_id = all_data['patient_id']
+            
             result1 = db.session.query(Tobacco_smoking).filter(Tobacco_smoking.patient_uid==patient_id).all()
             result2 = db.session.query(Alcohol_consumption).filter(Alcohol_consumption.patient_uid==patient_id).all()
             output=[]     
@@ -2305,8 +2260,6 @@ def getplanofcare():
         value = jwt.decode(token, options={"verify_signature": False})
         res = Patient_details.query.filter_by(email=value['email'], password=value['password']).first()
         if res:
-            #all_data=request.get_json()
-            #patient_uid = all_data['patient_uid']
             result1 = db.session.query(Care_plan).filter(Care_plan.patient_uid==res.id).all()
             result2 = db.session.query(Service_request).filter(Service_request.patient_uid==res.id).all()
             pat = {}   
@@ -2346,15 +2299,15 @@ def getplanofcare():
     except:
         return jsonify({'success':False,'message':'not recieved JSON data'}),400 
 
-@app.route('/api/getplanofcarefordoctor',methods=['GET'])
-def getplanofcarefordoctor():
+@app.route('/api/getplanofcarefordoctor/<int:patient_id>',methods=['GET'])
+def getplanofcarefordoctor(patient_id):
     try:
         token=request.headers['token']
         value = jwt.decode(token, options={"verify_signature": False})
         res = doctor_details.query.filter_by(email=value['email'], password=value['password']).first()
         if res:
-            all_data=request.get_json()
-            patient_uid = all_data['patient_id']
+            
+            patient_uid = patient_id
             result1 = db.session.query(Care_plan).filter(Care_plan.patient_uid==patient_uid).all()
             result2 = db.session.query(Service_request).filter(Service_request.patient_uid==patient_uid).all()
             pat = {}   
@@ -2454,8 +2407,6 @@ def getfunctionalstatus():
         value = jwt.decode(token, options={"verify_signature": False})
         res = Patient_details.query.filter_by(email=value['email'], password=value['password']).first()
         if res:
-            #all_data=request.get_json()
-            #patient_uid = all_data['patient_uid']
             result1 = db.session.query(Functional_status).filter(Care_plan.patient_uid==res.id).all()
             pat = {}   
             for value in result1:
@@ -2484,15 +2435,13 @@ def getfunctionalstatus():
         return jsonify({'success':False,'message':'not recieved JSON data'}),400 
 
 
-@app.route('/api/getfunctionalstatusfordoctor',methods=['GET'])
-def getfunctionalstatusfordoctor():
+@app.route('/api/getfunctionalstatusfordoctor/<int:patient_id>',methods=['GET'])
+def getfunctionalstatusfordoctor(patient_id):
     try:
         token=request.headers['token']
         value = jwt.decode(token, options={"verify_signature": False})
         res = doctor_details.query.filter_by(email=value['email'], password=value['password']).first()
         if res:
-            all_data=request.get_json()
-            patient_id = all_data['patient_id']
             result1 = db.session.query(Functional_status).filter(Care_plan.patient_uid==patient_id).all()
             pat = {}   
             for value in result1:

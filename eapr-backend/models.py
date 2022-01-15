@@ -354,7 +354,6 @@ class Pregnancy(db.Model):
 class history_of_procedures(db.Model):
     __tablename__ = 'history_of_procedures'
     id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
-    #patient_id (unique)
     patient_uid = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
     absence_of_info_absence_statement = db.Column(db.Text, unique=False, nullable=True)
     absence_of_info_protocol_last_updated = db.Column(db.Text, unique=False, nullable=True)
