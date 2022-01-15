@@ -1861,6 +1861,253 @@ def getPatientForAdmin():
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'not recieved JSON data/token'}),400 
+        
+        
+#Twinkle
+# Api for Get past history of Patient BY Patient Id
+@app.route('/api/getpasthistoryofpatientbypatientid',methods=['GET'])
+def getPastHistoryPatient():
+    try:
+        token=request.headers['token'] #patient token
+        value = jwt.decode(token, options={"verify_signature": False})
+        res = Patient_details.query.filter_by(email=value['email'], password=value['password']).first()
+        if res:
+            result = db.session.query(Past_history_of_illnesses).filter(Past_history_of_illnesses.patient_id==res.id).all()
+            output=[]     
+            for value in result:
+                pat = {}
+                pat['patient_uid']=value.patient_id
+                pat['problem_name']=value.problem_name
+                pat['body_site']=value.body_site
+                pat['datetime_of_onset']=value.datetime_of_onset
+                pat['severity']=value.severity
+                pat['date_of_abatebent']=value.date_of_abatebent
+                pat['active_or_inactive']=value.active_or_inactive
+                pat['resolution_phase']=value.resolution_phase
+                pat['remission_status']=value.remission_status
+                pat['occurrence']=value.occurrence
+                pat['diagnostic_certainity']=value.diagnostic_certainity
+                pat['protocol_last_updated']=value.protocol_last_updated
+                output.append(pat)
+                print(output)
+            if output:    
+                return jsonify({"history":output})
+            else:
+                return jsonify({'success':False,'message':'patient_id is not present'}) 
+        else:
+            return jsonify({'success':False,'message':'invalid email/password'}), 404       
+    except:
+        return jsonify({'success':False,'message':'not recieved JSON data'}),400      
+
+
+# Api for get past history of patient by patient id and past history id
+@app.route('/api/getpasthistoryofpatient',methods=['GET'])
+def getPastHistoryOfPatient():
+    try:
+        token=request.headers['token'] #Patient Token
+        value = jwt.decode(token, options={"verify_signature": False})
+        res = Patient_details.query.filter_by(email=value['email'], password=value['password']).first()
+        if res:
+            all_data=request.get_json()
+            past_id = all_data['past_id']
+            result = db.session.query(Past_history_of_illnesses).filter(Past_history_of_illnesses.patient_id==res.id,Past_history_of_illnesses.id==past_id)    
+            pat = {}
+            for value in result:
+                pat['patient_uid']=value.patient_id
+                pat['problem_name']=value.problem_name
+                pat['body_site']=value.body_site
+                pat['datetime_of_onset']=value.datetime_of_onset
+                pat['severity']=value.severity
+                pat['date_of_abatebent']=value.date_of_abatebent
+                pat['active_or_inactive']=value.active_or_inactive
+                pat['resolution_phase']=value.resolution_phase
+                pat['remission_status']=value.remission_status
+                pat['occurrence']=value.occurrence
+                pat['diagnostic_certainity']=value.diagnostic_certainity
+                pat['protocol_last_updated']=value.protocol_last_updated    
+            if pat:    
+                return jsonify({"history":pat})
+            else:
+                return jsonify({'success':False,'message':'Past_id is not present'}) 
+        else:
+            return jsonify({'success':False,'message':'invalid email/password'}), 404       
+    except:
+        return jsonify({'success':False,'message':'not recieved JSON data'}),400      
+
+
+
+# Api for create past history of patient
+@app.route('/api/createpasthistoryofpatient',methods=['POST'])
+def createPastHistoryOfPatient():
+    try:
+        token = request.headers['token'] #Admin Token
+        decoded = jwt.decode(token, options={"verify_signature": False})
+        admin_check= Admin_Login.query.filter_by(email=decoded["email"], password=decoded['password']).first()
+        if admin_check:
+            data=request.get_json()
+            #p_id = Past_history_of_illnesses.query.filter_by(patient_id=data['patient_uid'],problem_name=data['problem_name'],body_site=data['body_site'],datetime_of_onset=data['datetime_of_onset'],severity=data['severity'],date_of_abatebent=data['date_of_abatebent'],active_or_inactive=data['active_or_inactive'],resolution_phase=data['resolution_phase'],remission_status=data['remission_status'],occurrence=data['occurrence'],diagnostic_certainity=data['diagnostic_certainity'],protocol_last_updated=data['protocol_last_updated']).first()
+            #if not p_id:
+            entry = Past_history_of_illnesses(patient_id=data['patient_uid'],problem_name=data['problem_name'],body_site=data['body_site'],datetime_of_onset=data['datetime_of_onset'],severity=data['severity'],date_of_abatebent=data['date_of_abatebent'],active_or_inactive=data['active_or_inactive'],resolution_phase=data['resolution_phase'],remission_status=data['remission_status'],occurrence=data['occurrence'],diagnostic_certainity=data['diagnostic_certainity'],protocol_last_updated=data['protocol_last_updated'])
+            db.session.add(entry)
+            db.session.commit()
+            return jsonify({'success':True,'message':'history added successfully'})
+            # else:
+            #     return jsonify({'success':False,'message':'history already present'}), 404
+        else:
+            return jsonify({'success':False,'message':'Not Authorised'}), 404
+    except:
+        return jsonify({'success':False,'message':'Request misses token/json data'}), 400
+        
+
+# Api gor Get prblem List of Patient
+@app.route('/api/getproblemlist',methods=['GET'])
+def getProblemList():
+    try:
+        token=request.headers['token']   #Patient Token
+        value = jwt.decode(token, options={"verify_signature": False})
+        res = Patient_details.query.filter_by(email=value['email'], password=value['password']).first()
+        if res:
+            result1 = db.session.query(Problem_list).filter(Problem_list.patient_id==res.id).all()
+            result2 = db.session.query(Problem).filter(Problem.patient_id==res.id).all()
+            output=[]     
+            for value in result1:
+                pat = {}
+                pat['patient_uid']=value.patient_id
+                pat['global_exclusion_of_adverse_reactions']=value.global_exclusion_of_adverse_reactions
+                pat['absence_of_information_statement']=value.absence_of_information_statement
+                pat['absence_of_information_protocol_last_updated']=value.absence_of_information_protocol_last_updated
+                output.append(pat)
+            for value in result2:  
+                pat={}  
+                pat['p_patient_uid']=value.patient_id
+                pat['problem_name']=value.problem_name
+                pat['body_site']=value.body_site
+                pat['datetime_of_onset']=value.datetime_of_onset
+                pat['severity']=value.severity
+                pat['date_of_abatebent']=value.date_of_abatebent
+                pat['active_or_inactive']=value.active_or_inactive
+                pat['resolution_phase']=value.resolution_phase
+                pat['remission_status']=value.resolution_phase
+                pat['occurrence']=value.occurrence
+                pat['diagnostic_certainity']=value.diagnostic_certainity
+                pat['protocol_last_updated']=value.protocol_last_updated
+                output.append(pat)
+                
+            if output:    
+                return jsonify({"history":output})
+            else:
+                return jsonify({'success':False,'message':'patient_id is not present'})
+        else:
+            return jsonify({'success':False,'message':'invalid email/password'}), 404 
+    except:
+        return jsonify({'success':False,'message':'not recieved JSON data'}),400     
+
+
+
+
+# Api for Create problem List
+@app.route('/api/problemlist',methods=['POST'])
+def problemList():
+    try:
+        token = request.headers['token']  #Admin Token
+        decoded = jwt.decode(token, options={"verify_signature": False})
+        patient_check= Admin_Login.query.filter_by(email=decoded["email"], password=decoded['password']).first()
+        if patient_check:
+            data=request.get_json()
+            # p_id = db.session.query(Problem_list,Problem).filter(Problem_list.patient_id==data['p_patient_uid'],Problem.patient_id==data['patient_uid']).first()
+            # if not p_id:
+            entry = Problem_list(patient_id=data['p_patient_uid'],global_exclusion_of_adverse_reactions=data['global_exclusion_of_adverse_reactions'],absence_of_information_statement=data['absence_of_information_statement'],absence_of_information_protocol_last_updated=data['absence_of_information_protocol_last_updated'])
+            db.session.add(entry)
+            entry1=Problem(patient_id=data['patient_uid'],problem_name=data['problem_name'],body_site=data['body_site'],datetime_of_onset=data['datetime_of_onset'],severity=data['severity'],date_of_abatebent=data['date_of_abatebent'],active_or_inactive=data['active_or_inactive'],resolution_phase=data['resolution_phase'],remission_status=data['remission_status'],occurrence=data['occurrence'],diagnostic_certainity=data['diagnostic_certainity'],protocol_last_updated=data['protocol_last_updated'])
+            db.session.add(entry1)
+            db.session.commit()
+            return jsonify({'success':True,'message':'Problem added successfully'})
+            # else:
+            #     return jsonify({'success':False,'message':'history already present'}), 404
+        else:
+            return jsonify({'success':False,'message':'Not Authorised'}), 404
+    except:
+        return jsonify({'success':False,'message':'Request misses token/json data'}), 400
+        
+
+# Api for get advance directives
+@app.route('/api/getadvanceddirectives',methods=['GET'])
+def getAdvanceDirectives():
+    try:
+        token=request.headers['token']  #Patient Token
+        value = jwt.decode(token, options={"verify_signature": False})
+        res = Patient_details.query.filter_by(email=value['email'], password=value['password']).first()
+        if res:
+            result1 = db.session.query(Advance_care_directive).filter(Advance_care_directive.patient_id==res.id).all()
+            result2 = db.session.query(Limitation_of_treatment).filter(Limitation_of_treatment.patient_id==res.id).all()
+            output=[]     
+            for value in result1:
+                pat = {}
+                pat['a_patient_uid']=value.patient_id
+                pat['type_of_directive']=value.type_of_directive
+                pat['a_status']=value.status
+                pat['description']=value.description
+                pat['condition']=value.condition
+                pat['directive_location']=value.directive_location
+                pat['a_comment']=value.comment
+                pat['valid_period_start']=value.valid_period_start
+                pat['valid_period_end']=value.valid_period_end
+                pat['review_due_date']=value.review_due_date
+                pat['last_updated']=value.last_updated
+                pat['mandate']=value.mandate
+                output.append(pat)
+            for value in result2:  
+                pat={}  
+                pat['patient_uid']=value.patient_id
+                pat['status']=value.status
+                pat['type_of_limitation']=value.type_of_limitation
+                pat['decision']=value.decision
+                pat['qualification']=value.qualification
+                pat['rationale']=value.rationale
+                pat['patient_awareness']=value.patient_awareness
+                pat['carer_awareness']=value.carer_awareness
+                pat['comment']=value.comment
+                pat['element']=value.element
+                pat['protocol_review_date']=value.protocol_review_date
+                
+                output.append(pat)
+                
+            if output:    
+                return jsonify({"history":output})
+            else:
+                return jsonify({'success':False,'message':'patient_id is not present'})
+        else:
+            return jsonify({'success':False,'message':'invalid email/password'}), 404
+    except:
+        return jsonify({'success':False,'message':'not recieved JSON data'}),400 
+
+
+
+
+# Api for create Advance directives history  
+@app.route('/api/advanceddirectives',methods=['POST'])
+def advancedDirectives():
+    try:
+        token = request.headers['token']   #Admin Token
+        decoded = jwt.decode(token, options={"verify_signature": False})
+        patient_check= Admin_Login.query.filter_by(email=decoded["email"], password=decoded['password']).first()
+        if patient_check:
+            data=request.get_json()
+            # p_id = db.session.query(Advance_care_directive,Limitation_of_treatment).filter(Advance_care_directive.patient_id==data['a_patient_uid'],Limitation_of_treatment.patient_id==data['patient_uid']).first()
+            # if not p_id:
+            entry = Advance_care_directive(patient_id=data['a_patient_uid'],type_of_directive=data['type_of_directive'],status=data['a_status'],description=data['description'],condition=data['condition'],directive_location=data['directive_location'],comment=data['a_comment'],valid_period_start=data['valid_period_start'],valid_period_end=data['valid_period_end'],review_due_date=data['review_due_date'],last_updated=data['last_updated'],mandate=data['mandate'])
+            db.session.add(entry)
+            entry1=Limitation_of_treatment(patient_id=data['patient_uid'],status=data['status'],type_of_limitation=data['type_of_limitation'],decision=data['decision'],qualification=data['qualification'],rationale=data['rationale'],patient_awareness=data['patient_awareness'],carer_awareness=data['carer_awareness'],comment=data['comment'],element=data['element'],protocol_review_date=data['protocol_review_date'])
+            db.session.add(entry1)
+            db.session.commit()
+            return jsonify({'success':True,'message':'history added successfully'})
+            # else:
+            #     return jsonify({'success':False,'message':'history already present'}), 404
+        else:
+            return jsonify({'success':False,'message':'Not Authorised'}), 404
+    except:
+        return jsonify({'success':False,'message':'Request misses token/json data'}), 400        
+        
 
 if __name__ == "__main__":
     app.run(debug=True, port=7000)
