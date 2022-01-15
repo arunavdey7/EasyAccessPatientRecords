@@ -2,85 +2,42 @@ import React from 'react'
 import './styles.css'
 const Prescription = () => {
 
-    {
-        "patient_email" : "prashast@gmail.com",
-        "medOrders" :[
-        {
-            "medicationItem" : "xyz",
-            "route" : "qwe",
-            "dosageInstruction":"asdf",
-            "maximumAmount" : 2,
-            "maximumAmountDoseUnit":"wedfrgh",
-            "allowedPeriod" : "qwwd",
-            "overrideReason" : "nubhhjb",
-            "additionalInstructions" :"tyfgfv",
-            "reasons" : "bhj",
-            "status" : "done",
-            "dateDiscontinued":"2021-11-01",
-            "dateWritten" : "2022-11-01",
-            "numOfRepeatsAllowed":5,
-            "validityPeriod" :"2022-2-04",
-            "dispenseInstrution":"hubhb",
-            "dispenseAmountDescription" :"innds",
-            "dispenseAmount" : 21,
-            "dispenseAmountUnit" : 90,
-            "comment" : "uheds",
-            "dose_unit" : 3,
-            "dose_frequency" : "twice",
-            "dose_timing" : "2022-11-01",
-            "dose_duration" : "tomowwo",
-            "repetition_interval" : "5 mins",
-            "Specific_date" : "21-11-2021",
-            "specific_day_of_week" : "monday",
-            "Specific_day_of_month" :"jan",
-            "specific_Event" :"tom",
-            "substance_name" :"omnws",
-            "form" :"okds",
-            "strength" :10,
-            "strengthUnit" : "oksjn",
-            "diluentAmount" : 10,
-            "diluentunit" : "100mg",
-            "description" : "idjsd"
-            },
-            {
-            "medicationItem" : "abc",
-            "route" : "sad",
-            "dosageInstruction":"asdf",
-            "maximumAmount" : 2,
-            "maximumAmountDoseUnit":"wedfrgh",
-            "allowedPeriod" : "qwwd",
-            "overrideReason" : "nubhhjb",
-            "additionalInstructions" :"tyfgfv",
-            "reasons" : "bhj",
-            "status" : "done",
-            "dateDiscontinued":"2021-11-01",
-            "dateWritten" : "2022-11-01",
-            "numOfRepeatsAllowed":5,
-            "validityPeriod" :"2022-2-04",
-            "dispenseInstrution":"hubhb",
-            "dispenseAmountDescription" :"innds",
-            "dispenseAmount" : 21,
-            "dispenseAmountUnit" : 90,
-            "comment" : "uheds",
-            "dose_unit" : 3,
-            "dose_frequency" : "twice",
-            "dose_timing" : "2022-11-01",
-            "dose_duration" : "tomowwo",
-            "repetition_interval" : "5 mins",
-            "Specific_date" : "21-11-2021",
-            "specific_day_of_week" : "monday",
-            "Specific_day_of_month" :"jan",
-            "specific_Event" :"tom",
-            "substance_name" :"omnws",
-            "form" :"okds",
-            "strength" :10,
-            "strengthUnit" : "oksjn",
-            "diluentAmount" : 10,
-            "diluentunit" : "100mg",
-            "description" : "idjsd"
-            }
-        ]
-    }
+        const [medicationItem, setMedicationItem] = useState("")
+        const [route, setRoute] = useState("") 
+        const [dosageInstruction, setDosageInstruction] = useState("")
+        const [maximumAmount, setMaximumAmount] = useState("") 
+        const [maximumAmountDoseUnit, setMaximumAmountDoseUnit] = useState("")
+        const [allowedPeriod , setAllowedPeriod] = useState("")
+        const [overrideReason, setOverrideReason] = useState("")
+        additionalInstructions 
+        reasons 
+        status 
+        dateDiscontinued
+        dateWritten 
+        numOfRepeatsAllowed
+        validityPeriod 
+        dispenseInstrution
+        dispenseAmountDescription
+        dispenseAmount 
+        dispenseAmountUnit 
+        comment 
+        dose_unit 
+        dose_frequency 
+        dose_timing
+        dose_duration 
+        repetition_interval 
+        Specific_date 
+        specific_day_of_week 
+        Specific_day_of_month 
+        specific_Event
+        substance_name 
+        form 
+        strength 
+        strengthUnit 
+        diluentAmount 
+        diluentunit 
+        description 
+        
     var medOrders = JSON.parse(localStorage.getItem('tempMedOrders')) || []
     var currCount = JSON.parse(localStorage.getItem('currCount')) || [0]
     const handleAddMore = () => {
