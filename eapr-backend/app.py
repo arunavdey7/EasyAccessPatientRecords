@@ -2213,7 +2213,7 @@ def advancedDirectives():
         return jsonify({'success':False,'message':'Request misses token/json data'}), 400
   
 
-@app.route('/api/getsocialhistory',methods=['GET'])
+@app.route('/api/getsocialhistoryforpatient',methods=['GET'])
 def getSocialHistoryPatient():
     try:
         token=request.headers['token']
@@ -2222,8 +2222,8 @@ def getSocialHistoryPatient():
         if res:
             #all_data=request.get_json()
             #patient_uid = all_data['patient_uid']
-            result1 = db.session.query(Tobacco_smoking).filter(Tobacco_smoking.patient_id==res.id).all()
-            result2 = db.session.query(Alcohol_consumption).filter(Alcohol_consumption.patient_id==res.id).all()
+            result1 = db.session.query(Tobacco_smoking).filter(Tobacco_smoking.patient_uid==res.id).all()
+            result2 = db.session.query(Alcohol_consumption).filter(Alcohol_consumption.patient_uid==res.id).all()
             output=[]     
             for value in result1:
                 pat = {}
@@ -2233,14 +2233,40 @@ def getSocialHistoryPatient():
                 pat['alcohol_status']=value.status
                 pat['typical_consumption_alcohol_unit']=value.typical_consumption_alcohol_unit
                 output.append(pat)
-                #print(output)
-            if output:    
-                return jsonify({"history":output})
-            else:
-                return jsonify({'success':False,'message':'patient_id is not present'}) 
+                #print(output)    
+            return jsonify({"history":output})
         else:
             return jsonify({'success':False,'message':'invalid email/password'}), 404       
-    except:
+    except Exception as e:
+        print(e)
+        return jsonify({'success':False,'message':'not recieved JSON data'}),400 
+
+@app.route('/api/getsocialhistoryfordoctor',methods=['GET'])
+def getSocialHistoryDoctor():
+    try:
+        token=request.headers['token']
+        value = jwt.decode(token, options={"verify_signature": False})
+        res = doctor_details.query.filter_by(email=value['email'], password=value['password']).first()
+        if res:
+            all_data=request.get_json()
+            patient_id = all_data['patient_id']
+            result1 = db.session.query(Tobacco_smoking).filter(Tobacco_smoking.patient_uid==patient_id).all()
+            result2 = db.session.query(Alcohol_consumption).filter(Alcohol_consumption.patient_uid==patient_id).all()
+            output=[]     
+            for value in result1:
+                pat = {}
+                pat['patient_id']=value.patient_uid
+                pat['status']=value.status
+            for value in result2:    
+                pat['alcohol_status']=value.status
+                pat['typical_consumption_alcohol_unit']=value.typical_consumption_alcohol_unit
+                output.append(pat)
+                #print(output)   
+            return jsonify({"history":output})
+        else:
+            return jsonify({'success':False,'message':'not authorised'}), 404       
+    except Exception as e:
+        print(e)
         return jsonify({'success':False,'message':'not recieved JSON data'}),400 
 
 @app.route('/api/createsocialhistoryofpatient',methods=['POST'])
@@ -2251,24 +2277,25 @@ def createSocialHistoryOfPatient():
         admin_check= Admin_Login.query.filter_by(email=decoded["email"], password=decoded['password']).first()
         if admin_check:
             data=request.get_json()
-            p_id = Tobacco_smoking.query.filter_by(patient_id=data['patient_id']).first()
-            p_id1 = Alcohol_consumption.query.filter_by(patient_id=data['patient_id']).first()
+            p_id = Tobacco_smoking.query.filter_by(patient_uid=data['patient_id']).first()
+            p_id1 = Alcohol_consumption.query.filter_by(patient_uid=data['patient_id']).first()
             if p_id and p_id1:
-                p_id.status=data['status']
-                p_id1.alcohol_status=data['alcohol_status']
+                p_id.status=data['smoking_status']
+                p_id1.status=data['alcohol_status']
                 p_id1.typical_consumption_alcohol_unit=data['typical_consumption_alcohol_unit']
             else:
-                entry = Tobacco_smoking(patient_uid=data['patient_id'],status=data['status'])
+                entry = Tobacco_smoking(patient_uid=data['patient_id'],status=data['smoking_status'])
                 db.session.add(entry)
-                entry = Alcohol_consumption(patient_uid=data['patient_id'],alcohol_status=data['alcohol_status'],typical_consumption_alcohol_unit=data['typical_consumption_alcohol_unit'])
+                entry = Alcohol_consumption(patient_uid=data['patient_id'],status=data['alcohol_status'],typical_consumption_alcohol_unit=data['typical_consumption_alcohol_unit'])
                 db.session.add(entry)
-                db.session.commit()
+            db.session.commit()
             return jsonify({'success':True,'message':'social history added successfully'})
             # else:
             #     return jsonify({'success':False,'message':'history already present'}), 404
         else:
             return jsonify({'success':False,'message':'Not Authorised'}), 404
-    except:
+    except Exception as e:
+        print(e)
         return jsonify({'success':False,'message':'Request misses token/json data'}), 400
 
 @app.route('/api/getplanofcareforpatient',methods=['GET'])
@@ -2409,13 +2436,14 @@ def createplanofcareOfPatient():
                 urgency=data['urgency'],service_due=data['service_due'],service_period_start=data['service_period_start'],service_period_expiry=data['service_period_expiry'],indefinite=data['indefinite'],supplementary_information=data['supplementary_information'],information_description=data['information_description'],comment=data['comment'],
                 requester_order_identifier=data['requester_order_identifier'],receiver_order_identifier=data['receiver_order_identifier'],request_status=data['request_status'])
                 db.session.add(entry)
-                db.session.commit()
+            db.session.commit()
             return jsonify({'success':True,'message':'social history added successfully'})
             # else:
             #     return jsonify({'success':False,'message':'history already present'}), 404
         else:
             return jsonify({'success':False,'message':'Not Authorised'}), 404
-    except:
+    except Exception as e:
+        print(e)
         return jsonify({'success':False,'message':'Request misses token/json data'}), 400
 
 
@@ -2455,6 +2483,42 @@ def getfunctionalstatus():
     except:
         return jsonify({'success':False,'message':'not recieved JSON data'}),400 
 
+
+@app.route('/api/getfunctionalstatusfordoctor',methods=['GET'])
+def getfunctionalstatusfordoctor():
+    try:
+        token=request.headers['token']
+        value = jwt.decode(token, options={"verify_signature": False})
+        res = doctor_details.query.filter_by(email=value['email'], password=value['password']).first()
+        if res:
+            all_data=request.get_json()
+            patient_id = all_data['patient_id']
+            result1 = db.session.query(Functional_status).filter(Care_plan.patient_uid==patient_id).all()
+            pat = {}   
+            for value in result1:
+                pat['patient_id']=value.patient_uid
+                pat['diagnosis_name']=value.diagnosis_name
+                pat['body_site']=value.body_site
+                pat['date_of_onset']=value.date_of_onset
+                pat['severity']=value.severity   
+                pat['date_of_abatement']=value.date_of_abatement
+                pat['active_inactive']=value.active_inactive
+                pat['resolution_phase']=value.resolution_phase
+                pat['remission_status']=value.remission_status
+                pat['occurrence']=value.occurrence
+                pat['diagnostic_certainty']=value.diagnostic_certainty
+                pat['protocol_last_updated']=value.protocol_last_updated
+                pat['clinical_impression']=value.clinical_impression
+                
+                #print(output)
+            if pat:    
+                return jsonify({"functionalstatus":pat})
+            else:
+                return jsonify({'success':False,'message':'patient_id is not present'}) 
+        else:
+            return jsonify({'success':False,'message':'invalid email/password'}), 404       
+    except:
+        return jsonify({'success':False,'message':'not recieved JSON data'}),400 
 @app.route('/api/createfunctionalstatus',methods=['POST'])
 def createfunctionalOfPatient():
     try:
@@ -2485,7 +2549,7 @@ def createfunctionalOfPatient():
                 db.session.add(entry)
                 
     
-                db.session.commit()
+            db.session.commit()
             return jsonify({'success':True,'message':'functional status added successfully'})
             # else:
             #     return jsonify({'success':False,'message':'history already present'}), 404
