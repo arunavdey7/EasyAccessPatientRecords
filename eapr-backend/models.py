@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 import datetime
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:postgres@localhost/sample6"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:pass@localhost/sample6"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
 
@@ -48,60 +48,45 @@ class Medication_Order(db.Model):
     medId = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
     prescriptionId = db.Column(db.Integer, db.ForeignKey('prescription.prescriptionId'),nullable=False)
     medicationItem = db.Column(db.Text, unique=False, nullable=False)
-    route = db.Column(db.Text, unique=False, nullable=True)    
-    dosageInstruction = db.Column(db.Text, unique = False, nullable=True)
-    maximumAmount = db.Column(db.Integer, unique=False, nullable=True)
-    maximumAmountDoseUnit = db.Column(db.Text, unique = False, nullable=True)
-    allowedPeriod = db.Column(db.Text, unique = False, nullable=True)
-    overrideReason = db.Column(db.Text, unique = False, nullable=True)
+    route = db.Column(db.String(300), unique=False, nullable=False)    
+    dosageInstruction = db.Column(db.Text, unique = False, nullable=False)
+    maximumAmount = db.Column(db.Integer, unique=False, nullable=False)
+    maximumAmountDoseUnit = db.Column(db.Text, unique = False, nullable=False)
+    allowedPeriod = db.Column(db.Text, unique = False, nullable=False)
+    overrideReason = db.Column(db.Text, unique = False, nullable=False)
     additionalInstructions = db.Column(db.Text, unique=False, nullable=True)
-    reasons = db.Column(db.Text, unique = False, nullable=True)
-    status=db.Column(db.Text, unique = False, nullable=True)
-    dateDiscontinued = db.Column(db.Text, unique = False, nullable=True)
-    dateWritten = db.Column(db.Text, unique = False, nullable=True)
-    numOfRepeatsAllowed = db.Column(db.Integer, unique=False, nullable=True)
-    validityPeriod = db.Column(db.Text, unique = False, nullable=True)
-    dispenseInstrution =  db.Column(db.Text, unique = False, nullable=True)
-    dispenseAmountDescription = db.Column(db.Text, unique = False, nullable=True)
-    dispenseAmount = db.Column(db.Integer, unique=False, nullable=True)
-    dispenseAmountUnit = db.Column(db.Integer, unique=False, nullable=True)
-    comment = db.Column(db.Text, unique=False, nullable=True)
+    reasons = db.Column(db.Text, unique = False, nullable=False)
+    status=db.Column(db.Text, unique = False, nullable=False)
+    dateDiscontinued = db.Column(db.Text, unique = False, nullable=False)
+    dateWritten = db.Column(db.Text, unique = False, nullable=False)
+    numOfRepeatsAllowed = db.Column(db.Integer, unique=False, nullable=False)
+    validityPeriod = db.Column(db.Text, unique = False, nullable=False)
+    dispenseInstrution =  db.Column(db.Text, unique = False, nullable=False)
+    dispenseAmountDescription = db.Column(db.Text, unique = False, nullable=False)
+    dispenseAmount = db.Column(db.Integer, unique=False, nullable=False)
+    dispenseAmountUnit = db.Column(db.Integer, unique=False, nullable=False)
+    comment = db.Column(db.Text, unique=False, nullable=False)
 
-
-class Dose_Pattern(db.Model):
-    __tablename__ = 'dose_pattern'
-    dosePatternId = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
-    medicationId =  db.Column(db.Integer, db.ForeignKey('medication_order.medId'),nullable=False)
-    dose_unit   =  db.Column(db.Integer, unique=False, nullable=True)
-    dose_frequency = db.Column(db.Text, unique=False, nullable=True)
-    dose_timing   = db.Column(db.Text, unique = False, nullable=True)
-    dose_duration = db.Column(db.Text, unique=False, nullable=True)
-
-
-class Dose_Repetition(db.Model):
-    __tablename__ = 'dose_repetition'
-    doseRepetitionId = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
-    dosePatternId = db.Column(db.Integer, db.ForeignKey('dose_pattern.dosePatternId'),nullable=False)
-    repetition_interval = db.Column(db.Text, unique=False, nullable=True)
-    Specific_date = db.Column(db.Text, unique = False, nullable=True)
+# dose 
+    dose_unit   =  db.Column(db.Integer, unique=False, nullable=False)
+    dose_frequency = db.Column(db.Text, unique=False, nullable=False)
+    dose_timing   = db.Column(db.Text, unique = False, nullable=False)
+    dose_duration = db.Column(db.Text, unique=False, nullable=False)
+# repetition
+    repetition_interval = db.Column(db.Text, unique=False, nullable=False)
+    Specific_date = db.Column(db.Text, unique = False, nullable=False)
     specific_day_of_week = db.Column(db.Text, unique=False, nullable=True)
     Specific_day_of_month = db.Column(db.Text, unique=False, nullable=True)
     specific_Event = db.Column(db.Text, unique=False, nullable=True)
-
-
-
-class Preparation(db.Model):
-    __tablename__ = 'preparation'
-    preparationId = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
-    medicationId = db.Column(db.Integer, db.ForeignKey('medication_order.medId'),nullable=False)
+# preparation
     substance_name = db.Column(db.Text, unique=False, nullable=True)
     form = db.Column(db.Text, unique=False, nullable=True)
-    strength = db.Column(db.Integer, unique=False, nullable=True)
+    strength = db.Column(db.Integer, unique=False, nullable=False)
     strengthUnit = db.Column(db.Text, unique=False, nullable=True)
-    diluentAmount = db.Column(db.Integer, unique=False, nullable=True)
+    diluentAmount = db.Column(db.Integer, unique=False, nullable=False)
     diluentunit = db.Column(db.Text, unique=False, nullable=True)
     description = db.Column(db.Text, unique=False, nullable=True)
-    
+
     
 # Models for medication
 
