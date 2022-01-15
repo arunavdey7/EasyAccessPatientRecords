@@ -1815,5 +1815,52 @@ def getDignosticsByIdForPatient():
         return jsonify({'success':False,'message':'not recieved JSON data/token'}),400 
 
 
+@app.route('/api/getPatientForDoctor', methods=['GET'])
+def getPatientForDoctor():
+    try:
+        token = request.headers['token']    #doctor token
+        value = jwt.decode(token, options={"verify_signature": False})
+        email = value["email"]
+        password = value["password"]
+        
+        doctor = doctor_details.query.filter_by(email=email,password=password).first()
+        if doctor:
+            data = request.get_json()
+            pat_email = data['patient_email']
+            patient = Patient_details.query.filter_by(email = pat_email).first()
+            if patient:
+                return jsonify({"patient_id":patient.id})
+            else:
+                return jsonify({'success':False,'message':'Not a patient'}), 404
+        else:
+            return jsonify({'success':False,'message':'Not Authorised, not a doctor'}), 404
+    except Exception as e:
+        print(e)
+        return jsonify({'success':False,'message':'not recieved JSON data/token'}),400 
+        
+
+@app.route('/api/getPatientForAdmin', methods=['GET'])
+def getPatientForAdmin():
+    try:
+        token = request.headers['token']    #admin token
+        value = jwt.decode(token, options={"verify_signature": False})
+        email = value["email"]
+        password = value["password"]
+        
+        admin = Admin_Login.query.filter_by(email=email,password=password).first()
+        if admin:
+            data = request.get_json()
+            pat_email = data['patient_email']
+            patient = Patient_details.query.filter_by(email = pat_email).first()
+            if patient:
+                return jsonify({"patient_id":patient.id})
+            else:
+                return jsonify({'success':False,'message':'Not a patient'}), 404
+        else:
+            return jsonify({'success':False,'message':'Not Authorised, not Admin'}), 404
+    except Exception as e:
+        print(e)
+        return jsonify({'success':False,'message':'not recieved JSON data/token'}),400 
+
 if __name__ == "__main__":
     app.run(debug=True, port=7000)
