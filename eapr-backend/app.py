@@ -1343,7 +1343,7 @@ def getallAllergiesForDoctor():
 def getallAllergiesForPatient():
     try:
         #patient verification
-        token = request.header['token']
+        token = request.headers['token']
         value = jwt.decode(token, options={"verify_signature": False})
         email = value["email"]
         password = value["password"]
@@ -1406,7 +1406,7 @@ def getAllergyByIdForDoctor():
 
                 return jsonify({'allergy':output}), 200
             else:
-                return jsonify({'success':False, "message":"Allergy does not exist for patient"}), 404
+                return jsonify({'success':False, "message":"Allergy does not exist"}), 404
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'not recieved JSON data'}),400 
@@ -1442,7 +1442,7 @@ def getAllergyByIdForPatient():
 
                 return jsonify({'allergy':output}), 200
             else:
-                return jsonify({'success':False, "message":"This Allergy does not exist for this patient"}), 404
+                return jsonify({'success':False, "message":"This Allergy does not exist"}), 404
         else:
             return jsonify({'success':False,'message':'Not Authorised, not a Patient'}), 404
     except Exception as e:
@@ -1541,8 +1541,8 @@ def get_vital_signs_for_doctor():
 
 #get vital signs
     #for patient
-@app.route('/api/get_vital_signs', methods=['GET'])
-def get_vital_signs():
+@app.route('/api/get_vital_signs_for_patient', methods=['GET'])
+def get_vital_signs_for_patient():
     try:
         token = request.headers['token']    #patient token
         value = jwt.decode(token, options={"verify_signature": False})
@@ -1724,7 +1724,7 @@ def getDignosticsByIdForDoctor():
             result = dignostic_test_result.query.filter_by(id = dignostic_id).first()
             if result:
                 obj = {}
-                obj['lab_test_name'] = result.test_name
+                obj['lab_test_name'] = result.lab_test_name
                 obj['specimen_type'] = result.specimen_type
                 obj['specimen_method'] = result.specimen_method
                 obj['specimen_bodysite'] = result.specimen_bodysite
@@ -1733,7 +1733,7 @@ def getDignosticsByIdForDoctor():
                 obj['interpretation'] = result.interpretation
                 obj['multimedia_source_resource_name'] = result.multimedia_source_resource_name
                 obj['multimedia_source_content'] = result.multimedia_source_content
-                obj['imaging_test_name'] = result.test_name
+                obj['imaging_test_name'] = result.imaging_test_name
                 obj['modality'] = result.modality
                 obj['anatomical_site'] = result.anatomical_site
                 obj['imaging_finding_name'] = result.imaging_finding_name
@@ -1788,7 +1788,7 @@ def getDignosticsByIdForPatient():
             result = dignostic_test_result.query.filter_by(id = dignostic_id, patient_id = patient.id).first()
             if result:
                 obj = {}
-                obj['lab_test_name'] = result.test_name
+                obj['lab_test_name'] = result.lab_test_name
                 obj['specimen_type'] = result.specimen_type
                 obj['specimen_method'] = result.specimen_method
                 obj['specimen_bodysite'] = result.specimen_bodysite
@@ -1797,7 +1797,7 @@ def getDignosticsByIdForPatient():
                 obj['interpretation'] = result.interpretation
                 obj['multimedia_source_resource_name'] = result.multimedia_source_resource_name
                 obj['multimedia_source_content'] = result.multimedia_source_content
-                obj['imaging_test_name'] = result.test_name
+                obj['imaging_test_name'] = result.imaging_test_name
                 obj['modality'] = result.modality
                 obj['anatomical_site'] = result.anatomical_site
                 obj['imaging_finding_name'] = result.imaging_finding_name
@@ -1849,7 +1849,15 @@ def getPatientForDoctor():
             pat_email = data['patient_email']
             patient = Patient_details.query.filter_by(email = pat_email).first()
             if patient:
-                return jsonify({"patient_id":patient.id})
+                obj = {}
+                obj['id'] = patient.id
+                obj['name'] = patient.name
+                obj['age'] = patient.age
+                obj['email'] = patient.email
+                obj['contact'] = patient.contact
+                obj['gender'] = patient.gender
+                obj['address'] = patient.address
+                return jsonify({"patient":obj})
             else:
                 return jsonify({'success':False,'message':'Not a patient'}), 404
         else:
@@ -1873,7 +1881,15 @@ def getPatientForAdmin():
             pat_email = data['patient_email']
             patient = Patient_details.query.filter_by(email = pat_email).first()
             if patient:
-                return jsonify({"patient_id":patient.id})
+                obj = {}
+                obj['id'] = patient.id
+                obj['name'] = patient.name
+                obj['age'] = patient.age
+                obj['email'] = patient.email
+                obj['contact'] = patient.contact
+                obj['gender'] = patient.gender
+                obj['address'] = patient.address
+                return jsonify({"patient":obj})
             else:
                 return jsonify({'success':False,'message':'Not a patient'}), 404
         else:

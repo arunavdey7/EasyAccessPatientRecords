@@ -464,12 +464,12 @@ class dignostic_test_result(db.Model):
     examination_receiver_order_identifier = db.Column(db.Text, unique=False, nullable=True)
     dicom_study_identifier = db.Column(db.Text, unique=False, nullable=True)
     examination_report_identifier = db.Column(db.Text, unique=False, nullable=True)
-    image_identifier = db.Column(db.Text, unique=True, nullable=True)
+    image_identifier = db.Column(db.Text, unique=False, nullable=True) 
     dicom_series_identifier = db.Column(db.Text, unique=False, nullable=True)
     view = db.Column(db.Text, unique=False, nullable=True)
     position = db.Column(db.Text, unique=False, nullable=True)
     image_datetime = db.Column(db.Text, unique=False, nullable=True)
-    image = db.Column(db.Text, unique=True, nullable=True)
+    image = db.Column(db.Text, unique=False, nullable=True)      
 
 #vital_signs
 class vital_signs(db.Model):
