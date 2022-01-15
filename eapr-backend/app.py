@@ -2107,7 +2107,288 @@ def advancedDirectives():
             return jsonify({'success':False,'message':'Not Authorised'}), 404
     except:
         return jsonify({'success':False,'message':'Request misses token/json data'}), 400        
-        
+
+
+@app.route('/api/getsocialhistory',methods=['GET'])
+def getSocialHistoryPatient():
+    try:
+        token=request.headers['token']
+        value = jwt.decode(token, options={"verify_signature": False})
+        res = Patient_details.query.filter_by(email=value['email'], password=value['password']).first()
+        if res:
+            #all_data=request.get_json()
+            #patient_uid = all_data['patient_uid']
+            result1 = db.session.query(Tobacco_smoking).filter(Tobacco_smoking.patient_id==res.id).all()
+            result2 = db.session.query(Alcohol_consumption).filter(Alcohol_consumption.patient_id==res.id).all()
+            output=[]     
+            for value in result1:
+                pat = {}
+                pat['patient_id']=value.patient_uid
+                pat['status']=value.status
+            for value in result2:    
+                pat['alcohol_status']=value.status
+                pat['typical_consumption_alcohol_unit']=value.typical_consumption_alcohol_unit
+                output.append(pat)
+                #print(output)
+            if output:    
+                return jsonify({"history":output})
+            else:
+                return jsonify({'success':False,'message':'patient_id is not present'}) 
+        else:
+            return jsonify({'success':False,'message':'invalid email/password'}), 404       
+    except:
+        return jsonify({'success':False,'message':'not recieved JSON data'}),400 
+
+@app.route('/api/createsocialhistoryofpatient',methods=['POST'])
+def createSocialHistoryOfPatient():
+    try:
+        token = request.headers['token']
+        decoded = jwt.decode(token, options={"verify_signature": False})
+        admin_check= Admin_Login.query.filter_by(email=decoded["email"], password=decoded['password']).first()
+        if admin_check:
+            data=request.get_json()
+            p_id = Tobacco_smoking.query.filter_by(patient_id=data['patient_id']).first()
+            p_id1 = Alcohol_consumption.query.filter_by(patient_id=data['patient_id']).first()
+            if p_id and p_id1:
+                p_id.status=data['status']
+                p_id1.alcohol_status=data['alcohol_status']
+                p_id1.typical_consumption_alcohol_unit=data['typical_consumption_alcohol_unit']
+            else:
+                entry = Tobacco_smoking(patient_uid=data['patient_id'],status=data['status'])
+                db.session.add(entry)
+                entry = Alcohol_consumption(patient_uid=data['patient_id'],alcohol_status=data['alcohol_status'],typical_consumption_alcohol_unit=data['typical_consumption_alcohol_unit'])
+                db.session.add(entry)
+                db.session.commit()
+            return jsonify({'success':True,'message':'social history added successfully'})
+            # else:
+            #     return jsonify({'success':False,'message':'history already present'}), 404
+        else:
+            return jsonify({'success':False,'message':'Not Authorised'}), 404
+    except:
+        return jsonify({'success':False,'message':'Request misses token/json data'}), 400
+
+@app.route('/api/getplanofcareforpatient',methods=['GET'])
+def getplanofcare():
+    try:
+        token=request.headers['token']
+        value = jwt.decode(token, options={"verify_signature": False})
+        res = Patient_details.query.filter_by(email=value['email'], password=value['password']).first()
+        if res:
+            #all_data=request.get_json()
+            #patient_uid = all_data['patient_uid']
+            result1 = db.session.query(Care_plan).filter(Care_plan.patient_uid==res.id).all()
+            result2 = db.session.query(Service_request).filter(Service_request.patient_uid==res.id).all()
+            pat = {}   
+            for value in result1:
+                pat['patient_id']=value.patient_uid
+                pat['care_plan_name']=value.care_plan_name
+                pat['care_plan_description']=value.care_plan_description
+                pat['care_plan_reason']=value.care_plan_reason
+                pat['care_plan_expiry_date']=value.care_plan_expiry_date
+            for value in result2:    
+                pat['service_name']=value.service_name
+                pat['service_type']=value.service_type
+                pat['description']=value.description
+                pat['reason_for_request']=value.reason_for_request
+                pat['reason_description']=value.reason_description
+                pat['clinical_indication']=value.clinical_indication
+                pat['intent']=value.intent
+                pat['urgency']=value.urgency
+                pat['service_due']=value.service_due
+                pat['service_period_start']=value.service_period_start
+                pat['service_period_expiry']=value.service_period_expiry
+                pat['indefinite']=value.indefinite
+                pat['supplementary_information']=value.supplementary_information
+                pat['information_description']=value.information_description
+                pat['comment']=value.comment
+                pat['requester_order_identifier']=value.requester_order_identifier
+                pat['receiver_order_identifier']=value.receiver_order_identifier
+                pat['request_status']=value.request_status
+                
+                #print(output)
+            if pat:    
+                return jsonify({"planofcare":pat})
+            else:
+                return jsonify({'success':False,'message':'patient_id is not present'}) 
+        else:
+            return jsonify({'success':False,'message':'invalid email/password'}), 404       
+    except:
+        return jsonify({'success':False,'message':'not recieved JSON data'}),400 
+
+@app.route('/api/getplanofcarefordoctor',methods=['GET'])
+def getplanofcarefordoctor():
+    try:
+        token=request.headers['token']
+        value = jwt.decode(token, options={"verify_signature": False})
+        res = doctor_details.query.filter_by(email=value['email'], password=value['password']).first()
+        if res:
+            all_data=request.get_json()
+            patient_uid = all_data['patient_id']
+            result1 = db.session.query(Care_plan).filter(Care_plan.patient_uid==patient_uid).all()
+            result2 = db.session.query(Service_request).filter(Service_request.patient_uid==patient_uid).all()
+            pat = {}   
+            for value in result1:
+                pat['patient_id']=value.patient_uid
+                pat['care_plan_name']=value.care_plan_name
+                pat['care_plan_description']=value.care_plan_description
+                pat['care_plan_reason']=value.care_plan_reason
+                pat['care_plan_expiry_date']=value.care_plan_expiry_date
+            for value in result2:    
+                pat['service_name']=value.service_name
+                pat['service_type']=value.service_type
+                pat['description']=value.description
+                pat['reason_for_request']=value.reason_for_request
+                pat['reason_description']=value.reason_description
+                pat['clinical_indication']=value.clinical_indication
+                pat['intent']=value.intent
+                pat['urgency']=value.urgency
+                pat['service_due']=value.service_due
+                pat['service_period_start']=value.service_period_start
+                pat['service_period_expiry']=value.service_period_expiry
+                pat['indefinite']=value.indefinite
+                pat['supplementary_information']=value.supplementary_information
+                pat['information_description']=value.information_description
+                pat['comment']=value.comment
+                pat['requester_order_identifier']=value.requester_order_identifier
+                pat['receiver_order_identifier']=value.receiver_order_identifier
+                pat['request_status']=value.request_status
+                
+                #print(output)
+            if pat:    
+                return jsonify({"planofcare":pat})
+            else:
+                return jsonify({'success':False,'message':'patient_id is not present'}) 
+        else:
+            return jsonify({'success':False,'message':'invalid email/password'}), 404       
+    except:
+        return jsonify({'success':False,'message':'not recieved JSON data'}),400 
+
+
+@app.route('/api/createplanofcareofpatient',methods=['POST'])
+def createplanofcareOfPatient():
+    try:
+        token = request.headers['token']
+        decoded = jwt.decode(token, options={"verify_signature": False})
+        admin_check= Admin_Login.query.filter_by(email=decoded["email"], password=decoded['password']).first()
+        if admin_check:
+            data=request.get_json()
+            p_id1 = Care_plan.query.filter_by(patient_uid=data['patient_id']).first()
+            p_id = Service_request.query.filter_by(patient_uid=data['patient_id']).first()
+            if p_id and p_id1:
+                p_id1.patient_uid=data['patient_id']
+                p_id1.care_plan_name=data['care_plan_name']
+                p_id1.care_plan_description=data['care_plan_description']
+                p_id1.care_plan_reason=data['care_plan_reason']
+                p_id1.care_plan_expiry_date=data['care_plan_expiry_date']
+                p_id.service_name=data['service_name']
+                p_id.service_type=data['service_type']
+                p_id.description=data['description']
+                p_id.reason_for_request=data['reason_for_request']
+                p_id.reason_description=data['reason_description']
+                p_id.clinical_indication=data['clinical_indication']
+                p_id.intent=data['intent'],
+                p_id.urgency=data['urgency']
+                p_id.service_due=data['service_due']
+                p_id.service_period_start=data['service_period_start']
+                p_id.service_period_expiry=data['service_period_expiry']
+                p_id.indefinite=data['indefinite']
+                p_id.supplementary_information=data['supplementary_information']
+                p_id.information_description=data['information_description']
+                p_id.comment=data['comment']
+                p_id.requester_order_identifier=data['requester_order_identifier']
+                p_id.receiver_order_identifier=data['receiver_order_identifier']
+                p_id.request_status=data['request_status']
+            else:
+                entry = Care_plan(patient_uid=data['patient_id'],care_plan_name=data['care_plan_name'],care_plan_description=data['care_plan_description'],care_plan_reason=data['care_plan_reason'],care_plan_expiry_date=data['care_plan_expiry_date'])
+                db.session.add(entry)
+                entry = Service_request(patient_uid=data['patient_id'],service_name=data['service_name'],service_type=data['service_type'],description=data['description'],reason_for_request=data['reason_for_request'],reason_description=data['reason_description'],clinical_indication=data['clinical_indication'],intent=data['intent'],
+                urgency=data['urgency'],service_due=data['service_due'],service_period_start=data['service_period_start'],service_period_expiry=data['service_period_expiry'],indefinite=data['indefinite'],supplementary_information=data['supplementary_information'],information_description=data['information_description'],comment=data['comment'],
+                requester_order_identifier=data['requester_order_identifier'],receiver_order_identifier=data['receiver_order_identifier'],request_status=data['request_status'])
+                db.session.add(entry)
+                db.session.commit()
+            return jsonify({'success':True,'message':'social history added successfully'})
+            # else:
+            #     return jsonify({'success':False,'message':'history already present'}), 404
+        else:
+            return jsonify({'success':False,'message':'Not Authorised'}), 404
+    except:
+        return jsonify({'success':False,'message':'Request misses token/json data'}), 400
+
+
+@app.route('/api/getfunctionalstatusforpatient',methods=['GET'])
+def getfunctionalstatus():
+    try:
+        token=request.headers['token']
+        value = jwt.decode(token, options={"verify_signature": False})
+        res = Patient_details.query.filter_by(email=value['email'], password=value['password']).first()
+        if res:
+            #all_data=request.get_json()
+            #patient_uid = all_data['patient_uid']
+            result1 = db.session.query(Functional_status).filter(Care_plan.patient_uid==res.id).all()
+            pat = {}   
+            for value in result1:
+                pat['patient_id']=value.patient_uid
+                pat['diagnosis_name']=value.diagnosis_name
+                pat['body_site']=value.body_site
+                pat['date_of_onset']=value.date_of_onset
+                pat['severity']=value.severity   
+                pat['date_of_abatement']=value.date_of_abatement
+                pat['active_inactive']=value.active_inactive
+                pat['resolution_phase']=value.resolution_phase
+                pat['remission_status']=value.remission_status
+                pat['occurrence']=value.occurrence
+                pat['diagnostic_certainty']=value.diagnostic_certainty
+                pat['protocol_last_updated']=value.protocol_last_updated
+                pat['clinical_impression']=value.clinical_impression
+                
+                #print(output)
+            if pat:    
+                return jsonify({"functionalstatus":pat})
+            else:
+                return jsonify({'success':False,'message':'patient_id is not present'}) 
+        else:
+            return jsonify({'success':False,'message':'invalid email/password'}), 404       
+    except:
+        return jsonify({'success':False,'message':'not recieved JSON data'}),400 
+
+@app.route('/api/createfunctionalstatus',methods=['POST'])
+def createfunctionalOfPatient():
+    try:
+        token = request.headers['token']
+        decoded = jwt.decode(token, options={"verify_signature": False})
+        admin_check= Admin_Login.query.filter_by(email=decoded["email"], password=decoded['password']).first()
+        if admin_check:
+            data=request.get_json()
+            p_id = Functional_status.query.filter_by(patient_uid=data['patient_id']).first()
+            #p_id = Service_request.query.filter_by(patient_uid=data['patient_id']).first()
+            if p_id:
+                p_id.diagnosis_name=data['diagnosis_name']
+                p_id.body_site=data['body_site']
+                p_id.date_of_onset=data['date_of_onset']
+                p_id.severity=data['severity']
+                p_id.date_of_abatement=data['date_of_abatement']
+                p_id.active_inactive=data['active_inactive']
+                p_id.resolution_phase=data['resolution_phase']
+                p_id.remission_status=data['remission_status']
+                p_id.occurrence=data['occurrence']
+                p_id.diagnostic_certainty=data['diagnostic_certainty']
+                p_id.protocol_last_updated=data['protocol_last_updated']
+                p_id.clinical_impression=data['clinical_impression']
+            else:
+                entry = Functional_status(patient_uid=data['patient_id'],diagnosis_name=data['diagnosis_name'],body_site=data['body_site'],date_of_onset=data['date_of_onset']
+                ,severity=data['severity'],date_of_abatement=data['date_of_abatement'],active_inactive=data['active_inactive'],resolution_phase=data['resolution_phase'],
+                remission_status=data['remission_status'],occurrence=data['occurrence'],diagnostic_certainty=data['diagnostic_certainty'],protocol_last_updated=data['protocol_last_updated'],clinical_impression=data['clinical_impression'])
+                db.session.add(entry)
+                
+    
+                db.session.commit()
+            return jsonify({'success':True,'message':'functional status added successfully'})
+            # else:
+            #     return jsonify({'success':False,'message':'history already present'}), 404
+        else:
+            return jsonify({'success':False,'message':'Not Authorised'}), 404
+    except:
+        return jsonify({'success':False,'message':'Request misses token/json data'}), 400
 
 if __name__ == "__main__":
     app.run(debug=True, port=7000)
