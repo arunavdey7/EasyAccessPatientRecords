@@ -54,7 +54,7 @@ const VitalSigns = () => {
             <h1>Body weight</h1>
             <h2>Data</h2>
             <label>Weight</label>
-            <input placeholder='0-1000'></input>
+            <input placeholder='0-1000' onChange={e => setBody_weight(e.target.value)}></input>
             <select>
                 <option value='kg'>kg</option>
                 <option value='g'>g</option>
@@ -63,7 +63,7 @@ const VitalSigns = () => {
             <h1>Height/Length</h1>
             <h2>Data</h2>
             <label>Height/Length</label>
-            <input placeholder='0-1000'></input>
+            <input placeholder='0-1000' onChange={e => setHeight(e.target.value)}></input>
             <select>
                 <option value='cms'>cms</option>
                 <option value='inches'>inches</option>
@@ -72,17 +72,17 @@ const VitalSigns = () => {
             <h1>Respiration</h1>
             <h2>Data</h2>
             <label>Rate</label>
-            <input placeholder='0-200'></input><span>/min</span>
+            <input placeholder='0-200' onChange={e => setRespiration_rate(e.target.value)}></input><span>/min</span>
             <br/>
             <h1>Pulse/Heartbeat</h1>
             <h2>Data</h2>
             <label>Rate</label>
-            <input placeholder='0-1000'></input><span>/min</span>
+            <input placeholder='0-1000' onChange={e => setPulse_rate(e.target.value)}></input><span>/min</span>
             <br/>
             <h1>Body temperature</h1>
             <h2>Data</h2>
             <label>Temperature</label>
-            <input placeholder='0-100'></input>
+            <input placeholder='0-100' onChange={e => setBody_temperature(e.target.value)}></input>
             <select>
                 <option value='Cel'>Cel</option>
                 <option value='degF'>degF</option>
@@ -91,7 +91,7 @@ const VitalSigns = () => {
             <h1>Head circumference</h1>
             <h2>Data</h2>
             <label>Head circumference</label>
-            <input placeholder='0-100'></input>
+            <input placeholder='0-100' onChange={e => setHead_circumference(e.target.value)}></input>
             <select>
                 <option value='cms'>cms</option>
                 <option value='inches'>inches</option>
@@ -100,12 +100,12 @@ const VitalSigns = () => {
             <h1>Pulse oximetry</h1>
             <h2>Data</h2>
             <label>SpO2</label>
-            <input placeholder='0'></input><span>%</span>
+            <input placeholder='0' onChange={e => setPulse_oximetry(e.target.value)}></input><span>%</span>
             <br/>
             <h1>Body mass index</h1>
             <h2>Data</h2>
             <label>Body mass index</label>
-            <input placeholder='0-1000'></input>
+            <input placeholder='0-1000' onChange={e => setBody_mass_index(e.target.value)}></input>
             <select>
                 <option value='kg/m2'>kg/m2</option>
             </select>
@@ -113,9 +113,9 @@ const VitalSigns = () => {
             <h1>Blood pressure</h1>
             <h2>Data</h2>
             <label>Systolic</label>
-            <input placeholder='0-1000'></input><span>mm[Hg]</span>
+            <input placeholder='0-1000' onChange={e => setBlood_pressure_systolic(e.target.value)}></input><span>mm[Hg]</span>
             <label>Diastolic</label>
-            <input placeholder='0-1000'></input><span>mm[Hg]</span>
+            <input placeholder='0-1000' onChange={e => setBlood_pressure_diastolic(e.target.value)}></input><span>mm[Hg]</span>
             <br/>
         </div>
         </>
