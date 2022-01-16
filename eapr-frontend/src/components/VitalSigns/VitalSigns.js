@@ -2,14 +2,22 @@ import React,{useState} from 'react';
 
 const VitalSigns = () => {
 
-    const [pregnancy_status, setPregnancy_status] = useState("");
-    const [pregnancy_outcome, setPregnancy_outcome] = useState("");
-    const [estimated_date_of_delivery_by_date_of_conseption, setEstimated_date_of_delivery_by_date_of_conseption] = useState("");
-    const [estimated_date_of_delivery_by_cycle, setEstimated_date_of_delivery_by_cycle] = useState("");
-    const [estimated_date_of_delivery_by_ultrasound, setEstimated_date_of_delivery_by_ultrasound] = useState("");
-    const [agreed_date, setAgreed_date] = useState("");
-    const [protocol_last_updated, setProtocol_last_updated] = useState("");
-    const [exclusion_of_pregnancy_statement, setExclusion_of_pregnancy_statement] = useState("");
+    const [body_weight, setBody_weight] = useState("");
+    const [body_weight_unit, setBody_weight_unit] = useState("");
+    const [height, setHeight] = useState("");
+    const [height_unit, setHeight_unit] = useState("");
+    const [respiration_rate, setRespiration_rate] = useState("");
+    const [pulse_rate, setPulse_rate] = useState("");
+    const [body_temperature, setBody_temperature] = useState("");
+    const [body_temperature_unit, setBody_temperature_unit] = useState("");
+    const [head_circumference, setHead_circumference] = useState("");
+    const [head_circumference_unit, setHead_circumference_unit] = useState("");
+    const [pulse_oximetry, setPulse_oximetry] = useState("");
+    const [body_mass_index, setBody_mass_index] = useState("");
+    const [body_mass_index_unit, setBody_mass_index_unit] = useState("");
+    const [blood_pressure_systolic, setBlood_pressure_systolic] = useState("");
+    const [blood_pressure_diastolic, setBlood_pressure_diastolic] = useState("");
+
 
     const saveVitalSigns = () =>{
         var data = {
@@ -21,14 +29,14 @@ const VitalSigns = () => {
             respiration_rate,
             pulse_rate,
             body_temperature,
-            bodt_temperature_unit,
+            body_temperature_unit,
             head_circumference,
             head_circumference_unit,
             pulse_oximetry,
             body_mass_index,
             body_mass_index_unit,
-            "blood_pressure_systolic": 90,
-            "blood_pressure_diastolic": 60
+            blood_pressure_systolic,
+            blood_pressure_diastolic
         }
         var result = addVitalSigns(data)
         console.log(JSON.stringify(data))
@@ -41,45 +49,73 @@ const VitalSigns = () => {
 
     return(
         <>
-            <h1 className='main_heading'>Pregnancy</h1>
+            <h1 className='main_heading'>Vital Signs</h1>
         <div className='form_container'>
-            <h1>Pregnancy Summary</h1>
+            <h1>Body weight</h1>
             <h2>Data</h2>
-            <label>Status</label>
+            <label>Weight</label>
+            <input placeholder='0-1000'></input>
             <select>
-                <option value='Current pregnancy'>Current pregnancy</option>
+                <option value='kg'>kg</option>
+                <option value='g'>g</option>
             </select>
             <br/>
-            <h2>Per pregnancy</h2>
-            <label>Pregnancy outcome</label>
-            <input onChange={e => setPregnancy_outcome(e.target.value)}></input>
-            <br/>
-            <h1>Estimated date of delivery</h1>
+            <h1>Height/Length</h1>
             <h2>Data</h2>
-            <label>By date of conception</label>
-            <input type="date"></input><input type="time"></input>
-            <br/>
-            <label>By cycle</label>
-            <input type="date"></input><input type="time"></input>
-            <br/>
-            <h2>By ultrasound</h2>
-            <label>Estimated date by ultrasound</label>
-            <input type="date"></input><input type="time"></input>
-            <br/>
-            <h2>Agreed EDD</h2>
-            <label>Agreed date</label>
-            <input type="date"></input><input type="time"></input>
-            <br/>
-            <h2>Protocol</h2>
-            <label>Last updated</label>
-            <input type="datetime-local"></input>
-            <br/>
-            <h1>Exclusion of pregnancy</h1>
-            <h2>Data</h2>
-            <label>Exclusion statement</label>
+            <label>Height/Length</label>
+            <input placeholder='0-1000'></input>
             <select>
-                <option value='Not pregnant'>Not pregnant</option>
+                <option value='cms'>cms</option>
+                <option value='inches'>inches</option>
             </select>
+            <br/>
+            <h1>Respiration</h1>
+            <h2>Data</h2>
+            <label>Rate</label>
+            <input placeholder='0-200'></input><span>/min</span>
+            <br/>
+            <h1>Pulse/Heartbeat</h1>
+            <h2>Data</h2>
+            <label>Rate</label>
+            <input placeholder='0-1000'></input><span>/min</span>
+            <br/>
+            <h1>Body temperature</h1>
+            <h2>Data</h2>
+            <label>Temperature</label>
+            <input placeholder='0-100'></input>
+            <select>
+                <option value='Cel'>Cel</option>
+                <option value='degF'>degF</option>
+            </select>
+            <br/>
+            <h1>Head circumference</h1>
+            <h2>Data</h2>
+            <label>Head circumference</label>
+            <input placeholder='0-100'></input>
+            <select>
+                <option value='cms'>cms</option>
+                <option value='inches'>inches</option>
+            </select>
+            <br/>
+            <h1>Pulse oximetry</h1>
+            <h2>Data</h2>
+            <label>SpO2</label>
+            <input placeholder='0'></input><span>%</span>
+            <br/>
+            <h1>Body mass index</h1>
+            <h2>Data</h2>
+            <label>Body mass index</label>
+            <input placeholder='0-1000'></input>
+            <select>
+                <option value='kg/m2'>kg/m2</option>
+            </select>
+            <br/>
+            <h1>Blood pressure</h1>
+            <h2>Data</h2>
+            <label>Systolic</label>
+            <input placeholder='0-1000'></input><span>mm[Hg]</span>
+            <label>Diastolic</label>
+            <input placeholder='0-1000'></input><span>mm[Hg]</span>
             <br/>
         </div>
         </>
