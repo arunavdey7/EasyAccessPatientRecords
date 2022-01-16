@@ -415,37 +415,39 @@ def addmedicationstatement():
             
             entry = Medication_statement(patient_id=data['patient_id'])
             db.session.add(entry)
-            db.session.commit()
+            #remove commit
+            res2=db.session.query(Medication_statement).order_by(Medication_statement.order_id.desc()).first()
+            id=0
+            if res2:
+                id=res2.order_id
 
-            res2=db.session.query(Medication_statement).filter(data['patient_id']==Medication_statement.patient_id).all()
-            x=len(res2)
-            row = db.session.query(func.max(res2[x-1].order_id)).first()
-            entry = Medication(order_id=row[0],medication_item=data['medication_item'],medication_name=data['medication_name'],medication_form=data['medication_form'],medication_category=data['medication_category']
+
+            entry_medication = Medication(order_id=id,medication_item=data['medication_item'],medication_name=data['medication_name'],medication_form=data['medication_form'],medication_category=data['medication_category']
             ,medication_strength_numerator=data['medication_strength_numerator'],medication_strength_numerator_unit=data['medication_strength_numerator_unit'],medication_strength_denominator=data['medication_strength_denominator'],medication_strength_denominator_unit=data['medication_strength_denominator_unit'],
             unit_of_presentation=data['unit_of_presentation'],strength=data['strength'],manufacturer=data['manufacturer'],batch_id=data['batch_id'],
             expiry=data['expiry'],amount=data['amount'],amount_unit=data['amount_unit'],alternate_amount=data['alternate_amount'],
             alternate_amount_unit=data['alternate_amount_unit'],role=data['role'],description=data['description'])
-            db.session.add(entry)
+            db.session.add(entry_medication)
             
 
-            entry = Dosage(order_id=row[0],dose_amount=data['dose_amount'],dose_unit=data['dose_unit'],dose_formula=data['dose_formula'],dose_description=data['dose_description']
+            entry_medication = Dosage(order_id=id,dose_amount=data['dose_amount'],dose_unit=data['dose_unit'],dose_formula=data['dose_formula'],dose_description=data['dose_description']
             ,frequency_lower=data['dose_frequency_lower'],frequency_lower_rate=data['dose_frequency_lower_rate'],frequency_higher=data['dose_frequency_higher'],frequency_higher_rate=data['dose_frequency_higher_rate'],
             interval=data['dose_interval'],specific_time=data['dose_specific_time'],specific_time_lower=data['dose_specific_time_lower'],specific_time_upper=data['dose_specific_time_upper'],
             timing_description=data['dose_timing_description'],exact_timing_critical=data['dose_exact_timing_critical'],as_required=data['as_required'],as_required_criterion=data['as_required_criterion'],
             event_name=data['dose_event_name'],time_offset=data['dose_time_offset'],on=data['dose_on']
             ,off=data['dose_off'],repetetions=data['dose_repetetions'])
-            db.session.add(entry)
+            db.session.add(entry_medication)
         
 
-            entry = Administration_details(order_id=row[0],route=data['route'],body_site=data['body_site'])
-            db.session.add(entry)
+            entry_medication = Administration_details(order_id=id,route=data['route'],body_site=data['body_site'])
+            db.session.add(entry_medication)
         
 
-            entry = Timing_non_daily(order_id=row[0],repetetion_interval=data['time_repetetion_interval'],frequency_lower=data['time_frequency_lower'],frequency_lower_rate=data['time_frequency_lower_rate'],frequency_higher=data['time_frequency_higher']
+            entry_medication = Timing_non_daily(order_id=id,repetetion_interval=data['time_repetetion_interval'],frequency_lower=data['time_frequency_lower'],frequency_lower_rate=data['time_frequency_lower_rate'],frequency_higher=data['time_frequency_higher']
             ,frequency_higher_rate=data['time_frequency_higher_rate'],specific_date=data['time_specific_date'],specific_date_lower=data['time_specific_date_lower'],specific_date_upper=data['time_specific_date_upper'],
             specific_day_of_week=data['time_specific_day_of_week'],specific_day_of_month=data['time_specific_day_of_month'],timing_description=data['timing_description'],event_name=data['time_event_name'],
             event_time_offset=data['time_event_time_offset'],on=data['timing_on'],off=data['timing_off'],repetetions=data['timing_repetetions'])
-            db.session.add(entry)
+            db.session.add(entry_medication)
 
             db.session.commit() 
             return jsonify({'success':True,'message':'item added successfully'})
@@ -477,8 +479,11 @@ def addPrescription():
                 patId = result.id
                 entry = Prescription(patientId = patId,doctorId = docId)
                 db.session.add(entry)
-                db.session.commit()
-                id = Prescription.query.filter_by(patientId = patId,doctorId = docId).order_by(Prescription.prescriptionId.desc()).first().prescriptionId
+                
+                prescription = Prescription.query.order_by(Prescription.prescriptionId.desc()).first()
+                id=0
+                if prescription:
+                    id=prescription.prescriptionId
                 for medOrd in data['medOrders']:
                     entry_med_ord = Medication_Order(
                     prescriptionId = id,
@@ -1328,8 +1333,8 @@ def getallAllergiesForPatient():
 
 #get allergy by id
     #for doctor
-@app.route('/api/get_allergy_by_id_for_doctor', methods = ['GET'])
-def getAllergyByIdForDoctor():
+@app.route('/api/get_allergy_by_id_for_doctor/<int:allergy_id>', methods = ['GET'])
+def getAllergyByIdForDoctor(allergy_id):
     try:
         token = request.headers['token']    #doctor token
         value = jwt.decode(token, options={"verify_signature": False})
@@ -1338,8 +1343,6 @@ def getAllergyByIdForDoctor():
         
         doctor = doctor_details.query.filter_by(email=email,password=password).first()
         if doctor:
-            data = request.get_json()
-            allergy_id = data['allergy_id']
 
             result = Allergy.query.filter_by(id = allergy_id).first()
             if result:
@@ -1364,8 +1367,8 @@ def getAllergyByIdForDoctor():
 
 #get allergy by id
     #for patient
-@app.route('/api/get_allergy_by_id_for_patient', methods = ['GET'])
-def getAllergyByIdForPatient():
+@app.route('/api/get_allergy_by_id_for_patient/<int:allergy_id>', methods = ['GET'])
+def getAllergyByIdForPatient(allergy_id):
     try:
         token = request.headers['token']    #patient token
         value = jwt.decode(token, options={"verify_signature": False})
@@ -1374,9 +1377,6 @@ def getAllergyByIdForPatient():
         
         patient = Patient_details.query.filter_by(email=email,password=password).first()
         if patient:
-            data = request.get_json()
-            allergy_id = data['allergy_id']
-
             result = Allergy.query.filter_by(id = allergy_id, patient_id=patient.id).first()
             if result:
                 output = {}
@@ -1718,8 +1718,8 @@ def getDignosticsByIdForDoctor(dignostic_id):
 
 #get dignostics_by_id
     #for patient
-@app.route('/api/get_dognostics_by_id_for_patient', methods=['GET'])
-def getDignosticsByIdForPatient():
+@app.route('/api/get_dognostics_by_id_for_patient/<int:dignostic_id>', methods=['GET'])
+def getDignosticsByIdForPatient(dignostic_id):
     try:
         token = request.headers['token']    #doctor token
         value = jwt.decode(token, options={"verify_signature": False})
@@ -1728,8 +1728,6 @@ def getDignosticsByIdForPatient():
         
         patient = Patient_details.query.filter_by(email=email,password=password).first()
         if patient:
-            data = request.get_json()
-            dignostic_id = data['dignostic_id']
             result = dignostic_test_result.query.filter_by(id = dignostic_id, patient_id = patient.id).first()
             if result:
                 obj = {}
