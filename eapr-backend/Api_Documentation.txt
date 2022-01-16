@@ -1,0 +1,2296 @@
+1 POST request for Patient Register
+
+Endpoint :  /api/patientregister                           Methods=POST
+
+Body:
+{
+    "name":"vedu",
+    "email":"vedu@gmail.com",
+    "password":"1234",
+    "age":"20",
+    "contact":"7878787878",
+    "address":"delhi",
+    "gender":"female"
+}
+ output:
+{
+'success':True,
+'message':'Registration Successful'
+}
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2 . POST request for Doctor Register
+
+Endpoint:  /api/doctorregister                  Methods = POST
+
+Body:
+{
+        "name":" Dr.vishal",
+        "category":"Specialist",
+        "email":"vishal@gmail.com",
+        "password":"1234"
+         
+}
+Output:
+{
+       'success':True,
+       'message':'Registration Successful'
+}
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+3. POST Request for Admin Login
+
+Endpoint: /api/adminlogin                     Methods=POST
+
+Body:
+
+{
+               "email":"admin@gmail.com",
+                "password":"admin"
+}
+
+Output:
+
+   {
+    "success": true,
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiYWRtaW4ifQ.6ElIjKH9gMagZRYal0aCd3l3q5vCf1y8hBM03ldGT1w"
+}
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+4.POST Request for Patient Login
+
+Endpoint: /api/patientlogin                     Methods=POST
+
+Body:
+
+{
+               "email":"vedu@gmail.com",
+                "password":"1234"
+}
+
+Output:
+
+  {
+    "patient_info": {
+        "address": "delhi",
+        "age": 20,
+        "contact": "7878787878",
+        "email": "vedu@gmail.com",
+        "gender": "female",
+        "name": "vedu"
+    },
+    "success": true,
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InZlZHVAZ21haWwuY29tIiwicGFzc3dvcmQiOiI4MWRjOWJkYjUyZDA0ZGMyMDAzNmRiZDgzMTNlZDA1NSJ9.es0XUlJxaxw_dSo1wcuy8ovFp9m8HoEsbWSQwAx9rl0"
+}
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+5.POST Request for Doctor Login
+
+Endpoint: /api/doctorlogin                     Methods=POST
+
+Body:
+
+{
+               
+    "email":"vishal@gmail.com",
+    "password":"1234"
+}
+
+
+Output:
+
+  {
+    "doctor_info": {
+        "category": "specialist",
+        "email": "vishal@gmail.com",
+        "name": "Dr. Vishal"
+    },
+    "success": true,
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InZpc2hhbEBnbWFpbC5jb20iLCJwYXNzd29yZCI6IjgxZGM5YmRiNTJkMDRkYzIwMDM2ZGJkODMxM2VkMDU1In0.q9r1-d27sztyzf_53SxAOJzQOVKRe5Fsz-CqOhlKEug"
+}
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+========================================================================================================================
+
+
+1) 
+endpoint - ('/api/ips/medicationsummary/getallmedicationstatementsforpatient',methods=['GET'])
+header-'token'
+body-{}
+output-{
+    "medication_summary": {
+        "absence_of_info_protocol_last_updated": "",
+        "absence_of_info_statement": "",
+        "global_exclusion_of_medication_use": "",
+        "medication_statements": [
+            {
+                "medication_item": "para 100mg",
+                "order_id": 2
+            },
+            {
+                "medication_item": "para 100mg",
+                "order_id": 3
+            }
+        ]
+    },
+    "success": true
+}
+
+2) endpoint - ('/api/ips/medicationsummary/getmedicationstatementforpatient/<int:patient_id>',methods=['GET'])
+header-'token'
+body- {
+    none   
+}
+output- {
+    "data": {
+        "administration_details": {
+            "body_site": "head",
+            "id": 3,
+            "order_id": 3,
+            "route": "oral"
+        },
+        "dosage": {
+            "as_required": "TRUE",
+            "as_required_criterion": "for stress relieve",
+            "dose_amount": 1,
+            "dose_description": "2 to 3 times a day",
+            "dose_formula": "12",
+            "dose_unit": "mg",
+            "event_name": "after every meal",
+            "exact_timing_critical": "FALSE",
+            "frequency_higher": 3,
+            "frequency_higher_rate": "1",
+            "frequency_lower": 2,
+            "frequency_lower_rate": "1",
+            "id": 3,
+            "interval": "03:00",
+            "off": "03:00",
+            "on": "03:00",
+            "order_id": 3,
+            "repetetions": 6,
+            "specific_time": "03:00",
+            "specific_time_lower": "10:00",
+            "specific_time_upper": "20:00",
+            "time_offset": "03:00",
+            "timing_description": "every day"
+        },
+        "medication": {
+            "alternate_amount": 5,
+            "alternate_amount_unit": "ml",
+            "amount": 1,
+            "amount_unit": "mg",
+            "batch_id": "1",
+            "description": "therapy related medication",
+            "expiry": "2023-09-12",
+            "manufacturer": "abbott",
+            "medication_category": "ad-hoc mixture",
+            "medication_form": "tablet",
+            "medication_item": "atenolol 100mg",
+            "medication_name": "cefuroxim",
+            "medication_strength_denominator": 0,
+            "medication_strength_denominator_unit": "g",
+            "medication_strength_numerator": 9,
+            "medication_strength_numerator_unit": "mg",
+            "order_id": 3,
+            "role": "therapeutic",
+            "strength": "1",
+            "unit_of_presentation": "capsule"
+        },
+        "medication_statement": {
+            "order_id": 3,
+            "patient_id": 1
+        },
+        "timing_non-daily": {
+            "event_name": "after meal",
+            "event_time_offset": "01:00",
+            "frequency_higher": 3,
+            "frequency_higher_rate": "3",
+            "frequency_lower": 2,
+            "frequency_lower_rate": "1",
+            "id": 3,
+            "off": "08:00",
+            "on": "03:00",
+            "order_id": 3,
+            "repetetion_interval": 1,
+            "repetetions": 9,
+            "specific_date": "2020-01-01",
+            "specific_date_lower": "2020-01-01",
+            "specific_date_upper": "2020-01-01",
+            "specific_day_of_month": 1,
+            "specific_day_of_week": "1",
+            "timing_description": "every day"
+        }
+    },
+    "success": true
+}
+
+3) endpoint - /api/ips/medicationsummary/addmedicationstatement',methods=['POST']
+header-'token'
+body- {
+    
+        "patient_id":"1",
+        "medication_item":"atenolol 100mg",
+		"medication_name":"cefuroxim",
+		"medication_form":"tablet",
+        "strength":"1",
+        "exact_timing_critical":"2",
+		"medication_category":"ad-hoc mixture",
+		"medication_strength_numerator":9,
+		"medication_strength_numerator_unit":"mg",
+		"medication_strength_denominator":0.3,
+		"medication_strength_denominator_unit":"g",
+		"unit_of_presentation":"capsule",
+		"strength(concentration)":"10 mgml",
+		"manufacturer":"abbott",
+		"batch_id":1,
+		"expiry":"2023-09-12",
+		"amount":"1",
+		"amount_unit":"mg",
+		"alternate_amount":"5",
+		"alternate_amount_unit":"ml",
+		"role":"therapeutic",
+		"description":"therapy related medication",
+
+        "dose_amount":"1",
+		"dose_unit":"mg",
+		"dose_formula":"12",
+		"dose_description":"2 to 3 times a day",
+		"dose_frequency_lower":"2",
+		"dose_frequency_lower_rate":"1",
+		"dose_frequency_higher":"3",
+		"dose_frequency_higher_rate":"1",
+		"dose_interval":"03:00",
+		"dose_specific_time":"03:00",
+		"dose_specific_time_lower":"10:00",
+		"dose_specific_time_upper":"20:00",
+		"dose_timing_description":"every day",
+		"dose_exact_timing_critical":"FALSE",
+		"as_required":"TRUE",
+		"as_required_criterion":"for stress relieve",
+		"dose_event_name":"after every meal",
+		"dose_time_offset":"03:00",
+		"dose_on":"03:00",
+		"dose_off":"03:00",
+		"dose_repetetions":"6",
+
+        "route":"oral",
+		"body_site":"head",
+
+        "time_repetetion_interval":"1",
+        "time_frequency_lower":"2",
+		"time_frequency_lower_rate":"1",
+		"time_frequency_higher":"3",
+		"time_frequency_higher_rate":"3",
+		"time_specific_date":"2020-01-01",
+		"time_specific_date_lower":"2020-01-01",
+		"time_specific_date_upper":"2020-01-01",
+		"time_specific_day_of_week":"1",
+		"time_specific_day_of_month":"1",
+		"time_event_time_offset":"01:00",
+        "timing_description":"every day",
+		"time_event_name":"after meal",
+		"timing_on":"03:00",
+		"timing_off":"08:00",
+		"timing_repetetions":"9",
+
+        "global_exclusion_of_adverse_reactions":"",
+        "absence_of_information_statement":"",
+        "absence_of_information_protocol_last_updated":""
+
+
+}
+
+output - {'success':True,'message':'item added successfully'}
+
+4) endpoint - /api/ips/medicationsummary/getallmedicationstatementsfordoctor/<int:patient_id>',methods=['GET']
+header - 'token'
+body - {
+   none
+}
+output ={
+    "medication_summary": {
+        "absence_of_info_protocol_last_updated": "",
+        "absence_of_info_statement": "",
+        "global_exclusion_of_medication_use": "",
+        "medication_statements": [
+            {
+                "medication_item": "para 100mg",
+                "order_id": 2
+            },
+            {
+                "medication_item": "para 100mg",
+                "order_id": 3
+            }
+        ]
+    },
+    "success": true
+}
+
+5) endpoint - '/api/ips/medicationsummary/getmedicationstatementfordoctor/<int:Order_Id>',methods=['GET']
+
+header - 'token'
+body - {
+    none
+}
+output - {
+    "data": {
+        "administration_details": {
+            "body_site": "head",
+            "id": 2,
+            "order_id": 2,
+            "route": "oral"
+        },
+        "dosage": {
+            "as_required": "TRUE",
+            "as_required_criterion": "for stress relieve",
+            "dose_amount": 1,
+            "dose_description": "2 to 3 times a day",
+            "dose_formula": "12",
+            "dose_unit": "mg",
+            "event_name": "after every meal",
+            "exact_timing_critical": "FALSE",
+            "frequency_higher": 3,
+            "frequency_higher_rate": "1",
+            "frequency_lower": 2,
+            "frequency_lower_rate": "1",
+            "id": 2,
+            "interval": "03:00",
+            "off": "03:00",
+            "on": "03:00",
+            "order_id": 2,
+            "repetetions": 6,
+            "specific_time": "03:00",
+            "specific_time_lower": "10:00",
+            "specific_time_upper": "20:00",
+            "time_offset": "03:00",
+            "timing_description": "every day"
+        },
+        "medication": {
+            "alternate_amount": 5,
+            "alternate_amount_unit": "ml",
+            "amount": 1,
+            "amount_unit": "mg",
+            "batch_id": "1",
+            "description": "therapy related medication",
+            "expiry": "2023-09-12",
+            "manufacturer": "abbott",
+            "medication_category": "ad-hoc mixture",
+            "medication_form": "tablet",
+            "medication_item": "para 100mg",
+            "medication_name": "cefurox",
+            "medication_strength_denominator": 0,
+            "medication_strength_denominator_unit": "g",
+            "medication_strength_numerator": 9,
+            "medication_strength_numerator_unit": "mg",
+            "order_id": 2,
+            "role": "therapeutic",
+            "strength": "1",
+            "unit_of_presentation": "capsule"
+        },
+        "medication_statement": {
+            "order_id": 2,
+            "patient_id": 2
+        },
+        "timing_non-daily": {
+            "event_name": "after meal",
+            "event_time_offset": "01:00",
+            "frequency_higher": 3,
+            "frequency_higher_rate": "3",
+            "frequency_lower": 2,
+            "frequency_lower_rate": "1",
+            "id": 2,
+            "off": "08:00",
+            "on": "03:00",
+            "order_id": 2,
+            "repetetion_interval": 1,
+            "repetetions": 9,
+            "specific_date": "2020-01-01",
+            "specific_date_lower": "2020-01-01",
+            "specific_date_upper": "2020-01-01",
+            "specific_day_of_month": 1,
+            "specific_day_of_week": "1",
+            "timing_description": "every day"
+        }
+    },
+    "success": true
+}
+
+=========================================================================================
+
+
+
+Api endpoints:
+
+1.
+
+Endpoint::   ( '/api/addPrescription', methods=['POST'] )
+Header:
+body::
+
+{
+"patient_id" : 2,
+"medOrders" :[
+	{
+		"medicationItem" : "doct2",
+		"route" : "qwe",
+		"dosageInstruction":"asdf",
+		"maximumAmount" : 2,
+		"maximumAmountDoseUnit":"wedfrgh",
+		"allowedPeriod" : "qwwd",
+		"overrideReason" : "nubhhjb",
+		"additionalInstructions" :"tyfgfv",
+		"reasons" : "bhj",
+		"status" : "done",
+		"dateDiscontinued":"2021-11-01",
+		"dateWritten" : "2022-11-01",
+		"numOfRepeatsAllowed":5,
+		"validityPeriod" :"2022-2-04",
+		"dispenseInstrution":"hubhb",
+		"dispenseAmountDescription" :"innds",
+		"dispenseAmount" : 21,
+		"dispenseAmountUnit" : 90,
+		"comment" : "uheds",
+		"dose_unit" : 3,
+		"dose_frequency" : "twice",
+		"dose_timing" : "2022-11-01",
+		"dose_duration" : "tomowwo",
+		"repetition_interval" : "5 mins",
+		"Specific_date" : "21-11-2021",
+		"specific_day_of_week" : "monday",
+		"Specific_day_of_month" :"jan",
+		"specific_Event" :"tom",
+		"substance_name" :"omnws",
+		"form" :"okds",
+		"strength" :10,
+		"strengthUnit" : "oksjn",
+		"diluentAmount" : 10,
+		"diluentunit" : "100mg",
+		"description" : "idjsd"
+		},
+		{
+		"medicationItem" : "doc2.0",
+		"route" : "sad",
+		"dosageInstruction":"asdf",
+		"maximumAmount" : 2,
+		"maximumAmountDoseUnit":"wedfrgh",
+		"allowedPeriod" : "qwwd",
+		"overrideReason" : "nubhhjb",
+		"additionalInstructions" :"tyfgfv",
+		"reasons" : "bhj",
+		"status" : "done",
+		"dateDiscontinued":"2021-11-01",
+		"dateWritten" : "2022-11-01",
+		"numOfRepeatsAllowed":5,
+		"validityPeriod" :"2022-2-04",
+		"dispenseInstrution":"hubhb",
+		"dispenseAmountDescription" :"innds",
+		"dispenseAmount" : 21,
+		"dispenseAmountUnit" : 90,
+		"comment" : "uheds",
+		"dose_unit" : 3,
+		"dose_frequency" : "twice",
+		"dose_timing" : "2022-11-01",
+		"dose_duration" : "tomowwo",
+		"repetition_interval" : "5 mins",
+		"Specific_date" : "21-11-2021",
+		"specific_day_of_week" : "monday",
+		"Specific_day_of_month" :"jan",
+		"specific_Event" :"tom",
+		"substance_name" :"omnws",
+		"form" :"okds",
+		"strength" :10,
+		"strengthUnit" : "oksjn",
+		"diluentAmount" : 10,
+		"diluentunit" : "100mg",
+		"description" : "idjsd"
+		}
+	]
+}
+--------------------------------------------------------------------------------------------------------------------------
+ 
+ 2. 
+ 
+End point:: ('/api/getAllPrescriptionsForPatient', methods=['GET'])
+ 
+Header: token patient
+Body: {
+     none
+}
+
+Output:
+{
+   "allPrescriptions": [
+       {
+           "doctorName": "abc",
+           "prescriptionId": 6
+       }
+   ]
+}
+
+
+3.
+
+endpoint : ( ‘ /api/getAllPrescriptionsForDoctor ’ , methods= [‘GET’] )
+Header: token doctor
+Body: {
+   none
+}
+
+Output::
+
+{
+   "allPrescriptions": [
+       {
+           "patientName": "prashast",
+           "prescriptionId": 6
+       }
+   ]
+}
+--------------------------------------------------------------------------------------------------------------------------------------
+4.
+
+endpoint:  '/api/getPrescriptionByIdForDoctor/<int:presId>', methods=['GET']
+
+Header: token doctor
+Body: {
+  none
+  }
+
+Output::
+
+{
+   "Prescription": [
+       {
+           "medId": 10,
+           "medicationItem": "xyz"
+       },
+       {
+           "medId": 11,
+           "medicationItem": "abc"
+       }
+   ]
+}
+
+5.
+
+endpoint : ('/api/getPrescriptionByIdForPatient/<int:presId>', methods=['GET'])
+Header: token patient
+Body: {
+   none
+}
+
+Output:
+{
+   "Prescription": [
+       {
+           "medId": 10,
+           "medicationItem": "xyz"
+       },
+       {
+           "medId": 11,
+           "medicationItem": "abc"
+       }
+   ]
+}
+---------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+6.
+
+endpoint : ('/api/getMedicationOrderByIdForDoctor/<int:medId>', methods=['GET'])
+Header : token doctor
+body: 
+{
+   none
+}
+
+Output:  
+{
+   "Specific_date": "Sun, 21 Nov 2021 00:00:00 GMT",
+   "Specific_day_of_month": "jan",
+   "additionalInstructions": "tyfgfv",
+   "allowedPeriod": "qwwd",
+   "comment": "uheds",
+   "dateDiscontinued": "Mon, 01 Nov 2021 00:00:00 GMT",
+   "dateWritten": "Tue, 01 Nov 2022 00:00:00 GMT",
+   "description": "idjsd",
+   "diluentAmount": 10,
+   "diluentunit": "100mg",
+   "dispenseAmount": 21,
+   "dispenseAmountDescription": "innds",
+   "dispenseAmountUnit": 90,
+   "dispenseInstrution": "hubhb",
+   "dosageInstruction": "asdf",
+   "dose_duration": "tomowwo",
+   "dose_frequency": "twice",
+   "dose_timing": "Tue, 01 Nov 2022 00:00:00 GMT",
+   "dose_unit": 3,
+   "form": "okds",
+   "maximumAmount": 2,
+   "maximumAmountDoseUnit": "wedfrgh",
+   "medicationItem": "xyz",
+   "numOfRepeatsAllowed": 5,
+   "overrideReason": "nubhhjb",
+   "reasons": "bhj",
+   "repetition_interval": "5 mins",
+   "route": "qwe",
+   "specific_Event": "tom",
+   "specific_day_of_week": "monday",
+   "status": "done",
+   "strength": 10,
+   "strengthUnit": "oksjn",
+   "substance_name": "omnws",
+   "validityPeriod": "Fri, 04 Feb 2022 00:00:00 GMT"
+}
+
+
+7.
+
+
+endpoint:: ('/api/getMedicationOrderByIdForPatient/<int:medId>', methods=['GET'])
+Header : token patient
+
+body: 
+{
+   none
+}
+
+Output:  
+{
+   "Specific_date": "Sun, 21 Nov 2021 00:00:00 GMT",
+   "Specific_day_of_month": "jan",
+   "additionalInstructions": "tyfgfv",
+   "allowedPeriod": "qwwd",
+   "comment": "uheds",
+   "dateDiscontinued": "Mon, 01 Nov 2021 00:00:00 GMT",
+   "dateWritten": "Tue, 01 Nov 2022 00:00:00 GMT",
+   "description": "idjsd",
+   "diluentAmount": 10,
+   "diluentunit": "100mg",
+   "dispenseAmount": 21,
+   "dispenseAmountDescription": "innds",
+   "dispenseAmountUnit": 90,
+   "dispenseInstrution": "hubhb",
+   "dosageInstruction": "asdf",
+   "dose_duration": "tomowwo",
+   "dose_frequency": "twice",
+   "dose_timing": "Tue, 01 Nov 2022 00:00:00 GMT",
+   "dose_unit": 3,
+   "form": "okds",
+   "maximumAmount": 2,
+   "maximumAmountDoseUnit": "wedfrgh",
+   "medicationItem": "xyz",
+   "numOfRepeatsAllowed": 5,
+   "overrideReason": "nubhhjb",
+   "reasons": "bhj",
+   "repetition_interval": "5 mins",
+   "route": "qwe",
+   "specific_Event": "tom",
+   "specific_day_of_week": "monday",
+   "status": "done",
+   "strength": 10,
+   "strengthUnit": "oksjn",
+   "substance_name": "omnws",
+   "validityPeriod": "Fri, 04 Feb 2022 00:00:00 GMT"
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+
+==========================================================================================================
+
+
+
+1.Add allergy
+
+endpoint:
+
+/api/add_allergies_and_intolerances methods=['POST']
+
+header:
+	token for admin
+
+body:
+
+{
+    "patient_id" : "1",
+    "global_exclusion_of_adverse_reactions":"frvgtbh",
+    "absence_of_information_statement" :"sdfgh",
+    "absence_of_information_protocol_last_updated" :"asdfg",
+    "substance" : "fvgb",
+    "verification_status":"gvc",
+    "critically" :"fcds",
+    "type" :"frd",
+    "comment" :"edfsw",
+    "reaction_manifestation" :"fves",
+    "onset" :"brefv",
+    "severity" :"vfefv",
+    "protocol_last_updated":"vffd"
+
+}
+
+output:
+{
+    "message": "data added",
+    "success": true
+}
+----------------------------------------------------------------------------------------------------------------------------------------------
+2. get all allergies for patient
+
+endpoint
+/api/get_all_allergies_and_intolerances_for_patient  methods=['GET'])
+
+header:
+
+	patient token
+	
+output:
+
+{
+    "all_allergies_and_intolerances": {
+        "absence_of_information_protocol_last_updated": "asdfg",
+        "absence_of_information_statement": "sdfgh",
+        "allergy_list": [
+            {
+                "allergy_id": 3,
+                "substance": "qwerty"
+            },
+            {
+                "allergy_id": 4,
+                "substance": "herovired"
+            }
+        ],
+        "global_exclusion_of_adverse_reactions": "version 3"
+    }
+}
+----------------------------------------------------------------------------------------------------------------------------------
+3. get all allergies for doctor
+
+endpoint
+
+'/api/get_all_allergies_and_intolerances_for_doctor/<int:patient_id>', methods=['GET'])
+
+header:
+
+	token for doctor
+
+body:
+	{
+    none
+}
+
+output:
+
+{
+    "all_allergies_and_intolerances": {
+        "absence_of_information_protocol_last_updated": "asdfg",
+        "absence_of_information_statement": "sdfgh",
+        "allergy_list": [
+            {
+                "allergy_id": 1,
+                "substance": "fvgb"
+            },
+            {
+                "allergy_id": 2,
+                "substance": "qwerty"
+            },
+            {
+                "allergy_id": 5,
+                "substance": "herovired"
+            }
+        ],
+        "global_exclusion_of_adverse_reactions": "version 3"
+    }
+}
+---------------------------------------------------------------------------------------------------------------------------------------
+
+4. ('/api/get_allergy_by_id_for_doctor/<int:allergy_id>', methods = ['GET'])
+
+header:
+
+token for doctor
+
+body:
+{
+    none
+}
+
+output:
+{
+    "allergy": {
+        "comment": "edfsw",
+        "critically": "fcds",
+        "onset": "brefv",
+        "protocol_last_updated": "vffd",
+        "reaction_manifestation": "fves",
+        "severity": "vfefv",
+        "substance": "fvgb",
+        "type": "frd",
+        "verification_status": "gvc"
+    }
+}
+
+----------------------------------------------------------------------------------------------------------------------------------
+5. ('/api/get_allergy_by_id_for_patient/<int:allergy_id>', methods = ['GET'])
+
+header:
+
+	token for patient
+
+
+
+body:
+	{
+   none
+}
+
+output:
+
+{
+    "all_allergies_and_intolerances": {
+        "absence_of_information_protocol_last_updated": "asdfg",
+        "absence_of_information_statement": "sdfgh",
+        "allergy_list": [
+            {
+                "allergy_id": 3,
+                "substance": "qwerty"
+            },
+            {
+                "allergy_id": 4,
+                "substance": "herovired"
+            }
+        ],
+        "global_exclusion_of_adverse_reactions": "version 3"
+    }
+}
+	
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+6.POST FROM ADMIN:
+
+endpoint:
+('/api/add_vital_signs', methods=['POST'])
+
+header:
+token for admin
+
+body:
+
+ {
+    "patient_id":1,
+    "body_weight": 12,
+    "body_weight_unit": "gram",
+    "height": 12,
+    "height_unit": "cm",
+    "respiration_rate": 120,
+    "pulse_rate": 70,
+    "body_temperature": "37",
+    "body_temperature_unit": "celc",
+    "head_circumference": "32",
+    "head_circumference_unit": "meter",
+    "pulse_oximetry": "98",
+    "body_mass_index": "20",
+    "body_mass_index_unit": "BMI",
+    "blood_pressure_systolic": "198",
+    "blood_pressure_diastolic": "109"
+    
+}
+output:
+{
+    "message": "data added",
+    "success": true
+}
+------------------------------------------------------------------------------------------------------------
+7. Get for doctor:
+
+endpoint:
+
+('/api/get_vital_signs_for_doctor/<int:patient_id>', methods=['GET'])
+
+header:
+
+doctor token
+
+body
+:
+
+{
+    none
+}
+
+output:
+
+{
+    "data": {
+        "blood_pressure_diastolic": 109,
+        "blood_pressure_systolic": 198,
+        "body_mass_index": 20,
+        "body_mass_index_unit": "BMI",
+        "body_temperature": 37,
+        "body_temperature_unit": "celc",
+        "body_weight": 12,
+        "body_weight_unit": "gram",
+        "head_circumference": 32,
+        "head_circumference_unit": "meter",
+        "height": 12,
+        "height_unit": "cm",
+        "pulse_oximetry": 98,
+        "pulse_rate": 70,
+        "respiration_rate": 120
+    }
+}
+------------------------------------------------------------------------------------------------------------------------------
+8. get vitals for patient:
+
+endpoint:
+
+('/api/get_vital_signs_for_patient', methods=['GET'])
+
+header:
+patient token
+
+body:
+
+none
+
+output:
+
+{
+    "data": {
+        "blood_pressure_diastolic": 109,
+        "blood_pressure_systolic": 198,
+        "body_mass_index": 20,
+        "body_mass_index_unit": "BMI",
+        "body_temperature": 37,
+        "body_temperature_unit": "celc",
+        "body_weight": 12,
+        "body_weight_unit": "gram",
+        "head_circumference": 32,
+        "head_circumference_unit": "meter",
+        "height": 12,
+        "height_unit": "cm",
+        "pulse_oximetry": 98,
+        "pulse_rate": 70,
+        "respiration_rate": 120
+    }
+}
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+9 add diagnostic result  
+endpoint:
+
+('/api/add_dignostics_results', methods=['POST'])
+
+headers:
+token for admin
+
+body:
+
+ {
+    "patient_id":1,
+    "lab_test_name": "Compgraphy",
+    "specimen_type": "",
+    "specimen_method": "something",
+    "specimen_bodysite": "",
+    "diagnostic_service_category": "",
+    "laboratory_analyte_result_analyte_name": "",
+    "interpretation": "poer",
+    "multimedia_source_resource_name": "",
+    "multimedia_source_content": "",
+    "imaging_test_name": "test1",
+    "modality": "",
+    "anatomical_site": "hand",
+    "imaging_finding_name": "",
+    "anatomical_location": "",
+    "presence": "",
+    "description": "",
+    "comparison_to_previous": "yes",
+    "comment": "",
+    "comparison_with_previous": "",
+    "conclusion": "good",
+    "imaging_differential_diagnosis": "www",
+    "imaging_diagnosis": "",
+    "multimedia_resource_name": "erwe",
+    "multimedia_content": "",
+    "technique": "simple",
+    "imaging_quality": "",
+    "examination_requester_order_identifier": "some",
+    "examination_requested_name": "",
+    "examination_receiver_order_identifier": "",
+    "dicom_study_identifier": "",
+    "examination_report_identifier":"",
+    "image_identifier": "2",
+    "dicom_series_identifier": "yes",
+    "view": "",
+    "position": "right",
+    "image_datetime": "",
+    "image": "2"
+}
+
+output:
+{
+    "message": "data added",
+    "success": true
+}
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+10.
+endpoint
+
+ ('/api/get_dignosis_results_for_doctor/<int:patient_id>', methods=['GET'])
+
+header: 
+token for doctor
+
+body:
+
+{
+   none
+}
+
+output:
+
+{
+    "dignostic_test_result": [
+        {
+            "dignostic_id": 1,
+            "imaging_test_name": "test1",
+            "lab_test_name": "Computed tomography"
+        },
+        {
+            "dignostic_id": 5,
+            "imaging_test_name": "test1",
+            "lab_test_name": "Compgraphy"
+        }
+    ]
+}
+
+----------------------------------------------------------------------------------------------------------------------------
+11. 
+endpoint:
+
+('/api/get_dignosis_results_for_patient', methods=['GET'])
+
+header:
+
+token for patient
+
+output
+
+{
+    "dignostic_test_result": [
+        {
+            "dignosis_id": 1,
+            "imaging_test_name": "test1",
+            "lab_test_name": "Computed tomography"
+        },
+        {
+            "dignosis_id": 5,
+            "imaging_test_name": "test1",
+            "lab_test_name": "Compgraphy"
+        }
+    ]
+}
+----------------------------------------------------------------------------------------------------------------------------------------------
+12.
+endpoint:
+
+('/api/get_dognostics_by_id_for_doctor/<int:dignostic_id>', methods=['GET'])
+
+header:
+token for doctor
+
+body:
+
+{
+    none
+}
+
+output:
+
+{
+    "dignostic": {
+        "anatomical_location": "",
+        "anatomical_site": "hand",
+        "comment": "",
+        "comparison_to_previous": "yes",
+        "comparison_with_previous": "",
+        "conclusion": "good",
+        "description": "",
+        "diagnostic_service_category": "",
+        "dicom_series_identifier": "yes",
+        "dicom_study_identifier": "",
+        "examination_receiver_order_identifier": "",
+        "examination_report_identifier": "",
+        "examination_requested_name": "",
+        "examination_requester_order_identifier": "some",
+        "image": "",
+        "image_datetime": "",
+        "image_identifier": "",
+        "imaging_diagnosis": "",
+        "imaging_differential_diagnosis": "www",
+        "imaging_finding_name": "",
+        "imaging_quality": "",
+        "imaging_test_name": "test1",
+        "interpretation": "poer",
+        "lab_test_name": "Computed tomography",
+        "laboratory_analyte_result_analyte_name": "",
+        "modality": "",
+        "multimedia_content": "",
+        "multimedia_resource_name": "erwe",
+        "multimedia_source_content": "",
+        "multimedia_source_resource_name": "",
+        "position": "right",
+        "presence": "",
+        "specimen_bodysite": "",
+        "specimen_method": "something",
+        "specimen_type": "",
+        "technique": "simple",
+        "view": ""
+    }
+}
+
+13.
+endpoint:
+
+('/api/get_dognostics_by_id_for_patient/<int:dignostic_id>', methods=['GET'])
+
+headeR:
+
+token for patient
+
+body:
+
+{
+    none
+}
+
+output:
+{
+    "dignostic": {
+        "anatomical_location": "",
+        "anatomical_site": "hand",
+        "comment": "",
+        "comparison_to_previous": "yes",
+        "comparison_with_previous": "",
+        "conclusion": "good",
+        "description": "",
+        "diagnostic_service_category": "",
+        "dicom_series_identifier": "yes",
+        "dicom_study_identifier": "",
+        "examination_receiver_order_identifier": "",
+        "examination_report_identifier": "",
+        "examination_requested_name": "",
+        "examination_requester_order_identifier": "some",
+        "image": "2",
+        "image_datetime": "",
+        "image_identifier": "2",
+        "imaging_diagnosis": "",
+        "imaging_differential_diagnosis": "www",
+        "imaging_finding_name": "",
+        "imaging_quality": "",
+        "imaging_test_name": "test1",
+        "interpretation": "poer",
+        "lab_test_name": "Compgraphy",
+        "laboratory_analyte_result_analyte_name": "",
+        "modality": "",
+        "multimedia_content": "",
+        "multimedia_resource_name": "erwe",
+        "multimedia_source_content": "",
+        "multimedia_source_resource_name": "",
+        "position": "right",
+        "presence": "",
+        "specimen_bodysite": "",
+        "specimen_method": "something",
+        "specimen_type": "",
+        "technique": "simple",
+        "view": ""
+    }
+}
+
+
+
+===================================================================================================
+
+
+NOTE:
+Please ignore the inputs given to the APIs those are dummy irrespective of datatypes.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+1.Post for pregnancy
+
+Endpoint:
+
+'/api/addPregnancyDetails',methods=['POST']
+
+Header: token admin
+
+Body:
+
+{
+   "patient_id" : 1,
+   "pregnancy_status":"pregnant",
+   "pregnancy_outcome" : "ba",
+   "estimated_date_of_delivery_by_date_of_conseption" :"fvgbh",
+   "estimated_date_of_delivery_by_cycle":"fvgbh",
+   "estimated_date_of_delivery_by_ultrasound":"fvgbh",
+   "agreed_date":"gvbh",
+   "protocol_last_updated":"gvbhn",
+   "exclusion_of_pregnancy_statement":"vgbhn"
+}
+
+Output:
+
+{
+   "message": "pregnancy details Added successfully",
+   "success": true
+}
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+
+2.Get for pregnancy for patient:
+
+Endpoints:: 
+
+('/api/getPregnancyRecordForPatient',methods=['GET'])
+
+Header : patient token
+
+Body:
+ 	None
+
+Output:
+
+{
+   "history": [
+       {
+           "agreed_date": "gvbh",
+           "estimated_date_of_delivery_by_cycle": "fvgbh",
+           "estimated_date_of_delivery_by_date_of_conseption": "fvgbh",
+           "estimated_date_of_delivery_by_ultrasound": "fvgbh",
+           "exclusion_of_pregnancy_statement": "vgbhn",
+           "patient_id": 1,
+           "pregnancy_outcome": "ba",
+           "pregnancy_status": "pregnant",
+           "protocol_last_updated": "gvbhn"
+       }
+   ]
+}
+----------------------------------------------------------------------------------------------------------------------------------------------
+3. Get pregnancy details for Doctor:
+
+Endpoints:
+('/api/getPregnancyRecordForDoctor/<int:patient_id>',methods=['GET'])
+
+Headers: Doctor Token
+
+Body:
+{
+none
+}
+Output:
+
+{
+   "history": [
+       {
+           "agreed_date": "gvbh",
+           "estimated_date_of_delivery_by_cycle": "fvgbh",
+           "estimated_date_of_delivery_by_date_of_conseption": "fvgbh",
+           "estimated_date_of_delivery_by_ultrasound": "fvgbh",
+           "exclusion_of_pregnancy_statement": "vgbhn",
+           "patient_id": 1,
+           "pregnancy_outcome": "ba",
+           "pregnancy_status": "pregnant",
+           "protocol_last_updated": "gvbhn"
+       }
+   ]
+}
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+4.POST request for historyOfProcedure
+
+End point: 
+
+'/api/addHistoryOfProcedure,methods=['POST']
+
+Header: token for admin
+
+Body:
+
+	{
+   "patient_id" : 2,
+   "absence_of_info_absence_statement": "ASDF",
+   "absence_of_info_protocol_last_updated": "GTHJ",
+   "global_exclusion_of_procedures":"FEDFS",
+   "procedure_name":"kjsd",
+   "body_site":"wfsda"
+}
+
+
+Output:
+
+{
+   "message": "history of procedure added successfully",
+   "success": true
+}
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+5. Get request historyOfProcedure for patient:
+
+Endpoint:
+
+('/api/getHistoryOfProcedureforPatient',methods=['GET'])
+
+Header : patient token
+
+Body:
+	
+
+
+Output:
+{
+    "history_of_procedure": {
+        "absence_of_info_absence_statement": "ASDF",
+        "absence_of_info_protocol_last_updated": "GTHJ",
+        "global_exclusion_of_procedures": "FEDFS",
+        "patient_id": 2,
+        "procedures": [
+            {
+                "body_site": "wfsda",
+                "procedure_name": "kjsd"
+            },
+            {
+                "body_site": "wfsda",
+                "procedure_name": "kjsd"
+            }
+        ]
+    }
+}
+ 
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+6.GET API for historyOfProcedure for Doctor:
+Endpoint:
+('/api/getHistoryOfProcedureforDoctor/<int:patient_id>',methods=['GET'])
+
+Headers:
+
+Token for Doctor
+
+Body:
+ 
+   {
+ none
+}
+ 
+ 
+Output:
+
+{
+    "history_of_procedure": {
+        "absence_of_info_absence_statement": "ASDF",
+        "absence_of_info_protocol_last_updated": "GTHJ",
+        "global_exclusion_of_procedures": "FEDFS",
+        "patient_id": 2,
+        "procedures": [
+            {
+                "body_site": "wfsda",
+                "procedure_name": "kjsd"
+            },
+            {
+                "body_site": "wfsda",
+                "procedure_name": "kjsd"
+            }
+        ]
+    }
+}
+ 
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+7. API for Immunization POST
+Endpoint:
+
+('/api/addImmunizations',methods=['POST'])
+
+Headers : token for admin
+
+Body:
+
+{
+   "patient_id" : 2,
+   "absence_of_info_absence_statement": "fghj",
+   "absence_of_info_protocol_last_updated":"gyhsc",
+   "administration_details_route": "ajay",
+   "administration_details_target_site":"feswsw",
+   "sequence_number":"015"
+}
+ 
+
+Output:
+
+{
+   "message": "Immunizations added successfully",
+   "success": true
+}
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+8. API for Immunization GET
+
+Endpoint:
+'/api/getImmunizationsForPatient,methods=['GET']
+
+Headers:
+
+Token for patient
+
+Body:
+none
+ 
+
+Output:
+
+{
+    "immunization": {
+        "absence_of_info_absence_statement": "fghj",
+        "absence_of_info_protocol_last_updated": "gyhsc",
+        "immunizations": [
+            {
+                "administration_details_route": "ajay",
+                "administration_details_target_site": "feswsw",
+                "patient_id": 2,
+                "sequence_number": 15
+            },
+            {
+                "administration_details_route": "ajay",
+                "administration_details_target_site": "feswsw",
+                "patient_id": 2,
+                "sequence_number": 15
+            }
+        ],
+        "patient_uid": 2
+    }
+}
+ 
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+9. GET API for Immunization for Doctor:
+Endpoint:
+
+('/api/getImmunizationsForDoctor/<int:patient_id>',methods=['GET'])
+
+Headers: token for doctor
+
+Body:
+
+{
+ none
+}
+ 
+
+Output:
+{
+    "immunization": {
+        "absence_of_info_absence_statement": "fghj",
+        "absence_of_info_protocol_last_updated": "gyhsc",
+        "immunizations": [
+            {
+                "administration_details_route": "ajay",
+                "administration_details_target_site": "feswsw",
+                "sequence_number": 15
+            },
+            {
+                "administration_details_route": "ajay",
+                "administration_details_target_site": "feswsw",
+                "sequence_number": 15
+            }
+        ],
+        "patient_uid": 2
+    }
+}
+ 
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+ 
+
+10. POST API for Medical Devices:
+
+Endpoint: 
+
+('/api/addMedicalDevice',methods=['POST'])
+
+Header : token forAdmin
+
+Body:
+
+{
+   "patient_id":1,
+   "device_name":"hgfd",
+   "body_site":"hgbvf",
+   "type":"ytgfe",
+   "description":"ytrgvfe",
+   "UDI":"refv",
+   "manufacturer":"rgvfe",
+   "date_of_manufacture":"tefe",
+   "serial_number" :"gthjb",
+   "catalogue_number":"brvef",
+   "model_number":"5tgrf",
+   "batch_number" :"drftgyhu",
+   "software_version":"tgre",
+   "date_of_expiry":"2021-11-02",
+   "other_identifier":"jynhgtbvf",
+   "comment":"ujyhgtr"
+   }
+
+
+Output:
+
+{
+   "message": "Medical Devices Added successfully",
+   "success": true
+}
+ 
+------------------------------------------------------------------------------------------------------------------------------------------------------
+11. GET API for medical_devices for Patient
+
+Endpoint: 
+
+('/api/getMedicalDeviceForPatient',methods=['GET'])
+
+Header :
+
+Token for patient
+
+Body:
+
+None:
+
+Output:
+
+{
+    "history": [
+        {
+            "UDI": "refv",
+            "batch_number": "drftgyhu",
+            "body_site": "hgbvf",
+            "catalogue_number": "brvef",
+            "comment": "ujyhgtr",
+            "date_of_expiry": "2021-11-02",
+            "date_of_manufacture": "tefe",
+            "description": "ytrgvfe",
+            "device_name": "hgfd",
+            "manufacturer": "rgvfe",
+            "model_number": "5tgrf",
+            "other_identifier": "jynhgtbvf",
+            "patient_id": 2,
+            "serial_number": "gthjb",
+            "software_version": "tgre",
+            "type": "ytgfe"
+        },
+        {
+            "UDI": "refv",
+            "batch_number": "drftgyhu",
+            "body_site": "hgbvf",
+            "catalogue_number": "brvef",
+            "comment": "ujyhgtr",
+            "date_of_expiry": "2021-11-02",
+            "date_of_manufacture": "tefe",
+            "description": "ytrgvfe",
+            "device_name": "hgfd",
+            "manufacturer": "rgvfe",
+            "model_number": "5tgrf",
+            "other_identifier": "jynhgtbvf",
+            "patient_id": 2,
+            "serial_number": "gthjb",
+            "software_version": "tgre",
+            "type": "ytgfe"
+        }
+    ]
+}
+ 
+------------------------------------------------------------------------------------------------------------------------------------------------
+12. GET API for medical Devices for Doctor:
+
+Endpoint:
+
+('/api/getMedicalDeviceForDoctor/<int:patient_id>',methods=['GET'])
+
+Header: 
+Token for Doctor
+
+Body: 
+{
+	none
+}
+
+Output:
+
+{
+   "history": [
+       {
+           "UDI": "refv",
+           "batch_number": "drftgyhu",
+           "body_site": "hgbvf",
+           "catalogue_number": "brvef",
+           "comment": "ujyhgtr",
+           "date_of_expiry": "2021-11-02",
+           "date_of_manufacture": "tefe",
+           "description": "ytrgvfe",
+           "device_name": "hgfd",
+           "manufacturer": "rgvfe",
+           "model_number": "5tgrf",
+           "other_identifier": "jynhgtbvf",
+           "patient_id": 1,
+           "serial_number": "gthjb",
+           "software_version": "tgre",
+           "type": "ytgfe"
+       },
+       {
+           "UDI": "refv",
+           "batch_number": "drftgyhu",
+           "body_site": "hgbvf",
+           "catalogue_number": "brvef",
+           "comment": "ujyhgtr",
+           "date_of_expiry": "2021-11-02",
+           "date_of_manufacture": "tefe",
+           "description": "ytrgvfe",
+           "device_name": "hgfd",
+           "manufacturer": "rgvfe",
+           "model_number": "5tgrf",
+           "other_identifier": "jynhgtbvf",
+           "patient_id": 1,
+           "serial_number": "gthjb",
+           "software_version": "tgre",
+           "type": "ytgfe"
+       }
+   ]
+}
+
+
+=======================================================================================================
+
+
+
+
+NOTE:
+Please ignore the inputs given to the APIs those are dummy irrespective of datatypes.
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+1. Post Request for Past history of patient
+
+Endpoint:  /api/createpasthistoryofpatient      method=POST
+
+
+header: Admin Token
+body
+
+
+{
+		"patient_uid":"1",
+		"problem_name": "nephropathy",
+		"body_site": "Renal",
+		"datetime_of_onset": "2021-01-11",
+		"severity": "mild",
+		"date_of_abatebent": "2021-01-21",
+		"active_or_inactive": "active",
+		"resolution_phase": "resolved",
+		"remission_status": "In remission",
+		"occurrence": "recurrence",
+		"diagnostic_certainity": "suspected",
+		"protocol_last_updated": "2021-01-21"
+}
+output:
+{
+   'success':True,
+   'message':'history added successfully'
+}
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2 Get Request for past history for patient
+
+Endpoint: /api/getpasthistoryofpatient       method=GET
+
+
+header: Patient Token
+body:
+    None
+    
+output:
+
+
+{
+    "history": [
+        {
+            "active_or_inactive": "active",
+            "body_site": "Renal",
+            "date_of_abatebent": "2021-01-21",
+            "datetime_of_onset": "2021-01-11",
+            "diagnostic_certainity": "suspected",
+            "occurrence": "recurrence",
+            "patient_uid": 2,
+            "problem_name": "nephropathy",
+            "protocol_last_updated": "2021-01-21",
+            "remission_status": "In remission",
+            "resolution_phase": "resolved",
+            "severity": "mild"
+        },
+        {
+            "active_or_inactive": "active",
+            "body_site": "Renal",
+            "date_of_abatebent": "2021-01-21",
+            "datetime_of_onset": "2021-01-11",
+            "diagnostic_certainity": "suspected",
+            "occurrence": "recurrence",
+            "patient_uid": 2,
+            "problem_name": "nephropathy",
+            "protocol_last_updated": "2021-01-21",
+            "remission_status": "In remission",
+            "resolution_phase": "resolved",
+            "severity": "mild"
+        }
+    ]
+}
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+3 Get Request for past history for Doctor
+
+Endpoint: /api/getpasthistoryofpatient/<int:patient_id>       method=GET
+
+header: Doctor Token
+body:
+    none
+    
+output:
+
+
+{
+    "history": [
+        {
+            "active_or_inactive": "active",
+            "body_site": "Renal",
+            "date_of_abatebent": "2021-01-21",
+            "datetime_of_onset": "2021-01-11",
+            "diagnostic_certainity": "suspected",
+            "occurrence": "recurrence",
+            "patient_uid": 2,
+            "problem_name": "nephropathy",
+            "protocol_last_updated": "2021-01-21",
+            "remission_status": "In remission",
+            "resolution_phase": "resolved",
+            "severity": "mild"
+        },
+        {
+            "active_or_inactive": "active",
+            "body_site": "Renal",
+            "date_of_abatebent": "2021-01-21",
+            "datetime_of_onset": "2021-01-11",
+            "diagnostic_certainity": "suspected",
+            "occurrence": "recurrence",
+            "patient_uid": 2,
+            "problem_name": "nephropathy",
+            "protocol_last_updated": "2021-01-21",
+            "remission_status": "In remission",
+            "resolution_phase": "resolved",
+            "severity": "mild"
+        }
+    ]
+}
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+4 Post Request for Problem List
+
+Endpoint :  /api/addproblemlist     Method=POST
+
+header; Admin token
+Body:
+{
+		"patient_id":"1",
+		"global_exclusion_of_adverse_reactions":"sss",
+		"absence_of_information_statement":"sss",
+		"absence_of_information_protocol_last_updated":"sss",
+		"problem_name":"headache",
+		"body_site":"lower head",
+		"datetime_of_onset":"2021-07-21",
+		"severity":"mild",
+		"date_of_abatebent":"2021-07-24",
+		"active_or_inactive":"active",
+		"resolution_phase":"resolved",
+		"remission_status":"in remession",
+		"occurrence":"recurrence",
+		"diagnostic_certainity":"probable",
+		"protocol_last_updated":"2021-08-03"
+}
+
+output:
+      'success':True,
+      'message':'Problem added successfully'
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+5 Get Request for problem list for patient
+
+Endpoint: /api/getproblemlistbypatient  Method = GET
+
+
+header: Patient token
+Body:
+      None
+      
+      
+Output
+
+{
+    "history": {
+        "absence_of_information_protocol_last_updated": "sss",
+        "absence_of_information_statement": "sss",
+        "global_exclusion_of_adverse_reactions": "sss",
+        "patient_id": 2,
+        "problem list": [
+            {
+                "active_or_inactive": "active",
+                "body_site": "lower head",
+                "date_of_abatebent": "2021-07-24",
+                "datetime_of_onset": "2021-07-21",
+                "diagnostic_certainity": "probable",
+                "occurrence": "recurrence",
+                "patient_id": 2,
+                "problem_name": "headache",
+                "protocol_last_updated": "2021-08-03",
+                "remission_status": "resolved",
+                "resolution_phase": "resolved",
+                "severity": "mild"
+            },
+            {
+                "active_or_inactive": "active",
+                "body_site": "lower head",
+                "date_of_abatebent": "2021-07-24",
+                "datetime_of_onset": "2021-07-21",
+                "diagnostic_certainity": "probable",
+                "occurrence": "recurrence",
+                "patient_id": 2,
+                "problem_name": "headache",
+                "protocol_last_updated": "2021-08-03",
+                "remission_status": "resolved",
+                "resolution_phase": "resolved",
+                "severity": "mild"
+            }
+        ]
+    }
+}
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+6 Get Request for problem list for Doctor
+
+Endpoint: /api/getproblemlistbydoctor/<int:patient_id>  Method = GET
+
+header: Doctor Token
+Body:
+      none
+      
+      
+Output
+
+{
+    "history": {
+        "absence_of_information_protocol_last_updated": "sss",
+        "absence_of_information_statement": "sss",
+        "global_exclusion_of_adverse_reactions": "sss",
+        "patient_id": 2,
+        "problem list": [
+            {
+                "active_or_inactive": "active",
+                "body_site": "lower head",
+                "date_of_abatebent": "2021-07-24",
+                "datetime_of_onset": "2021-07-21",
+                "diagnostic_certainity": "probable",
+                "occurrence": "recurrence",
+                "patient_id": 2,
+                "problem_name": "headache",
+                "protocol_last_updated": "2021-08-03",
+                "remission_status": "resolved",
+                "resolution_phase": "resolved",
+                "severity": "mild"
+            },
+            {
+                "active_or_inactive": "active",
+                "body_site": "lower head",
+                "date_of_abatebent": "2021-07-24",
+                "datetime_of_onset": "2021-07-21",
+                "diagnostic_certainity": "probable",
+                "occurrence": "recurrence",
+                "patient_id": 2,
+                "problem_name": "headache",
+                "protocol_last_updated": "2021-08-03",
+                "remission_status": "resolved",
+                "resolution_phase": "resolved",
+                "severity": "mild"
+            }
+        ]
+    }
+}
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+7 Post request for Advance directives
+
+Endpoint :
+             /api/addadvanceddirectives      method = Post
+ header: Admin token            
+ Body:
+ 
+ {
+      "patient_id":"1",
+		"type_of_directive":"declaration of life",
+		"a_status":"Present",
+		"description":"overview of advance type",
+		"condition":"brain injury",
+		"directive_location":"in the top drawer of the bedside table",
+		"a_comment":"about the advance care directives",
+		"valid_period_start":"02/11/2021",
+		"valid_period_end":"20/11/2021",
+		"review_due_date":"24/11/2021",
+		"last_updated":"30/11/2021",
+		"mandate":"advance decision are covered bt the mental capacity act",
+		"status":"Allow natural death",
+		"type_of_limitation":"Dialysis",
+		"decision":"permitted",
+		"qualification":"clarification about the limitation",
+		"rationale":"justification for the limitation",
+		"patient_awareness":"Patient aware of decision",
+		"carer_awareness":"family awareness",
+		"comment":"about the limitations",
+		"element":"12/09/2020",
+		"protocol_review_date":"15/09/2020"
+  }
+  
+  Output:
+  {
+       'success':True,
+       'message':'history added successfully'
+  }
+  
+  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++    
+  8 Get request for Advance Directive for patient
+  Endpoint:
+             /api/getadvanceddirectivesbypatient      method =get
+             
+   Body:
+        None
+        
+  header: patient token      
+   Output:               
+          
+{
+    "history": {
+        "a_comment": "about the advance care directives",
+        "a_status": "Present",
+        "advance_directive": [
+            {
+                "carer_awareness": "family awareness",
+                "comment": "about the limitations",
+                "decision": "permitted",
+                "element": "12/09/2020",
+                "patient_awareness": "Patient aware of decision",
+                "patient_id": 2,
+                "protocol_review_date": "15/09/2020",
+                "qualification": "clarification about the limitation",
+                "rationale": "justification for the limitation",
+                "status": "Allow natural death",
+                "type_of_limitation": "Dialysis"
+            },
+            {
+                "carer_awareness": "family awareness",
+                "comment": "about the limitations",
+                "decision": "permitted",
+                "element": "12/09/2020",
+                "patient_awareness": "Patient aware of decision",
+                "patient_id": 2,
+                "protocol_review_date": "15/09/2020",
+                "qualification": "clarification about the limitation",
+                "rationale": "justification for the limitation",
+                "status": "Allow natural death",
+                "type_of_limitation": "Dialysis"
+            }
+        ],
+        "condition": "brain injury",
+        "description": "overview of advance type",
+        "directive_location": "in the top drawer of the bedside table",
+        "last_updated": "30/11/2021",
+        "mandate": "advance decision are covered bt the mental capacity act",
+        "patient_id": 2,
+        "review_due_date": "24/11/2021",
+        "type_of_directive": "declaration of life",
+        "valid_period_end": "20/11/2021",
+        "valid_period_start": "02/11/2021"
+    }
+}
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+9. 8 Get request for Advance Directive for Doctor
+  Endpoint:
+             /api/getadvanceddirectivesbypatient/<int:patient_id>      method =get
+         
+         
+         
+  header:Doctor token           
+   Body:
+        none
+        
+        
+   Output:               
+          
+{
+    "history": {
+        "a_comment": "about the advance care directives",
+        "a_status": "Present",
+        "advance_directive": [
+            {
+                "carer_awareness": "family awareness",
+                "comment": "about the limitations",
+                "decision": "permitted",
+                "element": "12/09/2020",
+                "patient_awareness": "Patient aware of decision",
+                "patient_id": 2,
+                "protocol_review_date": "15/09/2020",
+                "qualification": "clarification about the limitation",
+                "rationale": "justification for the limitation",
+                "status": "Allow natural death",
+                "type_of_limitation": "Dialysis"
+            },
+            {
+                "carer_awareness": "family awareness",
+                "comment": "about the limitations",
+                "decision": "permitted",
+                "element": "12/09/2020",
+                "patient_awareness": "Patient aware of decision",
+                "patient_id": 2,
+                "protocol_review_date": "15/09/2020",
+                "qualification": "clarification about the limitation",
+                "rationale": "justification for the limitation",
+                "status": "Allow natural death",
+                "type_of_limitation": "Dialysis"
+            }
+        ],
+        "condition": "brain injury",
+        "description": "overview of advance type",
+        "directive_location": "in the top drawer of the bedside table",
+        "last_updated": "30/11/2021",
+        "mandate": "advance decision are covered bt the mental capacity act",
+        "patient_id": 2,
+        "review_due_date": "24/11/2021",
+        "type_of_directive": "declaration of life",
+        "valid_period_end": "20/11/2021",
+        "valid_period_start": "02/11/2021"
+    }
+}
+
+
+
+=======================================================================================================================
+
+
+
+1) endpoint - '/api/getsocialhistoryforpatient',methods=['GET']
+header- token
+output - 
+{
+    "history": [
+        {
+            "alcohol_status": "Former drinker",
+            "patient_id": 2,
+            "status": "Never Smoke",
+            "typical_consumption_alcohol_unit": 10
+        }
+    ]
+}
+
+2) endpoint - '/api/getsocialhistoryfordoctor/<int:patient_id>',methods=['GET'])
+header - token
+body - {
+    none
+}
+output - 
+{
+    "history": [
+        {
+            "alcohol_status": "Former drinker",
+            "patient_id": 2,
+            "status": "Never Smoke",
+            "typical_consumption_alcohol_unit": 10
+        }
+    ]
+}
+
+3) endpoint - /api/createsocialhistoryofpatient',methods=['POST']
+header - token
+body - {
+    "patient_id":1,
+		"smoking_status":"Never Smoked",
+        "alcohol_status":"Former drinker",
+		"typical_consumption_alcohol_unit":10
+
+}
+
+
+4) endpoint - /api/getplanofcareforpatient',methods=['GET']
+header - token
+output - 
+{
+    "planofcare": {
+        "care_plan_description": "manage_diabetes_complications",
+        "care_plan_expiry_date": "2022-10-21",
+        "care_plan_name": "share care1",
+        "care_plan_reason": "diabetes_complications",
+        "clinical_indication": "Angina",
+        "comment": "Repeat CBC,ESR,CRP a week before the next follow-up review",
+        "description": "diabetes_complications",
+        "indefinite": "TRUE",
+        "information_description": "Supplemental magnesium may improve insulin sensitivity in diabetics",
+        "intent": "Suggestion to Consult a Nephrologists",
+        "patient_id": 2,
+        "reason_description": "The patient's diabetes has recently become more difficult to stabilise",
+        "reason_for_request": "manage_diabetes_complications",
+        "receiver_order_identifier": "456",
+        "request_status": "initial request",
+        "requester_order_identifier": "123",
+        "service_due": "2021-01-11",
+        "service_name": "referral",
+        "service_period_expiry": "2022-01-11",
+        "service_period_start": "2021-01-11",
+        "service_type": "ultrasound",
+        "supplementary_information": "TRUE",
+        "urgency": "Routine"
+    }
+}
+
+5) endpoint - '/api/getplanofcarefordoctor/<int:patient_id>',methods=['GET']
+header - token
+
+output - {
+    "planofcare": {
+        "care_plan_description": "manage_diabetes_complications",
+        "care_plan_expiry_date": "2022-10-21",
+        "care_plan_name": "share care1",
+        "care_plan_reason": "diabetes_complications",
+        "clinical_indication": "Angina",
+        "comment": "Repeat CBC,ESR,CRP a week before the next follow-up review",
+        "description": "diabetes_complications",
+        "indefinite": "TRUE",
+        "information_description": "Supplemental magnesium may improve insulin sensitivity in diabetics",
+        "intent": "Suggestion to Consult a Nephrologists",
+        "patient_id": 2,
+        "reason_description": "The patient's diabetes has recently become more difficult to stabilise",
+        "reason_for_request": "manage_diabetes_complications",
+        "receiver_order_identifier": "456",
+        "request_status": "initial request",
+        "requester_order_identifier": "123",
+        "service_due": "2021-01-11",
+        "service_name": "referral",
+        "service_period_expiry": "2022-01-11",
+        "service_period_start": "2021-01-11",
+        "service_type": "ultrasound",
+        "supplementary_information": "TRUE",
+        "urgency": "Routine"
+    }
+}
+
+6) endpoint /api/createplanofcareofpatient',methods=['POST']
+header - token
+body - {
+    "patient_id":2,
+		"care_plan_id":123,
+		"care_plan_name":"share care",
+		"care_plan_description":"manage_diabetes_complications",
+		 "care_plan_reason":"diabetes_complications",
+		"care_plan_expiry_date":"2022-10-21",
+        "service_name":"referral",
+		"service_type":"ultrasound",
+		"description":"diabetes_complications",
+		"reason_for_request":"manage_diabetes_complications",
+		"reason_description":"The patient's diabetes has recently become more difficult to stabilise",
+		"clinical_indication":"Angina",
+		"intent":"Suggestion to Consult a Nephrologists",
+		"urgency":"Routine",
+		"service_due":"2021-01-11",
+		"service_period_start":"2021-01-11",
+		"service_period_expiry":"2022-01-11",
+		"indefinite":"TRUE",
+		"supplementary_information":"TRUE",
+		"information_description":"Supplemental magnesium may improve insulin sensitivity in diabetics",
+		"comment":"Repeat CBC,ESR,CRP a week before the next follow-up review",
+		"requester_order_identifier":"123",
+		"receiver_order_identifier":"456",
+		"request_status":"initial request"
+
+}
+
+7) endpoint '/api/getfunctionalstatusforpatient',methods=['GET'])
+header - token
+output - {
+    "functionalstatus": {
+        "active_inactive": "Active",
+        "body_site": "lungs",
+        "clinical_impression": "summary about clinical",
+        "date_of_abatement": "22/12/2021",
+        "date_of_onset": "23/11/2021",
+        "diagnosis_name": "pneumoni",
+        "diagnostic_certainty": "confirmed",
+        "occurrence": "Recurrence",
+        "patient_id": 1,
+        "protocol_last_updated": "23/12/2021",
+        "remission_status": "in remission",
+        "resolution_phase": "Resolved",
+        "severity": "Moderate"
+    }
+}
+
+8) endpoint /api/getfunctionalstatusfordoctor/<int:patient_id>',methods=['GET'])
+header - token
+{
+    "functionalstatus": {
+        "active_inactive": "Active",
+        "body_site": "lungs",
+        "clinical_impression": "summary about clinical",
+        "date_of_abatement": "22/12/2021",
+        "date_of_onset": "23/11/2021",
+        "diagnosis_name": "pneumoni",
+        "diagnostic_certainty": "confirmed",
+        "occurrence": "Recurrence",
+        "patient_id": 1,
+        "protocol_last_updated": "23/12/2021",
+        "remission_status": "in remission",
+        "resolution_phase": "Resolved",
+        "severity": "Moderate"
+    }
+}
+
+9) endpoint /api/createfunctionalstatus',methods=['POST']
+header - token
+
+body - 
+{ "patient_id":1,
+		"diagnosis_name":"pneumoni",
+		"body_site":"lungs",
+		"date_of_onset":"23/11/2021",
+		"severity":"Moderate",
+		"date_of_abatement":"22/12/2021",
+		"active_inactive":"Active",
+		"resolution_phase":"Resolved",
+		"remission_status":"in remission",
+		"occurrence":"Recurrence",
+		"diagnostic_certainty":"confirmed",
+		"protocol_last_updated":"23/12/2021",
+		"clinical_impression":"summary about clinical"
+        }
+
+

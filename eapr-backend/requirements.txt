@@ -1,0 +1,11 @@
+flask==1.1.1
+flask_sqlalchemy==2.5.1
+jwt
+sqlalchemy==1.4.27
+
+
+
+
+
+
+
