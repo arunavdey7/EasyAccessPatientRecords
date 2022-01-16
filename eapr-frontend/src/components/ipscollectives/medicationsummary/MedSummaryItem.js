@@ -3,16 +3,17 @@ import MedicationSummary from './MedicationSummary'
 
 import './medSummaryItemStyles.css'
 const MedSummaryItem = ({
-    orderId,
-    medicationName
+    order_id,
+    medication_item
 }) => {
     const handleClick = () => {
+        localStorage.setItem('currOrderId',(order_id || 0))
         window.location.href = '/showmedicationstatement'
     }
     return(
         <div onClick={handleClick} className='container'>
             <div className='name_container'>
-                <h3>Medication Name</h3>
+                <h3>{medication_item}</h3>
             </div>
         </div>
     )

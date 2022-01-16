@@ -13,7 +13,7 @@ const Registration = () => {
         name:'',
         email:'',
         password:'',
-        specialization:''
+        category:''
     })
     const [patientData, setPatientData] = useState({
         role:'role_patient',

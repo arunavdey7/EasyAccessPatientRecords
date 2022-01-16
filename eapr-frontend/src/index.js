@@ -25,8 +25,10 @@ import CreatePrescription from './pages/createprescription/CreatePrescription';
 const MainComponent = () => {
 
   const [sessionData, setSessionData] = useState({
-    isUserLoggedIn: false
+    isUserLoggedIn: false,
+    role:''
   })
+  const [selectedIPSCollective, setSelectedIPSCollective] = useState("")
   return (
     
         <React.Fragment>
@@ -43,7 +45,7 @@ const MainComponent = () => {
             <Router>
               <Switch>
                 <Route exact path='/'>
-                  <Login setSessionData={setSessionData}/>
+                  <Login sessionData={sessionData} setSessionData={setSessionData}/>
                 </Route>
                 <Route exact path='/patienthome'>
                   <PatientHome />
@@ -64,7 +66,9 @@ const MainComponent = () => {
                   <IpsContainer/>
                 </Route>
                 <Route exact path='/doctorsdashboard'>
-                  <DoctorDashboard/>
+                  <DoctorDashboard selectedIPSCollective={selectedIPSCollective} 
+                                   setSelectedIPSCollective={setSelectedIPSCollective}
+                  />
                 </Route>
                 <Route exact path='/doctorpatientdashboard'>
                   <DoctorPatientDashboard/>
@@ -75,14 +79,14 @@ const MainComponent = () => {
                 <Route exact path='/register'>
                   <Registration/>
                 </Route>
-                <Route exact path='/login'>
-                  <Login/>
-                </Route>
                 <Route exact path='/preview'>
                   <Prescriptions/>
                 </Route>
                 <Route exact path='/createprescription'>
                   <CreatePrescription/>
+                </Route>
+                <Route exact path='/allmedicationstatements'>
+                  <MedicationSummary/>
                 </Route>
               </Switch>
             </Router>

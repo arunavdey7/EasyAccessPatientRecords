@@ -1,53 +1,101 @@
-import React from 'react' 
+import React,{useState, useEffect} from 'react' 
+import { toast } from 'react-toastify';
+import { addPrescription } from '../../utilities/PrescriptionUtility';
 import './styles.css'
 const Prescription = () => {
 
-        const [medicationItem, setMedicationItem] = useState("")
-        const [route, setRoute] = useState("") 
-        const [dosageInstruction, setDosageInstruction] = useState("")
-        const [maximumAmount, setMaximumAmount] = useState("") 
-        const [maximumAmountDoseUnit, setMaximumAmountDoseUnit] = useState("")
-        const [allowedPeriod , setAllowedPeriod] = useState("")
-        const [overrideReason, setOverrideReason] = useState("")
-        additionalInstructions 
-        reasons 
-        status 
-        dateDiscontinued
-        dateWritten 
-        numOfRepeatsAllowed
-        validityPeriod 
-        dispenseInstrution
-        dispenseAmountDescription
-        dispenseAmount 
-        dispenseAmountUnit 
-        comment 
-        dose_unit 
-        dose_frequency 
-        dose_timing
-        dose_duration 
-        repetition_interval 
-        Specific_date 
-        specific_day_of_week 
-        Specific_day_of_month 
-        specific_Event
-        substance_name 
-        form 
-        strength 
-        strengthUnit 
-        diluentAmount 
-        diluentunit 
-        description 
+    const [medicationItem, setMedicationItem] = useState("");
+    const [route, setRoute] = useState("") ;
+    const [dosageInstruction, setDosageInstruction] = useState("");
+    const [maximumAmount, setMaximumAmount] = useState(""); 
+    const [maximumAmountDoseUnit, setMaximumAmountDoseUnit] = useState("");
+    const [allowedPeriod , setAllowedPeriod] = useState("");
+    const [overrideReason, setOverrideReason] = useState("");
+    const [additionalInstructions, setAdditionalInstructions] = useState("");
+    const [reasons, setReasons] = useState("");
+    const [status, setStatus] = useState("");
+    const [dateDiscontinued, setDateDiscontinued] = useState("");
+    const [dateWritten, setDateWritten] = useState("");
+    const [numOfRepeatsAllowed, setNumOfRepeatsAllowed] = useState("");
+    const [validityPeriod, setValidityPeriod] = useState("");
+    const [dispenseInstrution, setDispenseInstrution] = useState("");
+    const [dispenseAmountDescription, setDispenseAmountDescription] = useState("");
+    const [dispenseAmount, setDispenseAmount] = useState("");
+    const [dispenseAmountUnit, setDispenseAmountUnit] = useState("");
+    const [comment, setComment] = useState("");
+    const [dose_unit, setDose_unit] = useState("");
+    const [dose_frequency, setDose_frequency] = useState("");
+    const [dose_timing, setDose_timing] = useState("");
+    const [dose_duration, setDose_duration] = useState("");
+    const [repetition_interval, setRepetition_interval] = useState("");
+    const [Specific_date, setSpecific_date] = useState("");
+    const [specific_day_of_week, setSpecific_day_of_week] = useState("");
+    const [Specific_day_of_month, setSpecific_day_of_month] = useState("");
+    const [specific_Event, setSpecific_Event] = useState("");
+    const [substance_name, setSubstance_name] = useState("");
+    const [form, setForm] = useState("");
+    const [strength, setStrength] = useState("");
+    const [strengthUnit, setStrengthUnit] = useState("");
+    const [diluentAmount, setDiluentAmount] = useState("");
+    const [diluentunit, setDiluentunit] = useState("");
+    const [description, setDescription] = useState("");
         
     var medOrders = JSON.parse(localStorage.getItem('tempMedOrders')) || []
     var currCount = JSON.parse(localStorage.getItem('currCount')) || [0]
     const handleAddMore = () => {
         
         medOrders.push({
-            order_id:currCount + 1
-        })
+            "medicationItem" : "doct2",
+            "route" : "qwe",
+            "dosageInstruction":"asdf",
+            "maximumAmount" : 2,
+            "maximumAmountDoseUnit":"wedfrgh",
+            "allowedPeriod" : "qwwd",
+            "overrideReason" : "nubhhjb",
+            "additionalInstructions" :"tyfgfv",
+            "reasons" : "bhj",
+            "status" : "done",
+            "dateDiscontinued":"2021-11-01",
+            "dateWritten" : "2022-11-01",
+            "numOfRepeatsAllowed":5,
+            "validityPeriod" :"2022-2-04",
+            "dispenseInstrution":"hubhb",
+            "dispenseAmountDescription" :"innds",
+            "dispenseAmount" : 21,
+            "dispenseAmountUnit" : 90,
+            "comment" : "uheds",
+            "dose_unit" : 3,
+            "dose_frequency" : "twice",
+            "dose_timing" : "2022-11-01",
+            "dose_duration" : "tomowwo",
+            "repetition_interval" : "5 mins",
+            "Specific_date" : "21-11-2021",
+            "specific_day_of_week" : "monday",
+            "Specific_day_of_month" :"jan",
+            "specific_Event" :"tom",
+            "substance_name" :"omnws",
+            "form" :"okds",
+            "strength" :10,
+            "strengthUnit" : "oksjn",
+            "diluentAmount" : 10,
+            "diluentunit" : "100mg",
+            "description" : "idjsd"
+            })
         localStorage.setItem('tempMedOrders',JSON.stringify(medOrders))
         localStorage.setItem('currCount',JSON.stringify(currCount))
         window.location.href = '/createprescription'
+    }
+
+    const postPrescriptionData = () => {
+        var requestData = {
+            patient_id:1,
+            medOrders:JSON.parse(localStorage.getItem('tempMedOrders'))
+        }
+        var result = addPrescription(requestData)
+        if(result)
+            toast("Prescription successfully created")
+        else
+            toast("Prescription was not created")
     }
     return(
     <div className='prescription_container'>
@@ -286,7 +334,7 @@ const Prescription = () => {
         <input></input>
         <br/>
         <button onClick={handleAddMore}>Add More</button>
-        <button>Finalize</button>
+        <button onClick={postPrescriptionData}>Finalize</button>
     </div>
     )
 

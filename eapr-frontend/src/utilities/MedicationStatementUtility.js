@@ -35,13 +35,13 @@ export const getAllMedicationStatements = async () => {
       }
     const response = await fetch("/api/ips/medicationsummary/getallmedicationstatementsforpatient", requestOptions)
     const {
-        success,
-        allmedicationstatements
+        medication_summary,
+        success
     } = await response.json()
-
+    
     if(success)
     {
-        return allmedicationstatements
+        return medication_summary["medication_statements"]
     }
     else
     {
@@ -50,19 +50,15 @@ export const getAllMedicationStatements = async () => {
 }
 
 export const getMedicationStatement = async (orderId) => {
-    var requestData = {
-        order_id:orderId
-    }
     var requestOptions = {
         method: 'GET',
         mode:'cors',
-        body: JSON.stringify(requestData),
         headers:{
             'Content-type':'Application/json',
             'token': localStorage.getItem('token')
         }
       }
-    const response = await fetch("/api/ips/medicationsummary/getmedicationstatementforpatient", requestOptions)
+    const response = await fetch("/api/ips/medicationsummary/getmedicationstatementforpatient/"+orderId, requestOptions)
     const {
         success,
         data
@@ -75,5 +71,55 @@ export const getMedicationStatement = async (orderId) => {
     else
     {
         return null
+    }
+}
+
+export const getMedicationStatementForDoctor = async (orderId) => {
+    var requestOptions = {
+        method: 'GET',
+        mode:'cors',
+        headers:{
+            'Content-type':'Application/json',
+            'token': localStorage.getItem('token')
+        }
+      }
+    const response = await fetch("/api/ips/medicationsummary/getmedicationstatementfordoctor/"+orderId, requestOptions)
+    const {
+        success,
+        data
+    } = await response.json()
+
+    if(success)
+    {
+        return data
+    }
+    else
+    {
+        return null
+    }
+}
+
+export const getAllMedicationStatementsForDoctor = async (patientId) => {
+    var requestOptions = {
+        method: 'GET',
+        mode:'cors',
+        headers:{
+            'Content-type':'Application/json',
+            'token': localStorage.getItem('token')
+        }
+      }
+    const response = await fetch("/api/ips/medicationsummary/getallmedicationstatementsfordoctor/"+patientId, requestOptions)
+    const {
+        medication_summary,
+        success
+    } = await response.json()
+    
+    if(success)
+    {
+        return medication_summary["medication_statements"]
+    }
+    else
+    {
+        return []
     }
 }

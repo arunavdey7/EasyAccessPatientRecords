@@ -6,13 +6,14 @@ import './styles.css'
 import {loginAdmin, loginDoctor, loginPatient} from '../../utilities/LoginUtility'
 
 const Login = ({
-    setSessionData
+    setSessionData,
+    sessionData
 }) => {
 
     const [email,setEmail] = useState("");
     const [password,setPassword] = useState("");
     const [role, setRole] = useState("No role selected")
-    const sessionData = useContext(SessionContext);
+    //const sessionData = useContext(SessionContext);
 
     const handleLogin = async () =>
     {
@@ -32,18 +33,15 @@ const Login = ({
         if(result)
         {
             toast(role+" login sucessfull.")
-            setSessionData({
-                ...sessionData,
-                isUserLoggedIn:true
-            })
+            var sessionData = {
+                isUserLoggedIn:true,
+                role:role
+            }
+        localStorage.setItem('sessionData',JSON.stringify(sessionData))
         }
         else
         {
             toast(role+" login failure.")
-            setSessionData({
-                ...sessionData,
-                isUserLoggedIn:false
-            })
         }   
     }
     const handleRole = (event) => {

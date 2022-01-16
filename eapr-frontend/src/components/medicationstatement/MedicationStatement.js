@@ -11,14 +11,14 @@ const MedicationSummary = () => {
     const [medicationCategory, setMedicationCategory] = useState("")
 
     // Strength
-    const [strengthNumerator, setStrengthNumerator] = useState("")
+    const [strengthNumerator, setStrengthNumerator] = useState(0)
     const [strengthNumeratorUnit, setStrengthNumeratorUnit] = useState("")
-    const [strengthDenominator, setStrengthDenominator] = useState("")
+    const [strengthDenominator, setStrengthDenominator] = useState(0)
     const [strengthDenominatorUnit, setStrengthDenominatorUnit] = useState("")
     const [unitOfPresentation, setUnitOfPresentation] = useState("")
     const [strength, setStrength] = useState("")
     const [manufacturer, setManufacturer] = useState("")
-    const [batchId, setBatchId] = useState("")
+    const [batchId, setBatchId] = useState(0)
     const [expiry, setExpiry] = useState("")
     const [amount, setAmount] = useState("")
     const [amountUnit, setAmountUnit] = useState("")
@@ -49,7 +49,7 @@ const MedicationSummary = () => {
     const [timingDailySpecificEventTimeOffset, setTimingDailySpecificEventTimeOffset] = useState("");
     const [timingDailyCycleOn, setTimingDailyCycleOn] = useState("");
     const [timingDailyCycleOff, setTimingDailyCycleOff] = useState("");
-    const [timingDailyCycleRepetitions, setTimingDailyCycleRepetitions] = useState("");
+    const [timingDailyCycleRepetitions, setTimingDailyCycleRepetitions] = useState(0);
 
     // Administration details
     const [administrationDetailsRoute, setAdministrationDetailsRoute] = useState("");
@@ -90,75 +90,77 @@ const MedicationSummary = () => {
     
     const saveMedicationStatement = () =>{
         var data = {
-            patient_id:1,
-            medication_item:medicationItem,
-		    medication_name:medicationName,
-		    medication_form:medicationForm,
-            strength:"",
-            exact_timing_critical:"",
-		    medication_category:medicationCategory,
-		    medication_strength_numerator:strengthNumerator,
-		    medication_strength_numerator_unit:strengthNumeratorUnit,
-		    medication_strength_denominator:strengthDenominator,
-		    medication_strength_denominator_unit:strengthDenominatorUnit,
-		    unit_of_presentation:unitOfPresentation,
-		    strength:strength,
-		    manufacturer:manufacturer,
-		    batch_id:batchId,
-		    expiry:expiry,
-		    amount:amount,
-		    amount_unit:amountUnit,
-		    alternate_amount:alternateAmount,
-		    alternate_amount_unit:alternateAmountUnit,
-		    role:role,
-		    description:description,
-
-            dose_amount:doseAmount,
-		    dose_unit:doseUnit,
-		    dose_formula:doseFormula,
-		    dose_description:doseDescription,
-		    dose_frequency_lower:timingDailyFrequencyLower,
-		    dose_frequency_lower_rate:"",
-		    dose_frequency_higher:timingDailyFrequencyUpper,
-		    dose_frequency_higher_rate:"",
-		    dose_interval:timingDailyInterval,
-		    dose_specific_time:timingDailySpecificTime,
-		    dose_specific_time_lower:"",
-		    dose_specific_time_upper:"",
-		    dose_timing_description:timingDailyDescription,
-		    dose_exact_timing_critical:timingDailyExactTimingCritical,
-		    as_required:timingDailyAsRequired,
-		    as_required_criterion:timingDailyAsRequiredCriterion,
-		    dose_event_name:timingDailySpecificEventEventName,
-		    dose_time_offset:timingDailySpecificEventTimeOffset,
-		    dose_on:timingDailyCycleOn,
-		    dose_off:timingDailyCycleOff,
-		    dose_repetetions:timingDailyCycleRepetitions,
-
-            route:administrationDetailsRoute,
-		    body_site:administrationDetailsBodySite,
-
-            time_repetetion_interval:timingNonDailyRepetitionInterval,
-            time_frequency_lower:timingNonDailyFrequencyLower,
-		    time_frequency_lower_rate:"",
-		    time_frequency_higher:timingNonDailyFrequencyUpper,
-		    time_frequency_higher_rate:"",
-		    time_specific_date:timingNonDailySpecificDate,
-		    time_specific_date_lower:timingNonDailySpecificDateLower,
-		    time_specific_date_upper:timingNonDailySpecificDateUpper,
-		    time_specific_day_of_week:timingNonDailySpecificDayOfWeek,
-		    time_specific_day_of_month:timingNonDailySpecificDayOfMonth,
-		    time_event_time_offset:specificEventTimeOffset,
-            timing_description:timingNonDailyTimingDescription,
-		    time_event_name:specificEventEventName,
-		    timing_on:timingNonDailyCycleOn,
-		    timing_off:timingNonDailyCycleOff,
-		    timing_repetetions:timingNonDailyCycleRepetitions,
-
-            global_exclusion_of_adverse_reactions:exclusionGlobalData,
-            absence_of_information_statement:absenceOfInformationDataAbsenceStatement,
-            absence_of_information_protocol_last_updated:absenceOfInformationProtocolLastUpdated
-        }
+            "patient_id":1,
+            "medication_item":medicationItem,
+            "medication_name":medicationName,
+            "medication_form":"tablet",
+            "strength":"1",
+            "exact_timing_critical":"2",
+            "medication_category":"ad-hoc mixture",
+            "medication_strength_numerator":9,
+            "medication_strength_numerator_unit":"mg",
+            "medication_strength_denominator":0.3,
+            "medication_strength_denominator_unit":"g",
+            "unit_of_presentation":"capsule",
+            "strength(concentration)":"10 mgml",
+            "manufacturer":"abbott",
+            "batch_id":1,
+            "expiry":"2023-09-12",
+            "amount":"1",
+            "amount_unit":"mg",
+            "alternate_amount":"5",
+            "alternate_amount_unit":"ml",
+            "role":"therapeutic",
+            "description":"therapy related medication",
+    
+            "dose_amount":"1",
+            "dose_unit":"mg",
+            "dose_formula":"12",
+            "dose_description":"2 to 3 times a day",
+            "dose_frequency_lower":"2",
+            "dose_frequency_lower_rate":"1",
+            "dose_frequency_higher":"3",
+            "dose_frequency_higher_rate":"1",
+            "dose_interval":"03:00",
+            "dose_specific_time":"03:00",
+            "dose_specific_time_lower":"10:00",
+            "dose_specific_time_upper":"20:00",
+            "dose_timing_description":"every day",
+            "dose_exact_timing_critical":"FALSE",
+            "as_required":"TRUE",
+            "as_required_criterion":"for stress relieve",
+            "dose_event_name":"after every meal",
+            "dose_time_offset":"03:00",
+            "dose_on":"03:00",
+            "dose_off":"03:00",
+            "dose_repetetions":"6",
+    
+            "route":"oral",
+            "body_site":"head",
+    
+            "time_repetetion_interval":"1",
+            "time_frequency_lower":"2",
+            "time_frequency_lower_rate":"1",
+            "time_frequency_higher":"3",
+            "time_frequency_higher_rate":"3",
+            "time_specific_date":"2020-01-01",
+            "time_specific_date_lower":"2020-01-01",
+            "time_specific_date_upper":"2020-01-01",
+            "time_specific_day_of_week":"1",
+            "time_specific_day_of_month":"1",
+            "time_event_time_offset":"01:00",
+            "timing_description":"every day",
+            "time_event_name":"after meal",
+            "timing_on":"03:00",
+            "timing_off":"08:00",
+            "timing_repetetions":"9",
+    
+            "global_exclusion_of_adverse_reactions":"",
+            "absence_of_information_statement":"",
+            "absence_of_information_protocol_last_updated":""
+    
+    
+    }
         var result = addMedicationStatement(data)
         console.log(JSON.stringify(data))
         console.log(result)

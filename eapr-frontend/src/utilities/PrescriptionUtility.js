@@ -9,7 +9,7 @@ export const addPrescription = async (data) => {
             'token': localStorage.getItem('token')
         }
       }
-    const response = await fetch("/api/ips/medicationsummary/addmedicationstatement", requestOptions)
+    const response = await fetch("/api/addPrescription", requestOptions)
     const {
         success
     } = await response.json()

@@ -3,12 +3,17 @@ import IpsItem from '../ipsitem/IpsItem'
 import SessionContext from '../../utilities/SessionContext'
 import './styles.css'
 
-const IpsContainer = () => {
+const IpsContainer = (
+    {
+        selectedIPSCollective,
+        setSelectedIPSCollective
+    }
+) => {
     const sessionData = useContext(SessionContext);
     const headings = [
         {
             fieldName:'Medication Summary',
-            gotoUrl:'/medicationstatements'
+            gotoUrl:'/allmedicationstatements'
         },
         {
             fieldName:'Allergies and Intolerances',
@@ -60,13 +65,14 @@ const IpsContainer = () => {
         }
 
     ]
-    console.log(sessionData)
     return(
         <div className='ips_container'>
-            <h1>{sessionData.a}</h1>
             <div className='ips_inner_container'>
                 {
-                    headings.map((data) => <IpsItem {...data}/>)
+                    headings.map((data) => <IpsItem {...data}
+                                                    selectedIPSCollective={selectedIPSCollective}
+                                                    selectedIPSCollective={setSelectedIPSCollective}
+                    />)
                 }
             </div>
         </div>
