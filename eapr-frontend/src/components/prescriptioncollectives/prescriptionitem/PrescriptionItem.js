@@ -1,7 +1,8 @@
 import React from 'react' 
 import './styles.css'
 const PrescriptionItem = ({
-    
+    doctorName,
+    prescriptionId
 }) => {
 
     const handleClick = () => {
@@ -10,7 +11,7 @@ const PrescriptionItem = ({
     return(
         <div onClick={handleClick} className='container'>
             <div>
-                <h3>Prescription item</h3>
+                <h3>{doctorName}</h3>
             </div>
         </div>
     )

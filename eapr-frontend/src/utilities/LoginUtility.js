@@ -59,7 +59,7 @@ export const loginPatient = async (email,password) => {
     if(success)
     {
         localStorage.setItem('token',token)
-        localStorage.setItem('user', patient_info)
+        localStorage.setItem('patient_info', JSON.stringify(patient_info))
         return true
     }
     else

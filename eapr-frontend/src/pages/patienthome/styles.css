@@ -1,0 +1,46 @@
+.patient_home_container
+{
+    display: flex;
+    flex-direction: column;
+    border: 1px solid red;
+}
+.patient_content_container
+{
+    display: flex;
+    flex-direction: row;
+}
+.patient_home_section_1
+{
+    width: 50%;
+    border: 1px solid red;
+}
+.patient_home_section_2
+{
+    width: 50%;
+    border: 1px solid red;
+}
+.patient_content_container
+{
+    border:1px solid red;
+}
+.basic_patient_info
+{
+    border: 1px solid red;
+    height: 20vh;
+    display: flex;
+    flex-direction: row;
+}
+.basic_patient_info_box
+{
+    border: 1px solid red;
+    width: 50%;
+}
+.info_box_headings
+{
+    margin: 0px;
+    padding: 0px;
+}
+.info_box_values
+{
+    font-weight: 300;
+}

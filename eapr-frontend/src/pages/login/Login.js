@@ -37,7 +37,20 @@ const Login = ({
                 isUserLoggedIn:true,
                 role:role
             }
-        localStorage.setItem('sessionData',JSON.stringify(sessionData))
+            localStorage.setItem('sessionData',JSON.stringify(sessionData))
+            if(role === 'Doctor')
+            {
+                window.location.href = '/doctorsdashboard'
+            }
+            else if(role === 'Patient')
+            {
+                
+                window.location.href = '/patienthome'
+            }
+            else if(role === 'Admin')
+            {
+                window.location.href = '/adminhome'
+            }
         }
         else
         {

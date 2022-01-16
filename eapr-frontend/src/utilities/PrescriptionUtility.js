@@ -33,15 +33,38 @@ export const getAllPrescriptions = async () => {
             'token': localStorage.getItem('token')
         }
       }
-    const response = await fetch("/api/ips/medicationsummary/getallmedicationstatementsforpatient", requestOptions)
+    const response = await fetch("/api/getAllPrescriptionsForPatient", requestOptions)
     const {
-        success,
-        allmedicationstatements
+        allPrescriptions
     } = await response.json()
 
-    if(success)
+    if(allPrescriptions !== undefined)
     {
-        return allmedicationstatements
+        return allPrescriptions
+    }
+    else
+    {
+        return []
+    }
+}
+
+export const getAllPrescriptionsForDoctor = async () => {
+    var requestOptions = {
+        method: 'GET',
+        mode:'cors',
+        headers:{
+            'Content-type':'Application/json',
+            'token': localStorage.getItem('token')
+        }
+      }
+    const response = await fetch("/api/getAllPrescriptionsForDoctor", requestOptions)
+    const {
+        allPrescriptions
+    } = await response.json()
+
+    if(allPrescriptions !== undefined)
+    {
+        return allPrescriptions
     }
     else
     {

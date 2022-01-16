@@ -8,24 +8,27 @@ const MedicationSummary = () => {
     const [data, setData] = useState([])
     var patientInfo = JSON.parse(localStorage.getItem('patient_info'))
     var sessionData = JSON.parse(localStorage.getItem('sessionData'))
-    if(sessionData.role === 'Patient')
-    {
-        const getData1 = async () => {
-            var result = await getAllMedicationStatements(patientInfo.id)
-            setData(result)
-        }
-        getData1()
-    }
-    else if(sessionData.role === 'Doctor')
-    {
-        const getData2 = async () => {
-            var result = await getAllMedicationStatementsForDoctor(patientInfo.id)
-            setData(result)
-        }
-        getData2()
-    }
-   console.log(sessionData)
 
+    useEffect(() => {
+        if(sessionData.role === 'Patient')
+        {
+            sendRequest1()
+        }
+        else if(sessionData.role === 'Doctor')
+        {
+            sendRequest2()
+        }
+    },[])
+
+    const sendRequest1 = async () => {
+        var result = await getAllMedicationStatements(patientInfo.id)
+        setData(result)
+    }
+    const sendRequest2 = async () => {
+        var result = await getAllMedicationStatementsForDoctor(patientInfo.id)
+        setData(result)
+    }
+    
     return(
         // Multiple medical statements will be loaded here
         <div>

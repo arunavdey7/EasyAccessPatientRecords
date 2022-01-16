@@ -88,6 +88,7 @@ const MainComponent = () => {
                 <Route exact path='/allmedicationstatements'>
                   <MedicationSummary/>
                 </Route>
+                
               </Switch>
             </Router>
             </SessionContext.Provider>
