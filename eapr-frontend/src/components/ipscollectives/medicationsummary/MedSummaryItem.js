@@ -13,7 +13,10 @@ const MedSummaryItem = ({
     return(
         <div onClick={handleClick} className='container'>
             <div className='name_container'>
-                <h3>{medication_item}</h3>
+                {
+                    medication_item !=='' ? <h3>{medication_item}</h3> : <h3>Medication Item</h3>
+                }
+                
             </div>
         </div>
     )

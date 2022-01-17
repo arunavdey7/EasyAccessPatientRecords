@@ -8,6 +8,7 @@ import IpsContainer from '../ipscontainer/IpsContainer'
 import MedicationSummary from '../ipscollectives/medicationsummary/MedicationSummary'
 import { toast } from 'react-toastify'
 import { getPatientInfo } from '../../utilities/PatientUtility'
+import { logout } from '../../utilities/LogoutUtility'
 
 const DoctorDashboard = ({
     selectedIPSCollective,
@@ -32,7 +33,8 @@ const DoctorDashboard = ({
     }
     const setPatientContext = async () => {
         var result = await getPatientInfo(patientEmail)
-        if(result)
+        console.log(result)
+        if(result === true)
         {
 
             toast("Patient successfully identified")
@@ -59,17 +61,22 @@ const DoctorDashboard = ({
             <div className='patient_info_1'>
                 <div className='search_form_container'>
                     <div>
-                        <h1>Enter patient's email</h1>
+                        <h1 className='ins_1'>Enter patient's email</h1>
                     </div>
                     <div>
-                        <input onChange={e => setPatientEmail(e.target.value)}></input>
+                        <input className='input_fields' onChange={e => setPatientEmail(e.target.value)}></input>
                     </div>
-                    <div>
-                        <button onClick={setPatientContext} className='search_btn'>Search Patient</button>
+                    <div className='srch_btn_cont'>
+                        <div>
+                            <button onClick={setPatientContext} className='search_btn'>Search Patient</button>
+                        </div>
+                        <div>
+                            <button className='search_btn' onClick={createPrescription}>Create Prescription</button>
+                        </div>
                     </div>
                 </div>
                 <div className='search_form_container'>
-                    <div>
+                    <div className='patient_info_secn'>
                         <h3>Patient Name: {patientInfo.name}</h3>
                         <h3>Patient Age: {patientInfo.age}</h3>
                         <h3>Patient Gender: {patientInfo.gender}</h3>
@@ -77,15 +84,24 @@ const DoctorDashboard = ({
                     </div>
                 </div>
             </div>
+            <h1 style={{textAlign:"center"}}>Detailed Medical record of patient</h1>
             <div className='patient_info_container'>
                 <div className='section_1'>
-                    <button onClick={createPrescription}>Create Prescription</button>
+                    
+                    
                 </div>
                 <div className='section_2'>
                     <IpsContainer setSelectedIPSCollective={setSelectedIPSCollective}
                                   selectedIPSCollective={selectedIPSCollective}
                     />
                 </div>
+                
+            </div>
+            <div className='lg_cont'>
+                <div>
+                <button onClick={logout} className='search_btn'>Logout</button>
+                </div>
+                    
             </div>
         </div>
     )

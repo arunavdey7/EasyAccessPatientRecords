@@ -1,6 +1,6 @@
-import React,{useState} from 'react';
-
-const ProblemList = () => {
+import React,{useState,useEffect} from 'react';
+import {addProblem} from '../../utilities/ProblemListUtility'
+const CreateProblemList = () => {
 
     const [data, setData] = useState({
 
@@ -37,7 +37,27 @@ const ProblemList = () => {
             [e.target.name] : e.target.value
         })
     }
-    console.log(data)
+    var data2 = {
+            "patient_id":"1",
+            "global_exclusion_of_adverse_reactions":"sss",
+            "absence_of_information_statement":"sss",
+            "absence_of_information_protocol_last_updated":"sss",
+            "problem_name":"headache",
+            "body_site":"lower head",
+            "datetime_of_onset":"2021-07-21",
+            "severity":"mild",
+            "date_of_abatebent":"2021-07-24",
+            "active_or_inactive":"active",
+            "resolution_phase":"resolved",
+            "remission_status":"in remession",
+            "occurrence":"recurrence",
+            "diagnostic_certainity":"probable",
+            "protocol_last_updated":"2021-08-03"
+    }
+    
+    const sendData = async () => {
+        const result = await addProblem(data2)
+     }
     return(
         <>
             <h1 className='main_heading'>Problem List</h1>
@@ -116,9 +136,9 @@ const ProblemList = () => {
             <input type='datetime-local'></input>
             <br/>
             <button>Temporary save</button>
-            <button>Final save</button>
+            <button onClick={sendData}>Final save</button>
         </div>
         </>
     )
 }
-export default ProblemList;
+export default CreateProblemList;

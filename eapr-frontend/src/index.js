@@ -21,6 +21,20 @@ import MedicationSummary from './components/ipscollectives/medicationsummary/Med
 import MedicationOrders from './components/prescriptioncollectives/medicationorders/MedicationOrders';
 import Prescriptions from './components/prescriptioncollectives/prescriptions/Prescriptions'
 import CreatePrescription from './pages/createprescription/CreatePrescription';
+import AllergiesIntolerances from './components/allergiesandintolerances/AllergiesAndIntolerances';
+import VitalSigns from './components/vitalsigns/VitalSigns';
+import Allergies from './components/ipscollectives/allergies/Allergies';
+import ShowAllergiesAndIntolerances from './components/allergiesandintolerances/ShowAllergiesAndIntolerances';
+import ShowProblemList from './components/problemlist/ShowProblemList';
+import CreateProblemList from './components/problemlist/CreateProblemList'
+import ProblemList from './components/ipscollectives/problemlist/ProblemList'
+import CreatePastHistoryOfIllness from './components/pasthistoryofillness/CreatePastHistoryofIllness'
+import PastHoi from './components/ipscollectives/pasthoi/PastHoi';
+import CreateAdvancedDirectives from './components/advancedirectives/CreateAdvanceDirectives';
+import ShowAdvanceDirectives from './components/advancedirectives/ShowAdvanceDirectives';
+import AdvancedDirectives from './components/ipscollectives/advanceddirectives/AdvancedDirectives';
+import ShowPrescription from './pages/showprescription/ShowPrescription';
+import AdminHome from './pages/adminhome/AdminHome';
 
 const MainComponent = () => {
 
@@ -88,7 +102,51 @@ const MainComponent = () => {
                 <Route exact path='/allmedicationstatements'>
                   <MedicationSummary/>
                 </Route>
-                
+                <Route exact path='/allergiesandintolerances'>
+                  <Allergies/>
+                </Route>
+                <Route exact path='/showallergies'>
+                  <ShowAllergiesAndIntolerances/>
+                </Route>
+                {/* Admin */}
+                <Route exact path='/createproblemlist'>
+                  <CreateProblemList/>
+                </Route>
+                {/* Patient's and Doctor's Detailed*/}
+                <Route exact path='/showproblemlist'>
+                  <ShowProblemList/>
+                </Route>
+                {/* Patient's and Doctor's Detailed*/}
+                <Route exact path='/ips/problemlist'>
+                  <ProblemList/>
+                </Route>
+                <Route exact path='/showproblemlist'>
+                  <ShowProblemList/>
+                </Route>
+                <Route exact path='/createpasthoi'>
+                  <CreatePastHistoryOfIllness/>
+                </Route>
+                <Route exact path='/pasthoi'>
+                  <PastHoi/>
+                </Route>
+                <Route exact path='/createadvancedirectives'>
+                  <CreateAdvancedDirectives/>
+                </Route>
+                <Route exact path='/advancedirectives'>
+                  <AdvancedDirectives/>
+                </Route>
+                <Route exact path='/showadvancedirectives'>
+                  <ShowAdvanceDirectives/>
+                </Route>
+                <Route exact path='/medicationorders'>
+                  <MedicationOrders/>
+                </Route>
+                <Route exact path='/showmedicationorder'>
+                  <ShowPrescription/>
+                </Route>
+                <Route exact path='/adminhome'>
+                  <AdminHome/>
+                </Route>
               </Switch>
             </Router>
             </SessionContext.Provider>

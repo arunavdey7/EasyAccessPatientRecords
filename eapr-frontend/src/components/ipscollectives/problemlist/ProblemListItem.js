@@ -1,18 +1,17 @@
 import React from 'react' 
-import Problemist from './Problemist'
 
-import './medSummaryItemStyles.css'
 const ProblemistItem = ({
-    orderId,
-    medicationName
+    problem_name,
+    id
 }) => {
     const handleClick = () => {
-        window.location.href = '/showmedicationstatement'
+        localStorage.setItem('problem_id',id)
+        window.location.href = '/showproblemlist'
     }
     return(
         <div onClick={handleClick} className='container'>
             <div className='name_container'>
-                <h3>Problem List</h3>
+                <h3>{problem_name}</h3>
             </div>
         </div>
     )

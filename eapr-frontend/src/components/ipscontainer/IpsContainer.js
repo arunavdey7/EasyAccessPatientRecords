@@ -21,7 +21,7 @@ const IpsContainer = (
         },
         {
             fieldName:'Problem List',
-            gotoUrl:'/medicationstatements'
+            gotoUrl:'/ips/problemlist'
         },
         {
             fieldName:'Immunizations',
@@ -41,7 +41,7 @@ const IpsContainer = (
         },
         {
             fieldName:'Past History of Illnesses',
-            gotoUrl:'/medicationstatements'
+            gotoUrl:'/pasthoi'
         },
         {
             fieldName:'Pregnancy',
@@ -61,7 +61,7 @@ const IpsContainer = (
         },
         {
             fieldName:'Advanced Directives',
-            gotoUrl:'/medicationstatements'
+            gotoUrl:'/advancedirectives'
         }
 
     ]

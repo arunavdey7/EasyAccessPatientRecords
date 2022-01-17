@@ -1,18 +1,18 @@
 import React from 'react' 
 import AdvancedDirectives from './AdvancedDirectives'
 
-import './medSummaryItemStyles.css'
 const AdvancedDirectivesItem = ({
-    orderId,
-    medicationName
+    id,
+    carer_awareness
 }) => {
     const handleClick = () => {
-        window.location.href = '/showmedicationstatement'
+        localStorage.setItem('adv_directive_id',id)
+        window.location.href = '/showadvancedirectives'
     }
     return(
         <div onClick={handleClick} className='container'>
             <div className='name_container'>
-                <h3>Advanced Directives</h3>
+                <h3>{carer_awareness}</h3>
             </div>
         </div>
     )

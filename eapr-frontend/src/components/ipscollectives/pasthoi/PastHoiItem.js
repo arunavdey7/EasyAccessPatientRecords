@@ -1,18 +1,18 @@
 import React from 'react' 
 import PastHoi from './PastHoi'
 
-import './medSummaryItemStyles.css'
 const PastHoiItem = ({
-    orderId,
-    medicationName
+    id,
+    problem_name
 }) => {
     const handleClick = () => {
-        window.location.href = '/showmedicationstatement'
+        localStorage.setItem('past_hoi_id',id)
+        window.location.href = '/showpasthoi'
     }
     return(
         <div onClick={handleClick} className='container'>
             <div className='name_container'>
-                <h3>Past History of Illnesses</h3>
+                <h3>{problem_name}</h3>
             </div>
         </div>
     )

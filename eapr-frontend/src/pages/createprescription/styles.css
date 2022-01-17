@@ -1,0 +1,51 @@
+.med_order_card
+{
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    font-weight: 600;
+    font-size: x-large;
+    margin-left: 10%;
+    margin-right: 10%;
+    padding: 1%;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+.rm_btn
+{
+    border-radius: 4px;
+    height: 10vh;
+    border-width:2.5px;
+    border-color: lightblue;
+    border-style: solid;
+    font-family: 'Open Sans', sans-serif;
+    color: lightslategrey;
+    padding-bottom: 22px;
+    margin:5% !important;
+    font-size: larger;
+
+}
+.rm_btn:hover
+{
+    cursor: pointer;
+}
+.jj
+{
+    padding: 0px;
+    margin: 0px;
+}
+.page_heading
+{
+    color: darkslategrey;
+    text-align: center;
+}
+.main_cont
+{
+    
+}
+.aa 
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}

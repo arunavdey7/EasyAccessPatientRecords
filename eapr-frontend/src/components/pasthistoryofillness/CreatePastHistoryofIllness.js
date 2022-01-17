@@ -1,37 +1,30 @@
 import React,{useState} from 'react';
+import { toast } from 'react-toastify';
+import { addPastHistory } from '../../utilities/PasthoiUtility';
 
-const PastHistoryofIllness = () => {
+const CreatePastHistoryofIllness = () => {
 
-    const [data, setData] = useState({
-
-    // Problem/Diagnosis Data (hi)
-        hiProblemName:'',
-        hiBodySite:'',
-        hiDateTimeofOnsetdate:'',
-        hiDateTimeofOnsettime:'',
-        hiSeverity:'',
-        hiDateofAbatementdate:'',
-        hiDateofAbatementtime:'',
-        hiDiagnosisCertainty:'',
-
-    // Problem/Diagnosis Qualifier (hi)
-        hiActiveInactive:'',
-        hiResolutionPhase:'',
-        hiRemissionStatus:'',
-        hiOccurrence:'',
-
-    // Problem/Diagnosis Protocol (hi)
-        hiLastUpdateddate:'',
-        hiLastUpdatedtime:''
-    })
-
-    const handleChange = e => {
-        setData({
-            ...data,
-            [e.target.name] : e.target.value
-        })
+    var data = {
+            "patient_uid":"1",
+            "problem_name": "nephropathy",
+            "body_site": "Renal",
+            "datetime_of_onset": "2021-01-11",
+            "severity": "mild",
+            "date_of_abatebent": "2021-01-21",
+            "active_or_inactive": "active",
+            "resolution_phase": "resolved",
+            "remission_status": "In remission",
+            "occurrence": "recurrence",
+            "diagnostic_certainity": "suspected",
+            "protocol_last_updated": "2021-01-21"
+        }
+    const sendData = () => {
+        var result = addPastHistory(data)
+        if(result === true)
+            toast("Data sucessfully added!")
+        else
+            toast("Unable to add data right now.")
     }
-    console.log(data)
     return(
         <>
             <h1 className='main_heading'>Past History of Illnesses</h1>
@@ -39,10 +32,10 @@ const PastHistoryofIllness = () => {
             <h1>Problem/Diagnosis</h1>
             <h2>Data</h2>
             <label>Problem/Diagnosis name</label>
-            <input name='hiProblemName' value={data.hiProblemName || ''} onChange={handleChange}></input>
+            <input name='hiProblemName' value={data.hiProblemName || ''} ></input>
             <br/>
             <label>Body site</label>
-            <input name='hiBodySite' value={data.hiBodySite || ''} onChange={handleChange}></input>
+            <input name='hiBodySite' value={data.hiBodySite || ''} ></input>
             <br/>
             <label>Date/Time of onset</label>
             <input type="date"></input><input type="time"></input>
@@ -92,7 +85,8 @@ const PastHistoryofIllness = () => {
             <input type="datetime-local"></input>
             <br/>
         </div>
+        <button onClick={sendData}>Finalize</button>
         </>
     )
 }
-export default PastHistoryofIllness;
+export default CreatePastHistoryofIllness;

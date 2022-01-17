@@ -1,18 +1,17 @@
 import React from 'react' 
 import Allergies from './Allergies'
-
-import './medSummaryItemStyles.css'
 const AllergiesItem = ({
-    orderId,
-    medicationName
+    allergy_id,
+    substance
 }) => {
     const handleClick = () => {
-        window.location.href = '/showmedicationstatement'
+        localStorage.setItem('allergy_id',allergy_id)
+        window.location.href = '/showallergies'
     }
     return(
         <div onClick={handleClick} className='container'>
             <div className='name_container'>
-                <h3>Allergies and Intolerances</h3>
+                <h3>{substance}</h3>
             </div>
         </div>
     )

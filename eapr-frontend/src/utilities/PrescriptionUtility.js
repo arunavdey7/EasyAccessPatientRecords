@@ -100,3 +100,105 @@ export const getPrescription = async (orderId) => {
         return null
     }
 }
+
+// A prescription is a collection of Medical Orders
+export const getPrescriptionByIdForDoctor = async (prescriptionId) => {
+    
+    var requestOptions = {
+        method: 'GET',
+        mode:'cors',
+        headers:{
+            'Content-type':'Application/json',
+            'token': localStorage.getItem('token')
+        }
+      }
+    const response = await fetch("/api/getPrescriptionByIdForDoctor/"+prescriptionId, requestOptions)
+    const {
+        Prescription
+    } = await response.json()
+
+    if(Prescription !== undefined)
+    {
+        return Prescription
+    }
+    else
+    {
+        return []
+    }
+}
+
+export const getPrescriptionByIdForPatient = async (prescriptionId) => {
+    
+    var requestOptions = {
+        method: 'GET',
+        mode:'cors',
+        headers:{
+            'Content-type':'Application/json',
+            'token': localStorage.getItem('token')
+        }
+      }
+    const response = await fetch("/api/getPrescriptionByIdForPatient/"+prescriptionId, requestOptions)
+    const {
+        Prescription
+    } = await response.json()
+
+    if(Prescription !== undefined)
+    {
+        return Prescription
+    }
+    else
+    {
+        return []
+    }
+}
+
+export const getMedicationOrderByIdForDoctor = async (medicationOrder) => {
+    
+    var requestOptions = {
+        method: 'GET',
+        mode:'cors',
+        headers:{
+            'Content-type':'Application/json',
+            'token': localStorage.getItem('token')
+        }
+      }
+    const response = await fetch("/api/getMedicationOrderByIdForDoctor"+medicationOrder, requestOptions)
+    const {
+        Prescription
+    } = await response.json()
+
+    if(Prescription !== undefined)
+    {
+        return Prescription
+    }
+    else
+    {
+        return []
+    }
+}
+
+export const getMedicationOrderByIdForPatient = async (medicationOrder) => {
+    
+    var requestOptions = {
+        method: 'GET',
+        mode:'cors',
+        headers:{
+            'Content-type':'Application/json',
+            'token': localStorage.getItem('token')
+        }
+      }
+    const response = await fetch("/api/getMedicationOrderByIdForPatient/"+medicationOrder, requestOptions)
+    const data = await response.json()
+
+    if(data !== undefined)
+    {
+        return data
+    }
+    else
+    {
+        return null
+    }
+}
+
+
+

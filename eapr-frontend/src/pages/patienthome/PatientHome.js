@@ -2,6 +2,7 @@ import React,{useState} from 'react'
 import IpsContainer from '../../components/ipscontainer/IpsContainer'
 import Prescriptions from '../../components/prescriptioncollectives/prescriptions/Prescriptions'
 import { getPatientInfo } from '../../utilities/PatientUtility'
+import {logout} from '../../utilities/LogoutUtility'
 import './styles.css'
 const PatientHome = () => {
 
@@ -17,7 +18,7 @@ const PatientHome = () => {
     return(
         <div className='patient_home_container'>
             <div className='patient_home_header'>
-                <h1 style={{textAlign:"center"}}>Patient Dashboard</h1>
+                <h1 className='he' style={{textAlign:"center"}}>Patient Dashboard</h1>
             </div>
             <div className='basic_patient_info'>
                 <div className='basic_patient_info_box'>
@@ -46,6 +47,7 @@ const PatientHome = () => {
                     <IpsContainer/>
                 </div>
             </div>
+            <button className = 'lgbtn' onClick={logout}>Logout</button>
         </div>
     )
 }

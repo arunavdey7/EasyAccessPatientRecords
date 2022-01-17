@@ -1,16 +1,18 @@
 import React from 'react' 
 import './styles.css'
 const MedicationOrderItem = ({
-    
+    medId,
+    medicationItem
 }) => {
 
     const handleClick = () => {
-        window.location.href = '/'
+        localStorage.setItem('medicationOrderId',medId)
+        window.location.href = '/showmedicationorder'
     }
     return(
         <div onClick={handleClick} className='container'>
             <div>
-                <h3>Medication Order Item</h3>
+                <h3>{medicationItem}</h3>
             </div>
         </div>
     )

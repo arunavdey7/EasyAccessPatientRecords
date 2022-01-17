@@ -6,7 +6,8 @@ const PrescriptionItem = ({
 }) => {
 
     const handleClick = () => {
-        window.location.href = '/'
+        localStorage.setItem('prescription_id',prescriptionId)
+        window.location.href = '/medicationorders'
     }
     return(
         <div onClick={handleClick} className='container'>

@@ -1,6 +1,6 @@
 .main_container
 {
-    border:1px solid red;
+
 }
 .patient_info_1
 {
@@ -9,7 +9,7 @@
 }
 .heading_picture
 {
-    border:1px solid red;
+    
     height: 40vh;
     background-image: url('../../assets/3698931.jpeg');
     background-position: center;
@@ -25,17 +25,85 @@
 }
 .section_1
 {
-    border: 1px solid red;
-    width: 50%;
+
+    width: 0%;
     
 }
 .section_2
 {
-    border: 1px solid red;
-    width: 50%;
+    width: 100%;
 }
 .search_form_container
 {
-    border: 1px solid blue;
     width: 50%;
+}
+.patient_info_secn
+{
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    border-radius: 4px;
+    margin: 5%;
+    padding: 1%;
+    color: darkslategrey;
+}
+.input_fields
+{
+    border-radius: 4px;
+    height: 3vh;
+    border-width:4.5px;
+    border-color: lightblue;
+    border-style: solid;
+    font-family: 'Open Sans', sans-serif;
+    color: lightslategrey;
+    width: 100%;
+}
+.search_btn
+{
+    border-radius: 4px;
+    height: 10vh;
+    border-width:2.5px;
+    border-color: lightblue;
+    border-style: solid;
+    font-family: 'Open Sans', sans-serif;
+    color: lightslategrey;
+    padding-bottom: 22px;
+    margin:5% !important;
+    font-size: larger;
+
+}
+.search_btn:hover
+{
+    cursor: pointer;
+}
+.patient_info_container
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    margin: 5%;
+    border-radius: 4px;
+}
+.section_1
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+.ins_1
+{
+    text-align: center;
+    color: darkslategrey;
+}
+.srch_btn_cont
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+.lg_cont
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
 }

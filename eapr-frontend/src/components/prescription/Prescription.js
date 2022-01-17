@@ -100,8 +100,6 @@ const Prescription = () => {
     return(
     <div className='prescription_container'>
         <h1 className='prescription_heading'>Prescription</h1>
-        <label>Prescription Identifier</label>
-        <input></input>
         <h2>Medication Order</h2>
         <h4>Order</h4>
         <label>Medication Item</label>

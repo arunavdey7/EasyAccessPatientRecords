@@ -10,15 +10,13 @@ export const getPatientInfo = async (patientEmail) => {
       }
     const response = await fetch("/api/getPatientForDoctor?email="+patientEmail, requestOptions)
     const {
-        patient
+        patient,
+        success
     } = await response.json()
-    if(patient !== undefined || patient !== null)
+    if(patient !== undefined)
     {
         localStorage.setItem('patient_info',JSON.stringify(patient))
         return true
     }
-    else
-    {
-        return false
-    }
+    return false
 }

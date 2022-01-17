@@ -33,15 +33,14 @@ export const getAllAllergiesAndIntolerancesForDoctor = async (patientId) => {
             'token': localStorage.getItem('token')
         }
       }
-    const response = await fetch("/api/get_all_allergies_and_intolerances_for_patient"+patientId, requestOptions)
+    const response = await fetch("/api/get_all_allergies_and_intolerances_for_doctor/"+patientId, requestOptions)
     const {
-        medication_summary,
-        success
+        all_allergies_and_intolerances
     } = await response.json()
     
-    if(success)
+    if(all_allergies_and_intolerances !== undefined)
     {
-        return medication_summary["medication_statements"]
+        return all_allergies_and_intolerances["allergy_list"]
     }
     else
     {
@@ -58,15 +57,14 @@ export const getAllAllergiesAndIntolerancesForPatient = async () => {
             'token': localStorage.getItem('token')
         }
       }
-    const response = await fetch("/api/get_all_allergies_and_intolerances_for_patient/api/get_all_allergies_and_intolerances_for_patient", requestOptions)
+    const response = await fetch("/api/get_all_allergies_and_intolerances_for_patient", requestOptions)
     const {
-        medication_summary,
-        success
+        all_allergies_and_intolerances
     } = await response.json()
     
-    if(success)
+    if(all_allergies_and_intolerances !== undefined)
     {
-        return medication_summary["medication_statements"]
+        return all_allergies_and_intolerances["allergy_list"]
     }
     else
     {
@@ -74,7 +72,7 @@ export const getAllAllergiesAndIntolerancesForPatient = async () => {
     }
 }
 
-export const getAllergyAndIntoleranceByIdForPatient = async (orderId) => {
+export const getAllergyAndIntoleranceByIdForPatient = async (allergyId) => {
     var requestOptions = {
         method: 'GET',
         mode:'cors',
@@ -83,7 +81,7 @@ export const getAllergyAndIntoleranceByIdForPatient = async (orderId) => {
             'token': localStorage.getItem('token')
         }
       }
-    const response = await fetch("/api/get_allergy_by_id_for_doctor"+orderId, requestOptions)
+    const response = await fetch("/api/get_allergy_by_id_for_patient/"+allergyId, requestOptions)
     const {
         success,
         data
@@ -99,7 +97,7 @@ export const getAllergyAndIntoleranceByIdForPatient = async (orderId) => {
     }
 }
 
-export const getAllergyAndIntoleranceByIdForDoctor = async (orderId) => {
+export const getAllergyAndIntoleranceByIdForDoctor = async (allergyId) => {
     var requestOptions = {
         method: 'GET',
         mode:'cors',
@@ -108,7 +106,7 @@ export const getAllergyAndIntoleranceByIdForDoctor = async (orderId) => {
             'token': localStorage.getItem('token')
         }
       }
-    const response = await fetch("/api/get_allergy_by_id_for_doctor"+orderId, requestOptions)
+    const response = await fetch("/api/get_allergy_by_id_for_doctor/"+allergyId, requestOptions)
     const {
         success,
         data
