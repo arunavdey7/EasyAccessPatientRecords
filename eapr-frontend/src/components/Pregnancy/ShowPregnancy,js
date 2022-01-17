@@ -22,29 +22,29 @@ const ShowPregnancy = () => {
         <div className='form_container'>
             <h1>Pregnancy Summary</h1>
             <h2>Data</h2>
-            <label>Status : <span className='values'>{data["pregnancy_status"]}</label>
+            <label>Status : <span className='values'>{data["pregnancy_status"]}</span></label>
             <br/>
             <h2>Per pregnancy</h2>
-            <label>Pregnancy outcome : <span className='values'>{data["pregnancy_outcome"]}</label>
+            <label>Pregnancy outcome : <span className='values'>{data["pregnancy_outcome"]}</span></label>
             <br/>
             <h1>Estimated date of delivery</h1>
             <h2>Data</h2>
-            <label>By date of conception : <span className='values'>{data["estimated_date_of_delivery_by_date_of_conseption"]}</label>
+            <label>By date of conception : <span className='values'>{data["estimated_date_of_delivery_by_date_of_conseption"]}</span></label>
             <br/>
-            <label>By cycle : <span className='values'>{data["estimated_date_of_delivery_by_cycle"]}</label>
+            <label>By cycle : <span className='values'>{data["estimated_date_of_delivery_by_cycle"]}</span></label>
             <br/>
             <h2>By ultrasound</h2>
-            <label>Estimated date by ultrasound : <span className='values'>{data["estimated_date_of_delivery_by_ultrasound"]}</label>
+            <label>Estimated date by ultrasound : <span className='values'>{data["estimated_date_of_delivery_by_ultrasound"]}</span></label>
             <br/>
             <h2>Agreed EDD</h2>
-            <label>Agreed date : <span className='values'>{data["agreed_date"]}</label>
+            <label>Agreed date : <span className='values'>{data["agreed_date"]}</span></label>
             <br/>
             <h2>Protocol</h2>
-            <label>Last updated : <span className='values'>{data["protocol_last_updated"]}</label>
+            <label>Last updated : <span className='values'>{data["protocol_last_updated"]}</span></label>
             <br/>
             <h1>Exclusion of pregnancy</h1>
             <h2>Data</h2>
-            <label>Exclusion statement : <span className='values'>{data["exclusion_of_pregnancy_statement"]}</label>
+            <label>Exclusion statement : <span className='values'>{data["exclusion_of_pregnancy_statement"]}</span></label>
             <br/>
         </div>
         </>
