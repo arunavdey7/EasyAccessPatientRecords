@@ -1,5 +1,6 @@
 import React,{useState,useEffect} from 'react' 
 import {getMedicationOrderByIdForDoctor,getMedicationOrderByIdForPatient} from '../../utilities/PrescriptionUtility'
+import './styles.css'
 const ShowPrescription = () => {
     const [data, setData] = useState([])
     var role = JSON.parse(localStorage.getItem('sessionData')).role
@@ -29,19 +30,19 @@ const ShowPrescription = () => {
         <h1 className='prescription_heading'>Prescription</h1>
         <h2>Medication Order</h2>
         <h4>Order</h4>
-        <label>Medication Item</label>
+        <label>Medication Item <span className='ans' style={{fontWeight:"bold"}}>{data["medicationItem"]}</span></label>
         
         <h4>Preparation</h4>
-        <label>Substance name</label>
+        <label>Substance name <span className='ans' style={{fontWeight:"bold"}}>{data["substance_name"]}</span></label>
         
         <br/>
-        <label>Form</label>
+        <label>Form <span className='ans' style={{fontWeight:"bold"}}>{data["form"]}</span></label>
         
         <br/>
-        <label>Strength</label>
+        <label>Strength <span className='ans' style={{fontWeight:"bold"}}>{data["strength"]}</span></label>
         
         <br/>
-        <label>Strength unit</label>
+        <label>Strength unit <span className='ans' style={{fontWeight:"bold"}}>{data["strengthUnit"]}</span></label>
         
         <br/>
         <h4>Dilutent</h4>

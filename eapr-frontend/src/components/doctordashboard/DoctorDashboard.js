@@ -54,6 +54,11 @@ const DoctorDashboard = ({
         }
             
     }
+
+    if(localStorage.getItem('token') === null)
+        return(
+            <h1>You need to be logged in first</h1>
+        )
     return(
         <div className='main_container'>
             <div className='heading_picture'>

@@ -1,7 +1,7 @@
 import React,{useState} from 'react'
 
 import {addAllergiesAndIntolerances} from '../../utilities/AllergiesAndIntolerancesUtility'
-const AllergiesAndIntolerances = () => {
+const CreateAllergiesAndIntolerances = () => {
     // Allergy Intolerance Data
     const [aiSubstance, setAiSubstance] = useState("")
     const [aiVerificationStatus, setAiVerificationStatus] = useState("")
@@ -31,7 +31,7 @@ const AllergiesAndIntolerances = () => {
         "global_exclusion_of_adverse_reactions":"frvgtbh",
         "absence_of_information_statement" :"sdfgh",
         "absence_of_information_protocol_last_updated" :"asdfg",
-        "substance" : "fvgb",
+        "substance" : aiSubstance,
         "verification_status":"gvc",
         "critically" :"fcds",
         "type" :"frd",
@@ -126,4 +126,4 @@ const AllergiesAndIntolerances = () => {
         </>
     )
 }
-export default AllergiesAndIntolerances;
+export default CreateAllergiesAndIntolerances;

@@ -45,8 +45,8 @@ const Prescription = () => {
     const handleAddMore = () => {
         
         medOrders.push({
-            "medicationItem" : "doct2",
-            "route" : "qwe",
+            "medicationItem" : medicationItem,
+            "route" : route,
             "dosageInstruction":"asdf",
             "maximumAmount" : 2,
             "maximumAmountDoseUnit":"wedfrgh",
@@ -73,8 +73,8 @@ const Prescription = () => {
             "specific_day_of_week" : "monday",
             "Specific_day_of_month" :"jan",
             "specific_Event" :"tom",
-            "substance_name" :"omnws",
-            "form" :"okds",
+            "substance_name" :substance_name,
+            "form" :form,
             "strength" :10,
             "strengthUnit" : "oksjn",
             "diluentAmount" : 10,
@@ -88,7 +88,7 @@ const Prescription = () => {
 
     const postPrescriptionData = () => {
         var requestData = {
-            patient_id:1,
+            patient_id:JSON.parse(localStorage.getItem('patient_info')).id,
             medOrders:JSON.parse(localStorage.getItem('tempMedOrders'))
         }
         var result = addPrescription(requestData)
@@ -103,12 +103,12 @@ const Prescription = () => {
         <h2>Medication Order</h2>
         <h4>Order</h4>
         <label>Medication Item</label>
-        <input></input>
+        <input onChange={e => setMedicationItem(e.target.value)}></input>
         <h4>Preparation</h4>
         <label>Substance name</label>
-        <input></input>
+        <input onChange={e => setSubstance_name(e.target.value)}></input>
         <br/>
-        <label>Form</label>
+        <label onChange={e => setForm(e.target.value)}>Form</label>
         <input></input>
         <br/>
         <label>Strength</label>

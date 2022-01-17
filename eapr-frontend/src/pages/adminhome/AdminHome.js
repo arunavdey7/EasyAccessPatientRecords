@@ -1,7 +1,7 @@
 import React,{useState,useEffect} from 'react' 
 import { toast } from 'react-toastify'
 import { logout } from '../../utilities/LogoutUtility'
-import { getPatientInfo } from '../../utilities/PatientUtility'
+import { getPatientInfo,getPatientInfoForAdmin } from '../../utilities/PatientUtility'
 
 import './styles.css'
 
@@ -15,7 +15,7 @@ const AdminHome = () => {
     })
     
     const setPatientContext = async () => {
-        var result = await getPatientInfo(patientEmail)
+        var result = await getPatientInfoForAdmin(patientEmail)
         console.log(result)
         if(result === true)
         {
@@ -37,12 +37,22 @@ const AdminHome = () => {
         }
             
     }
-    const handleCategorySelect = (event) => {
-        if(event.target.id === '1')
-            window.location.href = '/medicationstatement'
-        else if(event.target.id === '2')
-            window.location.href = '/medicationstatement'
+    const handleCreateMedicationStatement = () => {
+        window.location.href = '/medicationstatement'
     }
+    const handleCreateAllergiesAndIntolerances = () => {
+        window.location.href = '/createallergiesandintolerances'
+    }
+    const handleCreateProblemList = () => {
+        window.location.href = '/createproblemlist'
+    }
+    const handleCreateAdvanceDirectives = () => {
+        window.location.href = '/createadvancedirectives'
+    }
+    if(localStorage.getItem('token') === null)
+        return(
+            <h1>You need to be logged in first</h1>
+        )
     return(
         <div className='main_container'>
             <h1 className='intro' style={{textAlign:"center"}}>Admin Panel</h1>
@@ -78,14 +88,14 @@ const AdminHome = () => {
         <div className='patient_info_container'>
             
             <div className='section_2'>
-               <div className='cat_card'>
+               <div id='1' onClick = {handleCreateMedicationStatement} className='cat_card'>
                     <h3 style={{textAlign:"center"}}>Medication Summary</h3>
                </div>
-               <div className='cat_card'>
+               <div onClick = {handleCreateAllergiesAndIntolerances} className='cat_card'>
                 <h3 style={{textAlign:"center"}}>Allergies and Intolerances</h3>
                </div>
                <div className='cat_card'>
-               <h3 style={{textAlign:"center"}}>Problem List </h3>
+               <h3 onClick = {handleCreateProblemList} style={{textAlign:"center"}}>Problem List </h3>
                </div>
                <div className='cat_card'>
                <h3 style={{textAlign:"center"}}>Immunizations</h3>

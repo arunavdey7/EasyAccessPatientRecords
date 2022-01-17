@@ -57,14 +57,14 @@ const Registration = () => {
             var resultDoc  = await registerDoctor(doctorData)
             if(resultDoc)
                 toast("Registration of Doctor successfull")
-                window.location.href = '/doctorsdashboard'
+                //window.location.href = '/'
         }
         else if(selectedRole === 'Patient')
         {
             var resultPat = await registerPatient(patientData)
             if(resultPat)
                 toast("Registration of Patient successfull")
-                window.location.href = '/patientsdashboard'
+                //window.location.href = '/'
         }
     }
 

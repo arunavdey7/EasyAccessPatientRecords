@@ -5,6 +5,10 @@ import { getPatientInfo } from '../../utilities/PatientUtility'
 import {logout} from '../../utilities/LogoutUtility'
 import './styles.css'
 const PatientHome = () => {
+    if(localStorage.getItem('token') === null)
+        return(
+            <h1>You need to be logged in first</h1>
+        )
 
     var {
         name,
@@ -15,6 +19,7 @@ const PatientHome = () => {
         address
 
     } = JSON.parse(localStorage.getItem('patient_info'))
+    
     return(
         <div className='patient_home_container'>
             <div className='patient_home_header'>

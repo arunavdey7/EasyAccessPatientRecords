@@ -35,7 +35,7 @@ import ShowAdvanceDirectives from './components/advancedirectives/ShowAdvanceDir
 import AdvancedDirectives from './components/ipscollectives/advanceddirectives/AdvancedDirectives';
 import ShowPrescription from './pages/showprescription/ShowPrescription';
 import AdminHome from './pages/adminhome/AdminHome';
-
+import CreateAllergiesAndIntolerances from './components/allergiesandintolerances/AllergiesAndIntolerances'
 const MainComponent = () => {
 
   const [sessionData, setSessionData] = useState({
@@ -146,6 +146,9 @@ const MainComponent = () => {
                 </Route>
                 <Route exact path='/adminhome'>
                   <AdminHome/>
+                </Route>
+                <Route exact path='/createallergiesandintolerances'>
+                  <CreateAllergiesAndIntolerances/>
                 </Route>
               </Switch>
             </Router>

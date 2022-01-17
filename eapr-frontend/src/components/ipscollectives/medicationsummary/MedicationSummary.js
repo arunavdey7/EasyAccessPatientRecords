@@ -33,7 +33,7 @@ const MedicationSummary = () => {
         // Multiple medical statements will be loaded here
         <div>
             {
-                data === undefined ? <h1 style={{textAlign:"center"}}>No previous medication statements found.</h1> : 
+                data.length === 0 ? <h1 style={{textAlign:"center"}}>No previous medication statements found.</h1> : 
                 data.map((info) => <MedSummaryItem {...info}/>)
             }
         </div>
