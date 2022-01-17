@@ -1,18 +1,19 @@
 import React from 'react' 
-import DiagnosticResults from './DiagnosticResults'
+import DiagnosticResults from './ListDiagnosticResults'
 
-import './medSummaryItemStyles.css'
 const DiagnosticResultsItem = ({
-    orderId,
-    medicationName
+    diagnostic_id,
+    imaging_test_name,
+    lab_test_name
 }) => {
     const handleClick = () => {
-        window.location.href = '/showmedicationstatement'
+        window.location.href = '/showdiagnosticresult'
     }
     return(
         <div onClick={handleClick} className='container'>
             <div className='name_container'>
-                <h3>Diagnostic Results</h3>
+                <h3>{lab_test_name}s</h3>
+                <p>{imaging_test_name}</p>
             </div>
         </div>
     )

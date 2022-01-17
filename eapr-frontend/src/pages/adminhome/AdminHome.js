@@ -49,6 +49,9 @@ const AdminHome = () => {
     const handleCreateAdvanceDirectives = () => {
         window.location.href = '/createadvancedirectives'
     }
+    const handleCreateDiagnosticResult = () => {
+        window.location.href = '/creatediagnosticresult'
+    }
     if(localStorage.getItem('token') === null)
         return(
             <h1>You need to be logged in first</h1>
@@ -107,7 +110,7 @@ const AdminHome = () => {
                <h3 style={{textAlign:"center"}}>Medical Devices</h3>
                </div>
                <div className='cat_card'>
-               <h3 style={{textAlign:"center"}}>Diagnostic Results</h3>
+               <h3 onClick={handleCreateDiagnosticResult} style={{textAlign:"center"}}>Diagnostic Results</h3>
                </div>
                <div className='cat_card'>
                <h3 style={{textAlign:"center"}}>Vital Signs</h3>

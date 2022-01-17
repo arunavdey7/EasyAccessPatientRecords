@@ -1,4 +1,6 @@
 import React,{useState} from 'react';
+import { toast } from 'react-toastify';
+import { addDiagnosticResult } from '../../utilities/DiagnosticResultsUtility';
 
 const DiagnosticResults = () => {
 
@@ -71,7 +73,56 @@ const DiagnosticResults = () => {
             [e.target.name] : e.target.value
         })
     }
-    console.log(data)
+    var temp = {
+
+        "patient_id":parseInt(localStorage.getItem('patient_info').id),
+        "lab_test_name": "Compgraphy",
+        "specimen_type": "",
+        "specimen_method": "something",
+        "specimen_bodysite": "",
+        "diagnostic_service_category": "",
+        "laboratory_analyte_result_analyte_name": "",
+        "interpretation": "poer",
+        "multimedia_source_resource_name": "",
+        "multimedia_source_content": "",
+        "imaging_test_name": "test1",
+        "modality": "",
+        "anatomical_site": "hand",
+        "imaging_finding_name": "",
+        "anatomical_location": "",
+        "presence": "",
+        "description": "",
+        "comparison_to_previous": "yes",
+        "comment": "",
+        "comparison_with_previous": "",
+        "conclusion": "good",
+        "imaging_differential_diagnosis": "www",
+        "imaging_diagnosis": "",
+        "multimedia_resource_name": "erwe",
+        "multimedia_content": "",
+        "technique": "simple",
+        "imaging_quality": "",
+        "examination_requester_order_identifier": "some",
+        "examination_requested_name": "",
+        "examination_receiver_order_identifier": "",
+        "dicom_study_identifier": "",
+        "examination_report_identifier":"",
+        "image_identifier": "2",
+        "dicom_series_identifier": "yes",
+        "view": "",
+        "position": "right",
+        "image_datetime": "",
+        "image": "2"
+    }
+    
+    const handleSave = () => {
+        var result = addDiagnosticResult(temp)
+        if(result === true)
+            toast("Successfully added.")
+        else
+            toast("Unable to add right now")
+    }
+
     return(
         <>
             <h1 className='main_heading'>Diagnostic Results</h1>
@@ -226,6 +277,7 @@ const DiagnosticResults = () => {
             <label>Image</label>
             <input type="file"></input>
             <br/>
+            <button onClick = {handleSave}>Save</button>
         </div>
         </>
     )

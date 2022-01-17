@@ -36,6 +36,10 @@ import AdvancedDirectives from './components/ipscollectives/advanceddirectives/A
 import ShowPrescription from './pages/showprescription/ShowPrescription';
 import AdminHome from './pages/adminhome/AdminHome';
 import CreateAllergiesAndIntolerances from './components/allergiesandintolerances/AllergiesAndIntolerances'
+import DiagnosticResults from './components/diagnosticresults/DiagnosticResults';
+import ListDiagnosticResults from './components/ipscollectives/diagnosticresults/ListDiagnosticResults';
+import ShowDiagnosticResults from './components/diagnosticresults/ShowDiagnosticResults'
+
 const MainComponent = () => {
 
   const [sessionData, setSessionData] = useState({
@@ -150,6 +154,107 @@ const MainComponent = () => {
                 <Route exact path='/createallergiesandintolerances'>
                   <CreateAllergiesAndIntolerances/>
                 </Route>
+
+                {/* History of procedures */}
+                <Route exact path='/createhistoryofprocedure'>
+                  
+                </Route>
+                <Route exact path='/getallhistoryofprocedures'>
+                  
+                </Route>
+                <Route exact path='/showhistoryofprocedures'>
+                  
+                </Route>
+
+                {/* Show vital signs */}
+                <Route exact path='/createvitalsign'>
+                  
+                </Route>
+                <Route exact path='/getallvitalsigns'>
+                  
+                </Route>
+                <Route exact path='/showvitalsign'>
+                  
+                </Route>
+
+                {/* Social History */}
+
+                <Route exact path='/createsocialhistory'>
+                  
+                </Route>
+                <Route exact path='/getallsocialhistories'>
+                  
+                </Route>
+                <Route exact path='/showsocialhistory'>
+                  
+                </Route>
+
+                {/* Plan of care */}
+                <Route exact path='/createplanofcare'>
+                  
+                </Route>
+                <Route exact path='/getallplansofcare'>
+                  
+                </Route>
+                <Route exact path='/showplanofcare'>
+                  
+                </Route>
+
+                {/* Diagnostic result */}
+                <Route exact path='/creatediagnosticresult'>
+                  <DiagnosticResults/>
+                </Route>
+                <Route exact path='/getalldiagnosticresults'>
+                  <ListDiagnosticResults/>
+                </Route>
+                <Route exact path='/showdiagnosticresults'>
+                  <ShowDiagnosticResults/>
+                </Route>
+
+                {/* Functional Status  */}
+                <Route exact path='/createfunctionalstatus'>
+                  
+                </Route>
+                <Route exact path='/getallfunctionalstatus'>
+                  
+                </Route>
+                <Route exact path='/showfunctionalstatus'>
+                  
+                </Route>
+
+                {/* Pregnancy  */}
+                <Route exact path='/createpregnancy'>
+                  
+                </Route>
+                <Route exact path='/getallpregnancies'>
+                  
+                </Route>
+                <Route exact path='/showpregnancy'>
+                  
+                </Route>
+                
+                {/* Medical Devices */}
+                <Route exact path='/createmedicaldevices'>
+                  
+                </Route>
+                <Route exact path='/getallmedicaldevices'>
+                  
+                </Route>
+                <Route exact path='/showmedicaldevice'>
+                  
+                </Route>
+
+                {/* Immunizations */}
+                <Route exact path='/createimmunization'>
+                  
+                </Route>
+                <Route exact path='/getallimmunizations'>
+                  
+                </Route>
+                <Route exact path='/showimmunization'>
+                  
+                </Route>
+
               </Switch>
             </Router>
             </SessionContext.Provider>

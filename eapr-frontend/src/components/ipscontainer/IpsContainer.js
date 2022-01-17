@@ -48,6 +48,10 @@ const IpsContainer = (
             gotoUrl:'/medicationstatements'
         },
         {
+            fieldName:'Diagnostic results',
+            gotoUrl:'/getalldiagnosticresults'
+        },
+        {
             fieldName:'Social History',
             gotoUrl:'/medicationstatements'
         },
