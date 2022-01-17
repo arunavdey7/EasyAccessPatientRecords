@@ -22,7 +22,7 @@ import MedicationOrders from './components/prescriptioncollectives/medicationord
 import Prescriptions from './components/prescriptioncollectives/prescriptions/Prescriptions'
 import CreatePrescription from './pages/createprescription/CreatePrescription';
 import AllergiesIntolerances from './components/allergiesandintolerances/AllergiesAndIntolerances';
-import VitalSigns from './components/vitalsigns/VitalSigns';
+import VitalSigns from './components/vitalsigns/CreateVitalSigns';
 import Allergies from './components/ipscollectives/allergies/Allergies';
 import ShowAllergiesAndIntolerances from './components/allergiesandintolerances/ShowAllergiesAndIntolerances';
 import ShowProblemList from './components/problemlist/ShowProblemList';
@@ -39,7 +39,8 @@ import CreateAllergiesAndIntolerances from './components/allergiesandintolerance
 import DiagnosticResults from './components/diagnosticresults/DiagnosticResults';
 import ListDiagnosticResults from './components/ipscollectives/diagnosticresults/ListDiagnosticResults';
 import ShowDiagnosticResults from './components/diagnosticresults/ShowDiagnosticResults'
-
+import CreateVitalSigns from './components/vitalsigns/CreateVitalSigns';
+import ShowVitalSigns from './components/vitalsigns/ShowVitalSigns'
 const MainComponent = () => {
 
   const [sessionData, setSessionData] = useState({
@@ -166,17 +167,6 @@ const MainComponent = () => {
                   
                 </Route>
 
-                {/* Show vital signs */}
-                <Route exact path='/createvitalsign'>
-                  
-                </Route>
-                <Route exact path='/getallvitalsigns'>
-                  
-                </Route>
-                <Route exact path='/showvitalsign'>
-                  
-                </Route>
-
                 {/* Social History */}
 
                 <Route exact path='/createsocialhistory'>
@@ -253,6 +243,17 @@ const MainComponent = () => {
                 </Route>
                 <Route exact path='/showimmunization'>
                   
+                </Route>
+
+                {/* Vital Signs  */}
+                <Route exact path='/createvitalsign'>
+                  <CreateVitalSigns/>
+                </Route>
+                <Route exact path='/getallvitalsigns'>
+                  <VitalSigns/>
+                </Route>
+                <Route exact path='/showvitalsigns'>
+                  <ShowVitalSigns/>
                 </Route>
 
               </Switch>

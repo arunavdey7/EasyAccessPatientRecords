@@ -75,7 +75,7 @@ const DiagnosticResults = () => {
     }
     var temp = {
 
-        "patient_id":parseInt(localStorage.getItem('patient_info').id),
+        "patient_id":parseInt(JSON.parse(localStorage.getItem('patient_info')).id),
         "lab_test_name": "Compgraphy",
         "specimen_type": "",
         "specimen_method": "something",
@@ -115,8 +115,8 @@ const DiagnosticResults = () => {
         "image": "2"
     }
     
-    const handleSave = () => {
-        var result = addDiagnosticResult(temp)
+    const handleSave = async () => {
+        var result = await addDiagnosticResult(temp)
         if(result === true)
             toast("Successfully added.")
         else

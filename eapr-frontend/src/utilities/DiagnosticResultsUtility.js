@@ -18,10 +18,7 @@ export const addDiagnosticResult = async (data) => {
     {
         return true
     }
-    else
-    {
-        return false
-    }
+    return false
 }
 
 export const getAllDiagnosticResultsForDoctor = async (patientId) => {
