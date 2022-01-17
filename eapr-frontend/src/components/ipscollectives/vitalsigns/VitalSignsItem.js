@@ -1,7 +1,5 @@
 import React from 'react' 
 import VitalSigns from './VitalSigns'
-
-import './medSummaryItemStyles.css'
 const VitalSignsItem = ({
     orderId,
     medicationName

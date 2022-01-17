@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-
+import VitalSignsItem from '../../ipscollectives/vitalsigns/VitalSignsItem'
+import {getVitalSignsForDoctor,getVitalSignsForPatient} from '../../../utilities/VitalSignsUtility'
 const VitalSigns = () => {
     const [data, setData] = useState([])
     var role = JSON.parse(localStorage.getItem('sessionData')).role
