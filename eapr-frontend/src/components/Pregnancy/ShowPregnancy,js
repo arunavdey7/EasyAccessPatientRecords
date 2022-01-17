@@ -1,0 +1,53 @@
+import React,{useState} from 'react';
+
+const ShowPregnancy = () => {
+
+    var data = {
+            
+        "agreed_date": "gvbh",
+        "estimated_date_of_delivery_by_cycle": "fvgbh",
+        "estimated_date_of_delivery_by_date_of_conseption": "fvgbh",
+        "estimated_date_of_delivery_by_ultrasound": "fvgbh",
+        "exclusion_of_pregnancy_statement": "vgbhn",
+        "patient_id": parseInt(JSON.parse(localStorage.getItem('patient_info')).id),
+        "pregnancy_outcome": "ba",
+        "pregnancy_status": "pregnant",
+        "protocol_last_updated": "gvbhn"
+    }
+        
+
+    return(
+        <>
+        <h1 className='main_heading'>Pregnancy</h1>
+        <div className='form_container'>
+            <h1>Pregnancy Summary</h1>
+            <h2>Data</h2>
+            <label>Status : <span className='values'>{data["pregnancy_status"]}</label>
+            <br/>
+            <h2>Per pregnancy</h2>
+            <label>Pregnancy outcome : <span className='values'>{data["pregnancy_outcome"]}</label>
+            <br/>
+            <h1>Estimated date of delivery</h1>
+            <h2>Data</h2>
+            <label>By date of conception : <span className='values'>{data["estimated_date_of_delivery_by_date_of_conseption"]}</label>
+            <br/>
+            <label>By cycle : <span className='values'>{data["estimated_date_of_delivery_by_cycle"]}</label>
+            <br/>
+            <h2>By ultrasound</h2>
+            <label>Estimated date by ultrasound : <span className='values'>{data["estimated_date_of_delivery_by_ultrasound"]}</label>
+            <br/>
+            <h2>Agreed EDD</h2>
+            <label>Agreed date : <span className='values'>{data["agreed_date"]}</label>
+            <br/>
+            <h2>Protocol</h2>
+            <label>Last updated : <span className='values'>{data["protocol_last_updated"]}</label>
+            <br/>
+            <h1>Exclusion of pregnancy</h1>
+            <h2>Data</h2>
+            <label>Exclusion statement : <span className='values'>{data["exclusion_of_pregnancy_statement"]}</label>
+            <br/>
+        </div>
+        </>
+    )
+}
+export default ShowPregnancy;
