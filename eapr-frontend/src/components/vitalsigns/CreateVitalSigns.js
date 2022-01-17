@@ -3,12 +3,12 @@ import { toast } from 'react-toastify';
 import {addVitalSigns} from '../../utilities/VitalSignsUtility'
 const CreateVitalSigns = () => {
 
-    const [body_weight, setBody_weight] = useState("");
+    const [body_weight, setBody_weight] = useState(0);
     const [body_weight_unit, setBody_weight_unit] = useState("");
-    const [height, setHeight] = useState("");
+    const [height, setHeight] = useState(0);
     const [height_unit, setHeight_unit] = useState("");
-    const [respiration_rate, setRespiration_rate] = useState("");
-    const [pulse_rate, setPulse_rate] = useState("");
+    const [respiration_rate, setRespiration_rate] = useState(0);
+    const [pulse_rate, setPulse_rate] = useState(0);
     const [body_temperature, setBody_temperature] = useState("");
     const [body_temperature_unit, setBody_temperature_unit] = useState("");
     const [head_circumference, setHead_circumference] = useState("");
@@ -22,7 +22,8 @@ const CreateVitalSigns = () => {
 
     const saveVitalSigns = async () =>{
         var data = {
-            patient_uid:localStorage.getItem('patientuid'),
+    
+            patient_id:parseInt(JSON.parse(localStorage.getItem('patient_info')).id),
             body_weight,
             body_weight_unit,
             height,
@@ -38,6 +39,7 @@ const CreateVitalSigns = () => {
             body_mass_index_unit,
             blood_pressure_systolic,
             blood_pressure_diastolic
+
         }
         var result = await addVitalSigns(data)
         if(result)
@@ -48,7 +50,78 @@ const CreateVitalSigns = () => {
 
     return(
         <>
-          <h1>Arunav Dey</h1>
+        <h1 className='main_heading'>Vital Signs</h1>
+        <div className='form_container'>
+            <h1>Body weight</h1>
+            <h2>Data</h2>
+            <label>Weight</label>
+            <input placeholder='0-1000' onChange={e => setBody_weight(e.target.value)}></input>
+            <select>
+                <option value='kg'>kg</option>
+                <option value='g'>g</option>
+            </select>
+            <br/>
+            <h1>Height/Length</h1>
+            <h2>Data</h2>
+            <label>Height/Length</label>
+            <input placeholder='0-1000' onChange={e => setHeight(e.target.value)}></input>
+            <select>
+                <option value='cms'>cms</option>
+                <option value='inches'>inches</option>
+            </select>
+            <br/>
+            <h1>Respiration</h1>
+            <h2>Data</h2>
+            <label>Rate</label>
+            <input placeholder='0-200' onChange={e => setRespiration_rate(e.target.value)}></input><span>/min</span>
+            <br/>
+            <h1>Pulse/Heartbeat</h1>
+            <h2>Data</h2>
+            <label>Rate</label>
+            <input placeholder='0-1000' onChange={e => setPulse_rate(e.target.value)}></input><span>/min</span>
+            <br/>
+            <h1>Body temperature</h1>
+            <h2>Data</h2>
+            <label>Temperature</label>
+            <input placeholder='0-100' onChange={e => setBody_temperature(e.target.value)}></input>
+            <select>
+                <option value='Cel'>Cel</option>
+                <option value='degF'>degF</option>
+            </select>
+            <br/>
+            <h1>Head circumference</h1>
+            <h2>Data</h2>
+            <label>Head circumference</label>
+            <input placeholder='0-100' onChange={e => setHead_circumference(e.target.value)}></input>
+            <select>
+                <option value='cms'>cms</option>
+                <option value='inches'>inches</option>
+            </select>
+            <br/>
+            <h1>Pulse oximetry</h1>
+            <h2>Data</h2>
+            <label>SpO2</label>
+            <input placeholder='0' onChange={e => setPulse_oximetry(e.target.value)}></input><span>%</span>
+            <br/>
+            <h1>Body mass index</h1>
+            <h2>Data</h2>
+            <label>Body mass index</label>
+            <input placeholder='0-1000' onChange={e => setBody_mass_index(e.target.value)}></input>
+            <select>
+                <option value='kg/m2'>kg/m2</option>
+            </select>
+            <br/>
+            <h1>Blood pressure</h1>
+            <h2>Data</h2>
+            <label>Systolic</label>
+            <input placeholder='0-1000' onChange={e => setBlood_pressure_systolic(e.target.value)}></input><span>mm[Hg]</span>
+            <label>Diastolic</label>
+            <input placeholder='0-1000' onChange={e => setBlood_pressure_diastolic(e.target.value)}></input><span>mm[Hg]</span>
+            <br/>
+            <button onClick={saveVitalSigns}>
+                Save
+            </button>
+        </div>
         </>
     )
 }

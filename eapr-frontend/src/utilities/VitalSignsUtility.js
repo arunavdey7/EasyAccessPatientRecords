@@ -1,5 +1,4 @@
 export const addVitalSigns = async (data) => {
-    console.log('DATA',data)
     var requestOptions = {
         method: 'POST',
         mode:'cors',
@@ -9,7 +8,7 @@ export const addVitalSigns = async (data) => {
             'token': localStorage.getItem('token')
         }
       }
-    const response = await fetch("/api/add_dignostics_results", requestOptions)
+    const response = await fetch("/api/add_vital_signs", requestOptions)
     const {
         success
     } = await response.json()

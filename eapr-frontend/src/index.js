@@ -22,7 +22,7 @@ import MedicationOrders from './components/prescriptioncollectives/medicationord
 import Prescriptions from './components/prescriptioncollectives/prescriptions/Prescriptions'
 import CreatePrescription from './pages/createprescription/CreatePrescription';
 import AllergiesIntolerances from './components/allergiesandintolerances/AllergiesAndIntolerances';
-import VitalSigns from './components/vitalsigns/CreateVitalSigns';
+
 import Allergies from './components/ipscollectives/allergies/Allergies';
 import ShowAllergiesAndIntolerances from './components/allergiesandintolerances/ShowAllergiesAndIntolerances';
 import ShowProblemList from './components/problemlist/ShowProblemList';
@@ -41,6 +41,7 @@ import ListDiagnosticResults from './components/ipscollectives/diagnosticresults
 import ShowDiagnosticResults from './components/diagnosticresults/ShowDiagnosticResults'
 import CreateVitalSigns from './components/vitalsigns/CreateVitalSigns';
 import ShowVitalSigns from './components/vitalsigns/ShowVitalSigns'
+import VitalSigns from './components/ipscollectives/vitalsigns/VitalSigns';
 const MainComponent = () => {
 
   const [sessionData, setSessionData] = useState({
