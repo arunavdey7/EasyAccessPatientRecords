@@ -12,7 +12,7 @@ class Patient_details(db.Model):
     tablename ='patient_details'
     id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
     name = db.Column(db.Text, unique=False, nullable=False)
-    age = db.Column(db.Integer,unique=False,nullable = False)
+    age = db.Column(db.Text,unique=False,nullable = False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(500), unique = False, nullable=False)
     contact = db.Column(db.Text, unique=False, nullable=False)
@@ -38,19 +38,23 @@ class Admin_Login(db.Model):
 # Models for Prescription
 class Prescription(db.Model):
     __tablename__ = 'prescription'
-    prescriptionId = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
+    id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
+    #the following three are composite unique key
     patientId = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
     doctorId = db.Column(db.Integer, db.ForeignKey('doctor_details.id'),nullable=False)
-
+    dateWritten = db.Column(db.Text, unique = False, nullable=False)
 
 class Medication_Order(db.Model):
     __tablename__ = 'medication_order'
     medId = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
-    prescriptionId = db.Column(db.Integer, db.ForeignKey('prescription.prescriptionId'),nullable=False)
+    #the following three are composite unique key
+    patientId = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
+    doctorId = db.Column(db.Integer, db.ForeignKey('doctor_details.id'),nullable=False)
+    dateWritten = db.Column(db.Text, unique = False, nullable=False)
     medicationItem = db.Column(db.Text, unique=False, nullable=False)
     route = db.Column(db.String(300), unique=False, nullable=False)    
     dosageInstruction = db.Column(db.Text, unique = False, nullable=False)
-    maximumAmount = db.Column(db.Integer, unique=False, nullable=False)
+    maximumAmount = db.Column(db.Text, unique=False, nullable=False)
     maximumAmountDoseUnit = db.Column(db.Text, unique = False, nullable=False)
     allowedPeriod = db.Column(db.Text, unique = False, nullable=False)
     overrideReason = db.Column(db.Text, unique = False, nullable=False)
@@ -58,17 +62,16 @@ class Medication_Order(db.Model):
     reasons = db.Column(db.Text, unique = False, nullable=False)
     status=db.Column(db.Text, unique = False, nullable=False)
     dateDiscontinued = db.Column(db.Text, unique = False, nullable=False)
-    dateWritten = db.Column(db.Text, unique = False, nullable=False)
-    numOfRepeatsAllowed = db.Column(db.Integer, unique=False, nullable=False)
+    numOfRepeatsAllowed = db.Column(db.Text, unique=False, nullable=False)
     validityPeriod = db.Column(db.Text, unique = False, nullable=False)
     dispenseInstrution =  db.Column(db.Text, unique = False, nullable=False)
     dispenseAmountDescription = db.Column(db.Text, unique = False, nullable=False)
-    dispenseAmount = db.Column(db.Integer, unique=False, nullable=False)
-    dispenseAmountUnit = db.Column(db.Integer, unique=False, nullable=False)
+    dispenseAmount = db.Column(db.Text, unique=False, nullable=False)
+    dispenseAmountUnit = db.Column(db.Text, unique=False, nullable=False)
     comment = db.Column(db.Text, unique=False, nullable=False)
 
 # dose 
-    dose_unit   =  db.Column(db.Integer, unique=False, nullable=False)
+    dose_unit   =  db.Column(db.Text, unique=False, nullable=False)
     dose_frequency = db.Column(db.Text, unique=False, nullable=False)
     dose_timing   = db.Column(db.Text, unique = False, nullable=False)
     dose_duration = db.Column(db.Text, unique=False, nullable=False)
@@ -81,9 +84,9 @@ class Medication_Order(db.Model):
 # preparation
     substance_name = db.Column(db.Text, unique=False, nullable=True)
     form = db.Column(db.Text, unique=False, nullable=True)
-    strength = db.Column(db.Integer, unique=False, nullable=False)
+    strength = db.Column(db.Text, unique=False, nullable=False)
     strengthUnit = db.Column(db.Text, unique=False, nullable=True)
-    diluentAmount = db.Column(db.Integer, unique=False, nullable=False)
+    diluentAmount = db.Column(db.Text, unique=False, nullable=False)
     diluentunit = db.Column(db.Text, unique=False, nullable=True)
     description = db.Column(db.Text, unique=False, nullable=True)
 
@@ -105,86 +108,75 @@ class Medication_statement(db.Model):
     order_id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
     patient_id = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
 
-class Medication(db.Model):
-    tablename = 'medication'
-    id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
-    order_id = db.Column(db.Integer, db.ForeignKey('medication_statement.order_id'),nullable=False,unique=True)
+    #medication
     medication_item = db.Column(db.Text, unique=False, nullable=False)
     medication_name = db.Column(db.Text, unique=False, nullable=True)
     medication_form = db.Column(db.Text, unique=False, nullable=True)
+    strength = db.Column(db.Text, unique=False, nullable=True)
     medication_category = db.Column(db.Text, unique=False, nullable=True)
-    medication_strength_numerator = db.Column(db.Integer, unique=False, nullable=True)
+    medication_strength_numerator = db.Column(db.Text, unique=False, nullable=True)
     medication_strength_numerator_unit = db.Column(db.Text, unique=False, nullable=True)
-    medication_strength_denominator = db.Column(db.Integer, unique=False, nullable=True)
+    medication_strength_denominator = db.Column(db.Text, unique=False, nullable=True)
     medication_strength_denominator_unit = db.Column(db.Text, unique=False, nullable=True)
     unit_of_presentation = db.Column(db.Text, unique=False, nullable=True)
-    strength = db.Column(db.Text, unique=False, nullable=True)
+    strength_concentration = db.Column(db.Text, unique=False, nullable=True)
     manufacturer = db.Column(db.Text, unique=False, nullable=True)
     batch_id = db.Column(db.Text, unique=False, nullable=True)
     expiry = db.Column(db.Text, unique=False, nullable=True)
-    amount = db.Column(db.Integer, unique=False, nullable=True)
+    amount = db.Column(db.Text, unique=False, nullable=True)
     amount_unit = db.Column(db.Text, unique=False, nullable=True)
-    alternate_amount = db.Column(db.Integer, unique=False, nullable=True)
+    alternate_amount = db.Column(db.Text, unique=False, nullable=True)
     alternate_amount_unit = db.Column(db.Text, unique=False, nullable=True)
     role = db.Column(db.Text, unique=False, nullable=True)
     description = db.Column(db.Text, unique=False, nullable=True)
 
 
-class Dosage(db.Model):
-    tablename = 'dosage'
-    id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
-    order_id = db.Column(db.Integer, db.ForeignKey('medication_statement.order_id'),nullable=False,unique=True)
-    dose_amount = db.Column(db.Integer, unique=False, nullable=True)
+    #dosage
+    dose_amount = db.Column(db.Text, unique=False, nullable=True)
     dose_unit = db.Column(db.Text, unique=False, nullable=True)
     dose_formula = db.Column(db.Text, unique=False, nullable=True)
     dose_description = db.Column(db.Text, unique=False, nullable=True)
-    frequency_lower = db.Column(db.Integer, unique=False, nullable=True)
-    frequency_lower_rate = db.Column(db.Text, unique=False, nullable=True)
-    frequency_higher = db.Column(db.Integer, unique=False, nullable=True)
-    frequency_higher_rate = db.Column(db.Text, unique=False, nullable=True)
-    interval = db.Column(db.Text, unique=False, nullable=True)
-    specific_time = db.Column(db.Text, unique=False, nullable=True)
-    specific_time_lower = db.Column(db.Text, unique=False, nullable=True)
-    specific_time_upper = db.Column(db.Text, unique=False, nullable=True)
-    timing_description = db.Column(db.Text, unique=False, nullable=True)
-    exact_timing_critical = db.Column(db.Text, unique=False, nullable=True)
+    dose_frequency_lower = db.Column(db.Text, unique=False, nullable=True)
+    dose_frequency_lower_rate = db.Column(db.Text, unique=False, nullable=True)
+    dose_frequency_higher = db.Column(db.Text, unique=False, nullable=True)
+    dose_frequency_higher_rate = db.Column(db.Text, unique=False, nullable=True)
+    dose_interval = db.Column(db.Text, unique=False, nullable=True)
+    dose_specific_time = db.Column(db.Text, unique=False, nullable=True)
+    dose_specific_time_lower = db.Column(db.Text, unique=False, nullable=True)
+    dose_specific_time_upper = db.Column(db.Text, unique=False, nullable=True)
+    dose_timing_description = db.Column(db.Text, unique=False, nullable=True)
+    dose_exact_timing_critical = db.Column(db.Text, unique=False, nullable=True)
     as_required = db.Column(db.Text, unique=False, nullable=True)
     as_required_criterion = db.Column(db.Text, unique=False, nullable=True)
-    event_name = db.Column(db.Text, unique=False, nullable=True)
-    time_offset = db.Column(db.Text, unique=False, nullable=True)
-    on = db.Column(db.Text, unique=False, nullable=True)
-    off = db.Column(db.Text, unique=False, nullable=True)
-    repetetions = db.Column(db.Integer, unique=False, nullable=True)
+    dose_event_name = db.Column(db.Text, unique=False, nullable=True)
+    dose_time_offset = db.Column(db.Text, unique=False, nullable=True)
+    dose_on = db.Column(db.Text, unique=False, nullable=True)
+    dose_off = db.Column(db.Text, unique=False, nullable=True)
+    dose_repetetions = db.Column(db.Text, unique=False, nullable=True)
 
     
-class Administration_details(db.Model):
-    tablename = 'administration_details'
-    id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
-    order_id = db.Column(db.Integer, db.ForeignKey('medication_statement.order_id'),nullable=False,unique=True)
+    #administration_details
     route = db.Column(db.Text, unique=False, nullable=True)
     body_site = db.Column(db.Text, unique=False, nullable=True)
 
 
-class Timing_non_daily(db.Model):
-    tablename = 'timing_non_daily'
-    id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
-    order_id = db.Column(db.Integer, db.ForeignKey('medication_statement.order_id'),nullable=False,unique=True)
-    repetetion_interval = db.Column(db.Integer, unique=False, nullable=True)
-    frequency_lower = db.Column(db.Integer, unique=False, nullable=True)
-    frequency_lower_rate = db.Column(db.Text, unique=False, nullable=True)
-    frequency_higher = db.Column(db.Integer, unique=False, nullable=True)
-    frequency_higher_rate = db.Column(db.Text, unique=False, nullable=True)
-    specific_date = db.Column(db.Text, unique=False, nullable=True,default=datetime.datetime.utcnow)
-    specific_date_lower = db.Column(db.Text, unique=False, nullable=True,default=datetime.datetime.utcnow)
-    specific_date_upper = db.Column(db.Text, unique=False, nullable=True,default=datetime.datetime.utcnow)
-    specific_day_of_week = db.Column(db.Text, unique=False, nullable=True)
-    specific_day_of_month = db.Column(db.Integer, unique=False, nullable=True)
+    #timing_non_daily
+    time_repetetion_interval = db.Column(db.Text, unique=False, nullable=True)
+    time_frequency_lower = db.Column(db.Text, unique=False, nullable=True)
+    time_frequency_lower_rate = db.Column(db.Text, unique=False, nullable=True)
+    time_frequency_higher = db.Column(db.Text, unique=False, nullable=True)
+    time_frequency_higher_rate = db.Column(db.Text, unique=False, nullable=True)
+    time_specific_date = db.Column(db.Text, unique=False, nullable=True,default=datetime.datetime.utcnow)
+    time_specific_date_lower = db.Column(db.Text, unique=False, nullable=True,default=datetime.datetime.utcnow)
+    time_specific_date_upper = db.Column(db.Text, unique=False, nullable=True,default=datetime.datetime.utcnow)
+    time_specific_day_of_week = db.Column(db.Text, unique=False, nullable=True)
+    time_specific_day_of_month = db.Column(db.Text, unique=False, nullable=True)
     timing_description = db.Column(db.Text, unique=False, nullable=True)
-    event_name = db.Column(db.Text, unique=False, nullable=True)
-    event_time_offset = db.Column(db.Text, unique=False, nullable=True)
-    on = db.Column(db.Text, unique=False, nullable=True)
-    off = db.Column(db.Text, unique=False, nullable=True)
-    repetetions = db.Column(db.Integer, unique=False, nullable=True)
+    time_event_name = db.Column(db.Text, unique=False, nullable=True)
+    time_event_time_offset = db.Column(db.Text, unique=False, nullable=True)
+    timing_on = db.Column(db.Text, unique=False, nullable=True)
+    timing_off = db.Column(db.Text, unique=False, nullable=True)
+    timing_repetetions = db.Column(db.Text, unique=False, nullable=True)
     
  # Model for Advance care Directive
 class Advance_care_directive(db.Model):
@@ -282,7 +274,7 @@ class Alcohol_consumption(db.Model):
     id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
     patient_uid = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
     status = db.Column(db.Text, unique=False, nullable=True)
-    typical_consumption_alcohol_unit = db.Column(db.Integer, unique=False, nullable=True)
+    typical_consumption_alcohol_unit = db.Column(db.Text, unique=False, nullable=True)
 
 # Model for care plan
 class Care_plan(db.Model):
@@ -382,7 +374,7 @@ class Immunization(db.Model):
     patient_uid = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
     administration_details_route = db.Column(db.Text, unique=False, nullable=True)
     administration_details_target_site = db.Column(db.Text, unique=False, nullable=True)
-    sequence_number = db.Column(db.Integer, unique=False, nullable=True)
+    sequence_number = db.Column(db.Text, unique=False, nullable=True)
 
 # medical device  table
 class Medical_devices(db.Model):
@@ -476,18 +468,18 @@ class vital_signs(db.Model):
     __tablename__ = 'vital_signs'
     id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
     patient_id = db.Column(db.Integer, db.ForeignKey('patient_details.id'), unique=True,nullable=False)
-    body_weight = db.Column(db.Integer, unique=False, nullable=True)
+    body_weight = db.Column(db.Text, unique=False, nullable=True)
     body_weight_unit = db.Column(db.Text, unique=False, nullable=True)
-    height = db.Column(db.Integer, unique=False, nullable=True)
+    height = db.Column(db.Text, unique=False, nullable=True)
     height_unit = db.Column(db.Text, unique=False, nullable=True)
-    respiration_rate = db.Column(db.Integer, unique=False, nullable=True)
-    pulse_rate = db.Column(db.Integer, unique=False, nullable=True)
-    body_temperature = db.Column(db.Integer, unique=False, nullable=True)
+    respiration_rate = db.Column(db.Text, unique=False, nullable=True)
+    pulse_rate = db.Column(db.Text, unique=False, nullable=True)
+    body_temperature = db.Column(db.Text, unique=False, nullable=True)
     body_temperature_unit = db.Column(db.Text, unique=False, nullable=True)
-    head_circumference = db.Column(db.Integer, unique=False, nullable=True)
+    head_circumference = db.Column(db.Text, unique=False, nullable=True)
     head_circumference_unit = db.Column(db.Text, unique=False, nullable=True)
-    pulse_oximetry = db.Column(db.Integer, unique=False, nullable=True)
-    body_mass_index = db.Column(db.Integer, unique=False, nullable=True)
+    pulse_oximetry = db.Column(db.Text, unique=False, nullable=True)
+    body_mass_index = db.Column(db.Text, unique=False, nullable=True)
     body_mass_index_unit = db.Column(db.Text, unique=False, nullable=True)
-    blood_pressure_systolic = db.Column(db.Integer, unique=False, nullable=True)
-    blood_pressure_diastolic = db.Column(db.Integer, unique=False, nullable=True)
+    blood_pressure_systolic = db.Column(db.Text, unique=False, nullable=True)
+    blood_pressure_diastolic = db.Column(db.Text, unique=False, nullable=True)

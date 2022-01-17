@@ -1,6 +1,7 @@
 from flask.json import jsonify
 from flask import app, request
 from sqlalchemy import func
+import datetime
 from models import *
 import hashlib,jwt
 db.create_all()
@@ -109,15 +110,15 @@ def getallmedicationstatements():
             output={}
             medicationstatements=[]
             for res3 in res2:
-                result = Medication.query.filter_by(order_id=res3.order_id).first()
                 obj={}
-                obj['order_id']=result.order_id
-                obj['medication_item']=result.medication_item
+                obj['order_id']=res3.order_id
+                obj['medication_item']=res3.medication_item
                 medicationstatements.append(obj)
             res3=Medication_summary.query.filter_by(patient_id=res.id).first()
-            output['global_exclusion_of_medication_use']=res3.global_exclusion_of_medication_use
-            output['absence_of_info_statement']=res3.absence_of_info_statement
-            output['absence_of_info_protocol_last_updated']=res3.absence_of_info_protocol_last_updated
+            if res3:
+                output['global_exclusion_of_medication_use']=res3.global_exclusion_of_medication_use
+                output['absence_of_info_statement']=res3.absence_of_info_statement
+                output['absence_of_info_protocol_last_updated']=res3.absence_of_info_protocol_last_updated
             output['medication_statements']=medicationstatements
             return jsonify({"success":True, "medication_summary":output})
         else:
@@ -140,15 +141,15 @@ def getallmedicationstatementsfordoctor(patient_id):
             output={}
             medicationstatements=[]
             for res3 in res2:
-                result = Medication.query.filter_by(order_id=res3.order_id).first()
                 obj={}
-                obj['order_id']=result.order_id
-                obj['medication_item']=result.medication_item
+                obj['order_id']=res3.order_id
+                obj['medication_item']=res3.medication_item
                 medicationstatements.append(obj)
             res3=Medication_summary.query.filter_by(patient_id=res.id).first()
-            output['global_exclusion_of_medication_use']=res3.global_exclusion_of_medication_use
-            output['absence_of_info_statement']=res3.absence_of_info_statement
-            output['absence_of_info_protocol_last_updated']=res3.absence_of_info_protocol_last_updated
+            if res3:
+                output['global_exclusion_of_medication_use']=res3.global_exclusion_of_medication_use
+                output['absence_of_info_statement']=res3.absence_of_info_statement
+                output['absence_of_info_protocol_last_updated']=res3.absence_of_info_protocol_last_updated
             output['medication_statements']=medicationstatements
             return jsonify({"success":True, "medication_summary":output})
 
@@ -167,102 +168,96 @@ def getmedicationstatement(Order_Id):
         res = Patient_details.query.filter_by(email=value['email'], password=value['password']).first()
 
         if res:
-            res1=db.session.query(Medication_statement).filter(Order_Id==Medication_statement.order_id,res.id==Medication_statement.patient_id).all()
-            if res1:
+            result=db.session.query(Medication_statement).filter(Order_Id==Medication_statement.order_id,res.id==Medication_statement.patient_id).first()
+            if result:
 
-                result = db.session.query(Medication_summary,Medication,Dosage,Administration_details,Timing_non_daily).filter(res1[0].patient_id==Medication_summary.patient_id,Order_Id==Medication.order_id,Order_Id==Dosage.order_id,Order_Id==Administration_details.order_id,Order_Id==Timing_non_daily.order_id).all()
                 out={}
                 obj={}
-                obj['order_id']=res1[0].order_id
-                obj['patient_id']=result[0].Medication_summary.patient_id
-                #obj['global_exclusion_of_medication_use']=result[0].Medication_summary.global_exclusion_of_medication_use
-                #obj['absence_of_info_statement']=result[0].Medication.absence_of_info_statement
-                #obj['absence_of_info_protocol_last_updated']=result[0].Medication.absence_of_info_protocol_last_updated
+                obj['order_id']=result.order_id
+                obj['patient_id']=result.patient_id
+                #obj['global_exclusion_of_medication_use']=result.Medication_summary.global_exclusion_of_medication_use
+                #obj['absence_of_info_statement']=result.absence_of_info_statement
+                #obj['absence_of_info_protocol_last_updated']=result.absence_of_info_protocol_last_updated
                 l=obj
 
                 obj={}
-                obj['order_id']=result[0].Medication.order_id
-                obj['medication_item']=result[0].Medication.medication_item
-                obj['medication_name']=result[0].Medication.medication_name
-                obj['medication_form']=result[0].Medication.medication_form
-                obj['medication_category']=result[0].Medication.medication_category
-                obj['medication_strength_numerator']=result[0].Medication.medication_strength_numerator
-                obj['medication_strength_numerator_unit']=result[0].Medication.medication_strength_numerator_unit
-                obj['medication_strength_denominator']=result[0].Medication.medication_strength_denominator
-                obj['medication_strength_denominator_unit']=result[0].Medication.medication_strength_denominator_unit
-                obj['unit_of_presentation']=result[0].Medication.unit_of_presentation
-                obj['strength']=result[0].Medication.strength
-                obj['manufacturer']=result[0].Medication.manufacturer
-                obj['batch_id']=result[0].Medication.batch_id
-                obj['expiry']=result[0].Medication.expiry
-                obj['amount']=result[0].Medication.amount
-                obj['amount_unit']=result[0].Medication.amount_unit
-                obj['alternate_amount']=result[0].Medication.alternate_amount
-                obj['alternate_amount_unit']=result[0].Medication.alternate_amount_unit
-                obj['role']=result[0].Medication.role
-                obj['description']=result[0].Medication.description
+                obj['medication_item']=result.medication_item
+                obj['medication_name']=result.medication_name
+                obj['medication_form']=result.medication_form
+                obj['strength(concentration)']=result.strength_concentration
+                obj['medication_category']=result.medication_category
+                obj['medication_strength_numerator']=result.medication_strength_numerator
+                obj['medication_strength_numerator_unit']=result.medication_strength_numerator_unit
+                obj['medication_strength_denominator']=result.medication_strength_denominator
+                obj['medication_strength_denominator_unit']=result.medication_strength_denominator_unit
+                obj['unit_of_presentation']=result.unit_of_presentation
+                obj['strength']=result.strength
+                obj['manufacturer']=result.manufacturer
+                obj['batch_id']=result.batch_id
+                obj['expiry']=result.expiry
+                obj['amount']=result.amount
+                obj['amount_unit']=result.amount_unit
+                obj['alternate_amount']=result.alternate_amount
+                obj['alternate_amount_unit']=result.alternate_amount_unit
+                obj['role']=result.role
+                obj['description']=result.description
 
                 m=obj
                 
 
 
                 obj={}
-                obj['id']=result[0].Dosage.id
-                obj['order_id']=result[0].Dosage.order_id
-                obj['dose_amount']=result[0].Dosage.dose_amount
-                obj['dose_unit']=result[0].Dosage.dose_unit
-                obj['dose_formula']=result[0].Dosage.dose_formula
-                obj['dose_description']=result[0].Dosage.dose_description
-                obj['frequency_lower']=result[0].Dosage.frequency_lower
-                obj['frequency_lower_rate']=result[0].Dosage.frequency_lower_rate
-                obj['frequency_higher']=result[0].Dosage.frequency_higher
-                obj['frequency_higher_rate']=result[0].Dosage.frequency_higher_rate
+                obj['dose_amount']=result.dose_amount
+                obj['dose_unit']=result.dose_unit
+                obj['dose_formula']=result.dose_formula
+                obj['dose_description']=result.dose_description
+                obj['frequency_lower']=result.dose_frequency_lower
+                obj['frequency_lower_rate']=result.dose_frequency_lower_rate
+                obj['frequency_higher']=result.dose_frequency_higher
+                obj['frequency_higher_rate']=result.dose_frequency_higher_rate
             
-                obj['interval']=result[0].Dosage.interval
-                obj['specific_time']=result[0].Dosage.specific_time
-                obj['specific_time_lower']=result[0].Dosage.specific_time_lower
-                obj['specific_time_upper']=result[0].Dosage.specific_time_upper
-                obj['timing_description']=result[0].Dosage.timing_description
-                obj['exact_timing_critical']=result[0].Dosage.exact_timing_critical
-                obj['as_required']=result[0].Dosage.as_required
-                obj['as_required_criterion']=result[0].Dosage.as_required_criterion
-                obj['event_name']=result[0].Dosage.event_name
-                obj['time_offset']=result[0].Dosage.time_offset
-                obj['on']=result[0].Dosage.on
-                obj['off']=result[0].Dosage.off
-                obj['repetetions']=result[0].Dosage.repetetions
+                obj['interval']=result.dose_interval
+                obj['specific_time']=result.dose_specific_time
+                obj['specific_time_lower']=result.dose_specific_time_lower
+                obj['specific_time_upper']=result.dose_specific_time_upper
+                obj['timing_description']=result.timing_description
+                obj['exact_timing_critical']=result.dose_exact_timing_critical
+                obj['as_required']=result.as_required
+                obj['as_required_criterion']=result.as_required_criterion
+                obj['event_name']=result.dose_event_name
+                obj['time_offset']=result.dose_time_offset
+                obj['on']=result.dose_on
+                obj['off']=result.dose_off
+                obj['repetetions']=result.dose_repetetions
                 n=obj
 
 
 
                 obj={}
-                obj['id']=result[0].Administration_details.id
-                obj['order_id']=result[0].Administration_details.order_id
-                obj['route']=result[0].Administration_details.route
-                obj['body_site']=result[0].Administration_details.body_site
+            
+                obj['route']=result.route
+                obj['body_site']=result.body_site
                 o=obj
 
 
 
                 obj={}
-                obj['id']=result[0].Timing_non_daily.id
-                obj['order_id']=result[0].Timing_non_daily.order_id
-                obj['repetetion_interval']=result[0].Timing_non_daily.repetetion_interval
-                obj['frequency_lower']=result[0].Timing_non_daily.frequency_lower
-                obj['frequency_lower_rate']=result[0].Timing_non_daily.frequency_lower_rate
-                obj['frequency_higher']=result[0].Timing_non_daily.frequency_higher
-                obj['frequency_higher_rate']=result[0].Timing_non_daily.frequency_higher_rate
-                obj['specific_date']=result[0].Timing_non_daily.specific_date
-                obj['specific_date_lower']=result[0].Timing_non_daily.specific_date_lower
-                obj['specific_date_upper']=result[0].Timing_non_daily.specific_date_upper
-                obj['specific_day_of_week']=result[0].Timing_non_daily.specific_day_of_week
-                obj['specific_day_of_month']=result[0].Timing_non_daily.specific_day_of_month
-                obj['timing_description']=result[0].Timing_non_daily.timing_description
-                obj['event_name']=result[0].Timing_non_daily.event_name
-                obj['event_time_offset']=result[0].Timing_non_daily.event_time_offset
-                obj['on']=result[0].Timing_non_daily.on
-                obj['off']=result[0].Timing_non_daily.off
-                obj['repetetions']=result[0].Timing_non_daily.repetetions
+                obj['repetetion_interval']=result.time_repetetion_interval
+                obj['frequency_lower']=result.time_frequency_lower
+                obj['frequency_lower_rate']=result.time_frequency_lower_rate
+                obj['frequency_higher']=result.time_frequency_higher
+                obj['frequency_higher_rate']=result.time_frequency_higher_rate
+                obj['specific_date']=result.time_specific_date
+                obj['specific_date_lower']=result.time_specific_date_lower
+                obj['specific_date_upper']=result.time_specific_date_upper
+                obj['specific_day_of_week']=result.time_specific_day_of_week
+                obj['specific_day_of_month']=result.time_specific_day_of_month
+                obj['timing_description']=result.timing_description
+                obj['event_name']=result.time_event_name
+                obj['event_time_offset']=result.time_event_time_offset
+                obj['on']=result.timing_on
+                obj['off']=result.timing_off
+                obj['repetetions']=result.timing_repetetions
                 p=obj
                 
                 out={'medication_statement':l,"medication":m,"dosage":n,"administration_details":o,"timing_non-daily":p}
@@ -282,102 +277,97 @@ def getmedicationstatementfordoctor(Order_Id):
         value = jwt.decode(token, options={"verify_signature": False})
         res = doctor_details.query.filter_by(email=value['email'], password=value['password']).first()
         if res:
-            res1=db.session.query(Medication_statement).filter(Order_Id==Medication_statement.order_id).all()
-            if res1:
-                result = db.session.query(Medication_summary,Medication,Dosage,Administration_details,Timing_non_daily).filter(res1[0].patient_id==Medication_summary.patient_id,Order_Id==Medication.order_id,Order_Id==Dosage.order_id,Order_Id==Administration_details.order_id,Order_Id==Timing_non_daily.order_id).all()
+            result=db.session.query(Medication_statement).filter(Order_Id==Medication_statement.order_id).first()
+            if result:
                 out={}
                 obj={}
-                obj['order_id']=res1[0].order_id
-                obj['patient_id']=result[0].Medication_summary.patient_id
-                #obj['global_exclusion_of_medication_use']=result[0].Medication_summary.global_exclusion_of_medication_use
-                #obj['absence_of_info_statement']=result[0].Medication.absence_of_info_statement
-                #obj['absence_of_info_protocol_last_updated']=result[0].Medication.absence_of_info_protocol_last_updated
+                obj['order_id']=result.order_id
+                obj['patient_id']=result.patient_id
+                #obj['global_exclusion_of_medication_use']=result.Medication_summary.global_exclusion_of_medication_use
+                #obj['absence_of_info_statement']=result.absence_of_info_statement
+                #obj['absence_of_info_protocol_last_updated']=result.absence_of_info_protocol_last_updated
                 l=obj
 
                 obj={}
-                obj['order_id']=result[0].Medication.order_id
-                obj['medication_item']=result[0].Medication.medication_item
-                obj['medication_name']=result[0].Medication.medication_name
-                obj['medication_form']=result[0].Medication.medication_form
-                obj['medication_category']=result[0].Medication.medication_category
-                obj['medication_strength_numerator']=result[0].Medication.medication_strength_numerator
-                obj['medication_strength_numerator_unit']=result[0].Medication.medication_strength_numerator_unit
-                obj['medication_strength_denominator']=result[0].Medication.medication_strength_denominator
-                obj['medication_strength_denominator_unit']=result[0].Medication.medication_strength_denominator_unit
-                obj['unit_of_presentation']=result[0].Medication.unit_of_presentation
-                obj['strength']=result[0].Medication.strength
-                obj['manufacturer']=result[0].Medication.manufacturer
-                obj['batch_id']=result[0].Medication.batch_id
-                obj['expiry']=result[0].Medication.expiry
-                obj['amount']=result[0].Medication.amount
-                obj['amount_unit']=result[0].Medication.amount_unit
-                obj['alternate_amount']=result[0].Medication.alternate_amount
-                obj['alternate_amount_unit']=result[0].Medication.alternate_amount_unit
-                obj['role']=result[0].Medication.role
-                obj['description']=result[0].Medication.description
+                obj['medication_item']=result.medication_item
+                obj['medication_name']=result.medication_name
+                obj['medication_form']=result.medication_form
+                obj['strength(concentration)']=result.strength_concentration
+                obj['medication_category']=result.medication_category
+                obj['medication_strength_numerator']=result.medication_strength_numerator
+                obj['medication_strength_numerator_unit']=result.medication_strength_numerator_unit
+                obj['medication_strength_denominator']=result.medication_strength_denominator
+                obj['medication_strength_denominator_unit']=result.medication_strength_denominator_unit
+                obj['unit_of_presentation']=result.unit_of_presentation
+                obj['strength']=result.strength
+                obj['manufacturer']=result.manufacturer
+                obj['batch_id']=result.batch_id
+                obj['expiry']=result.expiry
+                obj['amount']=result.amount
+                obj['amount_unit']=result.amount_unit
+                obj['alternate_amount']=result.alternate_amount
+                obj['alternate_amount_unit']=result.alternate_amount_unit
+                obj['role']=result.role
+                obj['description']=result.description
 
                 m=obj
                 
 
 
                 obj={}
-                obj['id']=result[0].Dosage.id
-                obj['order_id']=result[0].Dosage.order_id
-                obj['dose_amount']=result[0].Dosage.dose_amount
-                obj['dose_unit']=result[0].Dosage.dose_unit
-                obj['dose_formula']=result[0].Dosage.dose_formula
-                obj['dose_description']=result[0].Dosage.dose_description
-                obj['frequency_lower']=result[0].Dosage.frequency_lower
-                obj['frequency_lower_rate']=result[0].Dosage.frequency_lower_rate
-                obj['frequency_higher']=result[0].Dosage.frequency_higher
-                obj['frequency_higher_rate']=result[0].Dosage.frequency_higher_rate
-                
-                obj['interval']=result[0].Dosage.interval
-                obj['specific_time']=result[0].Dosage.specific_time
-                obj['specific_time_lower']=result[0].Dosage.specific_time_lower
-                obj['specific_time_upper']=result[0].Dosage.specific_time_upper
-                obj['timing_description']=result[0].Dosage.timing_description
-                obj['exact_timing_critical']=result[0].Dosage.exact_timing_critical
-                obj['as_required']=result[0].Dosage.as_required
-                obj['as_required_criterion']=result[0].Dosage.as_required_criterion
-                obj['event_name']=result[0].Dosage.event_name
-                obj['time_offset']=result[0].Dosage.time_offset
-                obj['on']=result[0].Dosage.on
-                obj['off']=result[0].Dosage.off
-                obj['repetetions']=result[0].Dosage.repetetions
+                obj['dose_amount']=result.dose_amount
+                obj['dose_unit']=result.dose_unit
+                obj['dose_formula']=result.dose_formula
+                obj['dose_description']=result.dose_description
+                obj['frequency_lower']=result.dose_frequency_lower
+                obj['frequency_lower_rate']=result.dose_frequency_lower_rate
+                obj['frequency_higher']=result.dose_frequency_higher
+                obj['frequency_higher_rate']=result.dose_frequency_higher_rate
+            
+                obj['interval']=result.dose_interval
+                obj['specific_time']=result.dose_specific_time
+                obj['specific_time_lower']=result.dose_specific_time_lower
+                obj['specific_time_upper']=result.dose_specific_time_upper
+                obj['timing_description']=result.timing_description
+                obj['exact_timing_critical']=result.dose_exact_timing_critical
+                obj['as_required']=result.as_required
+                obj['as_required_criterion']=result.as_required_criterion
+                obj['event_name']=result.dose_event_name
+                obj['time_offset']=result.dose_time_offset
+                obj['on']=result.dose_on
+                obj['off']=result.dose_off
+                obj['repetetions']=result.dose_repetetions
                 n=obj
 
 
 
                 obj={}
-                obj['id']=result[0].Administration_details.id
-                obj['order_id']=result[0].Administration_details.order_id
-                obj['route']=result[0].Administration_details.route
-                obj['body_site']=result[0].Administration_details.body_site
+            
+                obj['route']=result.route
+                obj['body_site']=result.body_site
                 o=obj
 
 
 
                 obj={}
-                obj['id']=result[0].Timing_non_daily.id
-                obj['order_id']=result[0].Timing_non_daily.order_id
-                obj['repetetion_interval']=result[0].Timing_non_daily.repetetion_interval
-                obj['frequency_lower']=result[0].Timing_non_daily.frequency_lower
-                obj['frequency_lower_rate']=result[0].Timing_non_daily.frequency_lower_rate
-                obj['frequency_higher']=result[0].Timing_non_daily.frequency_higher
-                obj['frequency_higher_rate']=result[0].Timing_non_daily.frequency_higher_rate
-                obj['specific_date']=result[0].Timing_non_daily.specific_date
-                obj['specific_date_lower']=result[0].Timing_non_daily.specific_date_lower
-                obj['specific_date_upper']=result[0].Timing_non_daily.specific_date_upper
-                obj['specific_day_of_week']=result[0].Timing_non_daily.specific_day_of_week
-                obj['specific_day_of_month']=result[0].Timing_non_daily.specific_day_of_month
-                obj['timing_description']=result[0].Timing_non_daily.timing_description
-                obj['event_name']=result[0].Timing_non_daily.event_name
-                obj['event_time_offset']=result[0].Timing_non_daily.event_time_offset
-                obj['on']=result[0].Timing_non_daily.on
-                obj['off']=result[0].Timing_non_daily.off
-                obj['repetetions']=result[0].Timing_non_daily.repetetions
+                obj['repetetion_interval']=result.time_repetetion_interval
+                obj['frequency_lower']=result.time_frequency_lower
+                obj['frequency_lower_rate']=result.time_frequency_lower_rate
+                obj['frequency_higher']=result.time_frequency_higher
+                obj['frequency_higher_rate']=result.time_frequency_higher_rate
+                obj['specific_date']=result.time_specific_date
+                obj['specific_date_lower']=result.time_specific_date_lower
+                obj['specific_date_upper']=result.time_specific_date_upper
+                obj['specific_day_of_week']=result.time_specific_day_of_week
+                obj['specific_day_of_month']=result.time_specific_day_of_month
+                obj['timing_description']=result.timing_description
+                obj['event_name']=result.time_event_name
+                obj['event_time_offset']=result.time_event_time_offset
+                obj['on']=result.timing_on
+                obj['off']=result.timing_off
+                obj['repetetions']=result.timing_repetetions
                 p=obj
+               
                 
                 out={'medication_statement':l,"medication":m,"dosage":n,"administration_details":o,"timing_non-daily":p}
                 return jsonify({"success":True, "data":out})
@@ -412,41 +402,71 @@ def addmedicationstatement():
                 entry = Medication_summary(patient_id=data['patient_id'],global_exclusion_of_medication_use=data['global_exclusion_of_adverse_reactions'],absence_of_info_statement=data['absence_of_information_statement'],absence_of_info_protocol_last_updated=data['absence_of_information_protocol_last_updated'])
                 db.session.add(entry)
             
-            
-            entry = Medication_statement(patient_id=data['patient_id'])
-            db.session.add(entry)
-            #remove commit
-            res2=db.session.query(Medication_statement).order_by(Medication_statement.order_id.desc()).first()
-            id=0
-            if res2:
-                id=res2.order_id
+            entry_medication = Medication_statement(
+                patient_id=data['patient_id'],
+                medication_item=data['medication_item'],
+                medication_name=data['medication_name'],
+                medication_form=data['medication_form'],
+                strength_concentration=data['strength(concentration)'],
+                medication_category=data['medication_category'],
+                medication_strength_numerator=data['medication_strength_numerator'],
+                medication_strength_numerator_unit=data['medication_strength_numerator_unit'],
+                medication_strength_denominator=data['medication_strength_denominator'],
+                medication_strength_denominator_unit=data['medication_strength_denominator_unit'],
+                unit_of_presentation=data['unit_of_presentation'],
+                strength=data['strength'],
+                manufacturer=data['manufacturer'],
+                batch_id=data['batch_id'],
+                expiry=data['expiry'],
+                amount=data['amount'],
+                amount_unit=data['amount_unit'],
+                alternate_amount=data['alternate_amount'],
+                alternate_amount_unit=data['alternate_amount_unit'],
+                role=data['role'],
+                description=data['description'],
 
-
-            entry_medication = Medication(order_id=id,medication_item=data['medication_item'],medication_name=data['medication_name'],medication_form=data['medication_form'],medication_category=data['medication_category']
-            ,medication_strength_numerator=data['medication_strength_numerator'],medication_strength_numerator_unit=data['medication_strength_numerator_unit'],medication_strength_denominator=data['medication_strength_denominator'],medication_strength_denominator_unit=data['medication_strength_denominator_unit'],
-            unit_of_presentation=data['unit_of_presentation'],strength=data['strength'],manufacturer=data['manufacturer'],batch_id=data['batch_id'],
-            expiry=data['expiry'],amount=data['amount'],amount_unit=data['amount_unit'],alternate_amount=data['alternate_amount'],
-            alternate_amount_unit=data['alternate_amount_unit'],role=data['role'],description=data['description'])
-            db.session.add(entry_medication)
-            
-
-            entry_medication = Dosage(order_id=id,dose_amount=data['dose_amount'],dose_unit=data['dose_unit'],dose_formula=data['dose_formula'],dose_description=data['dose_description']
-            ,frequency_lower=data['dose_frequency_lower'],frequency_lower_rate=data['dose_frequency_lower_rate'],frequency_higher=data['dose_frequency_higher'],frequency_higher_rate=data['dose_frequency_higher_rate'],
-            interval=data['dose_interval'],specific_time=data['dose_specific_time'],specific_time_lower=data['dose_specific_time_lower'],specific_time_upper=data['dose_specific_time_upper'],
-            timing_description=data['dose_timing_description'],exact_timing_critical=data['dose_exact_timing_critical'],as_required=data['as_required'],as_required_criterion=data['as_required_criterion'],
-            event_name=data['dose_event_name'],time_offset=data['dose_time_offset'],on=data['dose_on']
-            ,off=data['dose_off'],repetetions=data['dose_repetetions'])
-            db.session.add(entry_medication)
+                dose_amount=data['dose_amount'],
+                dose_unit=data['dose_unit'],
+                dose_formula=data['dose_formula'],
+                dose_description=data['dose_description'],
+                dose_frequency_lower=data['dose_frequency_lower'],
+                dose_frequency_lower_rate=data['dose_frequency_lower_rate'],
+                dose_frequency_higher=data['dose_frequency_higher'],
+                dose_frequency_higher_rate=data['dose_frequency_higher_rate'],
+                dose_interval=data['dose_interval'],
+                dose_specific_time=data['dose_specific_time'],
+                dose_specific_time_lower=data['dose_specific_time_lower'],
+                dose_specific_time_upper=data['dose_specific_time_upper'],
+                dose_timing_description=data['dose_timing_description'],
+                dose_exact_timing_critical=data['dose_exact_timing_critical'],
+                as_required=data['as_required'],
+                as_required_criterion=data['as_required_criterion'],
+                dose_event_name=data['dose_event_name'],
+                dose_time_offset=data['dose_time_offset'],
+                dose_on=data['dose_on'],
+                dose_off=data['dose_off'],
+                dose_repetetions=data['dose_repetetions'],
+                route=data['route'],
+                body_site=data['body_site'],
         
-
-            entry_medication = Administration_details(order_id=id,route=data['route'],body_site=data['body_site'])
-            db.session.add(entry_medication)
-        
-
-            entry_medication = Timing_non_daily(order_id=id,repetetion_interval=data['time_repetetion_interval'],frequency_lower=data['time_frequency_lower'],frequency_lower_rate=data['time_frequency_lower_rate'],frequency_higher=data['time_frequency_higher']
-            ,frequency_higher_rate=data['time_frequency_higher_rate'],specific_date=data['time_specific_date'],specific_date_lower=data['time_specific_date_lower'],specific_date_upper=data['time_specific_date_upper'],
-            specific_day_of_week=data['time_specific_day_of_week'],specific_day_of_month=data['time_specific_day_of_month'],timing_description=data['timing_description'],event_name=data['time_event_name'],
-            event_time_offset=data['time_event_time_offset'],on=data['timing_on'],off=data['timing_off'],repetetions=data['timing_repetetions'])
+                time_repetetion_interval=data['time_repetetion_interval'],
+                time_frequency_lower=data['time_frequency_lower'],
+                time_frequency_lower_rate=data['time_frequency_lower_rate'],
+                time_frequency_higher=data['time_frequency_higher'],
+                time_frequency_higher_rate=data['time_frequency_higher_rate'],
+                time_specific_date=data['time_specific_date'],
+                time_specific_date_lower=data['time_specific_date_lower'],
+                time_specific_date_upper=data['time_specific_date_upper'],
+                time_specific_day_of_week=data['time_specific_day_of_week'],
+                time_specific_day_of_month=data['time_specific_day_of_month'],
+                timing_description=data['timing_description'],
+                time_event_name=data['time_event_name'],
+                time_event_time_offset=data['time_event_time_offset'],
+                timing_on=data['timing_on'],
+                timing_off=data['timing_off'],
+                timing_repetetions=data['timing_repetetions']
+            )
+                
             db.session.add(entry_medication)
 
             db.session.commit() 
@@ -474,19 +494,18 @@ def addPrescription():
             docId = docResult.id
             data = request.get_json()
             patId = data['patient_id']
-            result = Patient_details.query.filter_by(id = data['patient_id']).first()
+            result = Patient_details.query.filter_by(id = patId).first()
             if result:
-                patId = result.id
-                entry = Prescription(patientId = patId,doctorId = docId)
+               
+                current_date =datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                entry = Prescription(doctorId=docId,patientId=patId,dateWritten=current_date)
                 db.session.add(entry)
-                
-                prescription = Prescription.query.order_by(Prescription.prescriptionId.desc()).first()
-                id=0
-                if prescription:
-                    id=prescription.prescriptionId
+
                 for medOrd in data['medOrders']:
                     entry_med_ord = Medication_Order(
-                    prescriptionId = id,
+                    dateWritten = current_date,
+                    patientId=patId,
+                    doctorId=docId,
                     medicationItem = medOrd['medicationItem'],
                     route = medOrd['route'],
                     dosageInstruction = medOrd['dosageInstruction'],
@@ -498,7 +517,6 @@ def addPrescription():
                     reasons = medOrd['reasons'],
                     status=medOrd['status'],
                     dateDiscontinued = medOrd['dateDiscontinued'],
-                    dateWritten = medOrd['dateWritten'],
                     numOfRepeatsAllowed = medOrd['numOfRepeatsAllowed'],
                     validityPeriod = medOrd['validityPeriod'],
                     dispenseInstrution =  medOrd['dispenseInstrution'],
@@ -558,7 +576,8 @@ def getAllPrescriptionsForPatient():
                 obj = {}
                 docName = doctor_details.query.filter_by(id = prescription.doctorId).first().name
                 obj['doctorName'] = docName
-                obj['prescriptionId'] = prescription.prescriptionId
+                obj['prescriptionId'] = prescription.id
+                obj['date_written']=prescription.dateWritten
                 result.append(obj)
             return jsonify({'allPrescriptions':result})        
             
@@ -590,7 +609,8 @@ def getAllPrescriptionsForDoctor():
                 obj = {}
                 patName = Patient_details.query.filter_by(id = prescription.patientId).first().name
                 obj['patientName'] = patName
-                obj['prescriptionId'] = prescription.prescriptionId
+                obj['prescriptionId'] = prescription.id
+                obj['date_written']=prescription.dateWritten
                 result.append(obj)
             return jsonify({'allPrescriptions':result})
             
@@ -617,15 +637,18 @@ def getPrescriptionByIdForDoct(presId):
         docRes = doctor_details.query.filter_by(email=email,password=password).first()
         
         if docRes:
-            docverfify = Prescription.query.filter_by(prescriptionId=presId, doctorId =docRes.id).first()
+            docverfify = Prescription.query.filter_by(id=presId, doctorId =docRes.id).first()
             if docverfify:
-                result = Medication_Order.query.filter_by(prescriptionId = presId).all()
+                result = Medication_Order.query.filter_by(doctorId=docRes.id,patientId=docverfify.patientId,dateWritten=docverfify.dateWritten).all()
                 if len(result):
                     output = []
                     for item in result:
                         detail = {}
                         detail['medicationItem'] = item.medicationItem
                         detail['medId'] = item.medId
+                        detail['date_written']=item.dateWritten
+                        detail['patient_id']=item.patientId
+
                         output.append(detail)
                     return jsonify({'Prescription':output})
                 else:
@@ -651,15 +674,17 @@ def getPrescriptionByIdForPat(presId):
         patRes = Patient_details.query.filter_by(email=email,password=password).first()
         
         if patRes:
-            patverfify = Prescription.query.filter_by(prescriptionId=presId, patientId =patRes.id).first()
+            patverfify = Prescription.query.filter_by(id=presId, patientId =patRes.id).first()
             if patverfify:
-                result = Medication_Order.query.filter_by(prescriptionId = presId).all()
+                result = Medication_Order.query.filter_by(doctorId=patverfify.doctorId,patientId=patRes.id,dateWritten=patverfify.dateWritten).all()
                 if len(result):
                     output = []
                     for item in result:
                         detail = {}
                         detail['medicationItem'] = item.medicationItem
                         detail['medId'] = item.medId
+                        detail['date_written']=item.dateWritten
+                        detail['patient_id']=item.patientId
                         output.append(detail)
                     return jsonify({'Prescription':output})
                 else:
@@ -688,7 +713,7 @@ def getMedicationOrderByIdForDoctor(medId):
             pres_id = result.prescriptionId
             print(pres_id)
             print(docRes.id)
-            docverify =Prescription.query.filter_by(prescriptionId = pres_id,doctorId=docRes.id).first()
+            docverify =Prescription.query.filter_by(id = pres_id,doctorId=docRes.id).first()
             if docverify:
                 if result:
                     output = {}
@@ -754,7 +779,7 @@ def getMedicationOrderByIdForPatient(medId):
         if patRes:
             result = Medication_Order.query.filter_by(medId = medId).first()
             pres_id = result.prescriptionId
-            patverify =Prescription.query.filter_by(prescriptionId = pres_id,patientId=patRes.id).first()
+            patverify =Prescription.query.filter_by(id = pres_id,patientId=patRes.id).first()
             if patverify:
 
                 if result:
