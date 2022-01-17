@@ -71,7 +71,7 @@ def patientLoginSucess():
         if result:
             payload={"email":all_data['email'],"password":hashedPassword }
             value = jwt.encode(payload, key)
-            patient_info={'name':result.name,'age':result.age,'email':result.email,'contact':result.contact,'gender':result.gender,'address':result.address}
+            patient_info={'id':result.id,'name':result.name,'age':result.age,'email':result.email,'contact':result.contact,'gender':result.gender,'address':result.address}
             return jsonify({'success':True,'token':value.decode('utf-8'), 'patient_info':patient_info})
         else:
             return jsonify({'success':False,'message':'invalid email/Password'}), 404
@@ -1850,9 +1850,12 @@ def getPastHistoryPatient():
         res = Patient_details.query.filter_by(email=value['email'], password=value['password']).first()
         if res:
             result = db.session.query(Past_history_of_illnesses).filter(Past_history_of_illnesses.patient_id==res.id).all()
-            output=[]     
+            output=[] 
+            c = 1    
             for value in result:
                 pat = {}
+                pat['id'] = c
+                c += 1
                 pat['patient_id']=value.patient_id
                 pat['problem_name']=value.problem_name
                 pat['body_site']=value.body_site
@@ -1955,8 +1958,11 @@ def getProblemListByPatient():
             output['absence_of_information_statement']=result1.absence_of_information_statement
             output['absence_of_information_protocol_last_updated']=result1.absence_of_information_protocol_last_updated
             pat =[]
+            c = 1
             for value in result2:
-                obj={}  
+                obj={}
+                obj['id']= c
+                c += 1
                 obj['patient_id']=value.patient_id
                 obj['problem_name']=value.problem_name
                 obj['body_site']=value.body_site
@@ -2054,6 +2060,7 @@ def getAdvanceDirectivesByPatient():
         value = jwt.decode(token, options={"verify_signature": False})
         res = Patient_details.query.filter_by(email=value['email'], password=value['password']).first()
         if res:
+            c = 0
             result1 = db.session.query(Advance_care_directive).filter(Advance_care_directive.patient_id==res.id).first()
             result2 = db.session.query(Limitation_of_treatment).filter(Limitation_of_treatment.patient_id==res.id).all()
             output={}      
@@ -2072,6 +2079,8 @@ def getAdvanceDirectivesByPatient():
             pat =[]  
             for value in result2:  
                 obj={}  
+                obj['id'] = c
+                c += 1
                 obj['patient_id']=value.patient_id
                 obj['status']=value.status
                 obj['type_of_limitation']=value.type_of_limitation
