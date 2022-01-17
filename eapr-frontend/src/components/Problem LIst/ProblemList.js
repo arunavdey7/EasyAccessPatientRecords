@@ -81,7 +81,7 @@ const ProblemList = () => {
                 <option value='In remission'>In remission</option>
             </select>
             <br/>
-            <label>Occurence</label>
+            <label>Occurrence</label>
             <select>
                 <option value='Recurrence'>Recurrence</option>
             </select>
