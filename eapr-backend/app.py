@@ -1,9 +1,9 @@
 from flask.json import jsonify
 from flask import app, request
-from sqlalchemy import func
 import datetime
 from models import *
 import hashlib,jwt
+
 db.create_all()
 db.session.commit()
 
@@ -58,7 +58,8 @@ def adminLoginSuccess():
             return jsonify({'success':True,'token':value})
         else:
             return jsonify({'success':False,'message':'Wrong Password'}), 404
-    except:
+    except Exception as e:
+        print(e)
         return jsonify({'success':False,'message':'not recieved JSON data'}), 400
 
 # Api for Patient Login
@@ -98,63 +99,87 @@ def doctorLoginSucess():
     except:
         return jsonify({'success':False,'message':'not recieved JSON data'}),400      
 
+
+#1. Medication Summary
 @app.route('/api/ips/medicationsummary/getallmedicationstatementsforpatient',methods=['GET'])
 def getallmedicationstatements():
     try:
+        #patient verification
         token=request.headers['token']
         value = jwt.decode(token, options={"verify_signature": False})
-        res = Patient_details.query.filter_by(email=value['email'], password=value['password']).first()
-        if res:
-            
-            res2=Medication_statement.query.filter_by(patient_id=res.id).all()
+        patient = Patient_details.query.filter_by(email=value['email'], password=value['password']).first()
+        
+        if patient:
             output={}
-            medicationstatements=[]
-            for res3 in res2:
-                obj={}
-                obj['order_id']=res3.order_id
-                obj['medication_item']=res3.medication_item
-                medicationstatements.append(obj)
-            res3=Medication_summary.query.filter_by(patient_id=res.id).first()
-            if res3:
-                output['global_exclusion_of_medication_use']=res3.global_exclusion_of_medication_use
-                output['absence_of_info_statement']=res3.absence_of_info_statement
-                output['absence_of_info_protocol_last_updated']=res3.absence_of_info_protocol_last_updated
-            output['medication_statements']=medicationstatements
+
+            #check medication_summary
+            medication_summary=Medication_summary.query.filter_by(patient_id=patient.id).first()
+
+            if medication_summary:
+                output['global_exclusion_of_medication_use']=medication_summary.global_exclusion_of_medication_use
+                output['absence_of_info_statement']=medication_summary.absence_of_info_statement
+                output['absence_of_info_protocol_last_updated']=medication_summary.absence_of_info_protocol_last_updated
+            
+                medication_statements=Medication_statement.query.filter_by(patient_id=patient.id).all()
+                medicationstatements=[]
+
+                for medication_statement in medication_statements:
+                    obj={}
+                    
+                    obj['order_id']=medication_statement.order_id
+                    obj['medication_item']=medication_statement.medication_item
+
+                    medicationstatements.append(obj)
+                
+                output['medication_statements']=medicationstatements
             return jsonify({"success":True, "medication_summary":output})
+
         else:
-            return jsonify({'success':False,'message':'invalid email/password'}), 404
+            return jsonify({'success':False,'message':'Not Authorised'}), 401
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'Request misses token/json data'}), 400
 
+
 @app.route('/api/ips/medicationsummary/getallmedicationstatementsfordoctor/<int:patient_id>',methods=['GET'])
 def getallmedicationstatementsfordoctor(patient_id):
     try:
+        #doctor verification
         token=request.headers['token']
         value = jwt.decode(token, options={"verify_signature": False})
-        res = doctor_details.query.filter_by(email=value['email'], password=value['password']).first()
-        if res:
-            Patient_Id=patient_id
+        doctor = doctor_details.query.filter_by(email=value['email'], password=value['password']).first()
+        
+        if doctor:
+            #patient verification
+            patient = Patient_details.query.filter_by(id=patient_id).first()
+            if patient:
+                output={}
+                #check medication_summary
+                medication_summary=Medication_summary.query.filter_by(patient_id=patient.id).first()
 
-            
-            res2=Medication_statement.query.filter_by(patient_id=Patient_Id).all()
-            output={}
-            medicationstatements=[]
-            for res3 in res2:
-                obj={}
-                obj['order_id']=res3.order_id
-                obj['medication_item']=res3.medication_item
-                medicationstatements.append(obj)
-            res3=Medication_summary.query.filter_by(patient_id=res.id).first()
-            if res3:
-                output['global_exclusion_of_medication_use']=res3.global_exclusion_of_medication_use
-                output['absence_of_info_statement']=res3.absence_of_info_statement
-                output['absence_of_info_protocol_last_updated']=res3.absence_of_info_protocol_last_updated
-            output['medication_statements']=medicationstatements
-            return jsonify({"success":True, "medication_summary":output})
+                if medication_summary:
+                    output['global_exclusion_of_medication_use']=medication_summary.global_exclusion_of_medication_use
+                    output['absence_of_info_statement']=medication_summary.absence_of_info_statement
+                    output['absence_of_info_protocol_last_updated']=medication_summary.absence_of_info_protocol_last_updated
+                
+                    medication_statements=Medication_statement.query.filter_by(patient_id=patient.id).all()
+                    medicationstatements=[]
 
+                    for medication_statement in medication_statements:
+                        obj={}
+                        
+                        obj['order_id']=medication_statement.order_id
+                        obj['medication_item']=medication_statement.medication_item
+
+                        medicationstatements.append(obj)
+                    
+                    output['medication_statements']=medicationstatements
+                return jsonify({"success":True, "medication_summary":output})
+
+            else:
+                return jsonify({'success':False, 'message': 'Invalid Patient'}), 404
         else:
-            return jsonify({'success':False,'message':'invalid email/password'}), 404
+            return jsonify({'success':False,'message':'Not Authorised'}), 401
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'Request misses token/json data'}), 400
@@ -163,21 +188,20 @@ def getallmedicationstatementsfordoctor(patient_id):
 @app.route('/api/ips/medicationsummary/getmedicationstatementforpatient/<int:Order_Id>',methods=['GET'])
 def getmedicationstatement(Order_Id):
     try:
+        #patient authentication
         token=request.headers['token']
         value = jwt.decode(token, options={"verify_signature": False})
-        res = Patient_details.query.filter_by(email=value['email'], password=value['password']).first()
+        patient = Patient_details.query.filter_by(email=value['email'], password=value['password']).first()
 
-        if res:
-            result=db.session.query(Medication_statement).filter(Order_Id==Medication_statement.order_id,res.id==Medication_statement.patient_id).first()
+        if patient:
+            result=db.session.query(Medication_statement).filter(Order_Id==Medication_statement.order_id,patient.id==Medication_statement.patient_id).first()
             if result:
 
                 out={}
+
                 obj={}
                 obj['order_id']=result.order_id
                 obj['patient_id']=result.patient_id
-                #obj['global_exclusion_of_medication_use']=result.Medication_summary.global_exclusion_of_medication_use
-                #obj['absence_of_info_statement']=result.absence_of_info_statement
-                #obj['absence_of_info_protocol_last_updated']=result.absence_of_info_protocol_last_updated
                 l=obj
 
                 obj={}
@@ -201,11 +225,8 @@ def getmedicationstatement(Order_Id):
                 obj['alternate_amount_unit']=result.alternate_amount_unit
                 obj['role']=result.role
                 obj['description']=result.description
-
                 m=obj
                 
-
-
                 obj={}
                 obj['dose_amount']=result.dose_amount
                 obj['dose_unit']=result.dose_unit
@@ -215,7 +236,6 @@ def getmedicationstatement(Order_Id):
                 obj['frequency_lower_rate']=result.dose_frequency_lower_rate
                 obj['frequency_higher']=result.dose_frequency_higher
                 obj['frequency_higher_rate']=result.dose_frequency_higher_rate
-            
                 obj['interval']=result.dose_interval
                 obj['specific_time']=result.dose_specific_time
                 obj['specific_time_lower']=result.dose_specific_time_lower
@@ -231,15 +251,10 @@ def getmedicationstatement(Order_Id):
                 obj['repetetions']=result.dose_repetetions
                 n=obj
 
-
-
                 obj={}
-            
                 obj['route']=result.route
                 obj['body_site']=result.body_site
                 o=obj
-
-
 
                 obj={}
                 obj['repetetion_interval']=result.time_repetetion_interval
@@ -262,10 +277,11 @@ def getmedicationstatement(Order_Id):
                 
                 out={'medication_statement':l,"medication":m,"dosage":n,"administration_details":o,"timing_non-daily":p}
                 return jsonify({"success":True, "data":out})
+
             else:
-                return jsonify({'success':False,'message':'not authorised'}), 404
+                return jsonify({'success':False,'message':'not authorised'}), 401
         else:
-            return jsonify({'success':False,'message':'invalid email/password'}), 404
+            return jsonify({'success':False,'message':'Not authorised, not a Patient'}), 401
     except:
         return jsonify({'success':False,'message':'Request misses token/json data'}), 400
 
@@ -273,19 +289,20 @@ def getmedicationstatement(Order_Id):
 @app.route('/api/ips/medicationsummary/getmedicationstatementfordoctor/<int:Order_Id>',methods=['GET'])
 def getmedicationstatementfordoctor(Order_Id):
     try:
+        #doctor verification
         token=request.headers['token']
         value = jwt.decode(token, options={"verify_signature": False})
-        res = doctor_details.query.filter_by(email=value['email'], password=value['password']).first()
-        if res:
+        doctor = doctor_details.query.filter_by(email=value['email'], password=value['password']).first()
+        
+        if doctor:
             result=db.session.query(Medication_statement).filter(Order_Id==Medication_statement.order_id).first()
+            
             if result:
                 out={}
+
                 obj={}
                 obj['order_id']=result.order_id
                 obj['patient_id']=result.patient_id
-                #obj['global_exclusion_of_medication_use']=result.Medication_summary.global_exclusion_of_medication_use
-                #obj['absence_of_info_statement']=result.absence_of_info_statement
-                #obj['absence_of_info_protocol_last_updated']=result.absence_of_info_protocol_last_updated
                 l=obj
 
                 obj={}
@@ -309,11 +326,8 @@ def getmedicationstatementfordoctor(Order_Id):
                 obj['alternate_amount_unit']=result.alternate_amount_unit
                 obj['role']=result.role
                 obj['description']=result.description
-
                 m=obj
                 
-
-
                 obj={}
                 obj['dose_amount']=result.dose_amount
                 obj['dose_unit']=result.dose_unit
@@ -323,7 +337,6 @@ def getmedicationstatementfordoctor(Order_Id):
                 obj['frequency_lower_rate']=result.dose_frequency_lower_rate
                 obj['frequency_higher']=result.dose_frequency_higher
                 obj['frequency_higher_rate']=result.dose_frequency_higher_rate
-            
                 obj['interval']=result.dose_interval
                 obj['specific_time']=result.dose_specific_time
                 obj['specific_time_lower']=result.dose_specific_time_lower
@@ -339,15 +352,10 @@ def getmedicationstatementfordoctor(Order_Id):
                 obj['repetetions']=result.dose_repetetions
                 n=obj
 
-
-
-                obj={}
-            
+                obj={}            
                 obj['route']=result.route
                 obj['body_site']=result.body_site
                 o=obj
-
-
 
                 obj={}
                 obj['repetetion_interval']=result.time_repetetion_interval
@@ -368,13 +376,13 @@ def getmedicationstatementfordoctor(Order_Id):
                 obj['repetetions']=result.timing_repetetions
                 p=obj
                
-                
                 out={'medication_statement':l,"medication":m,"dosage":n,"administration_details":o,"timing_non-daily":p}
                 return jsonify({"success":True, "data":out})
+
             else:
-                return jsonify({'success':False,'message':'medication statement is not available'}), 404
+                return jsonify({'success':False,'message':'Invalid Order id'}), 404
         else:
-            return jsonify({'success':False,'message':'invalid email/password'}), 404
+            return jsonify({'success':False,'message':'Not Authorised'}), 401
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'Request misses token/json data'}), 400
@@ -384,107 +392,111 @@ def getmedicationstatementfordoctor(Order_Id):
 @app.route('/api/ips/medicationsummary/addmedicationstatement',methods=['POST'])
 def addmedicationstatement():
     try:
+        #admin verification
         token=request.headers['token']
         value = jwt.decode(token, options={"verify_signature": False})
         res = Admin_Login.query.filter_by(email=value['email'], password=value['password']).first()
-        data=request.get_json()
-        result1 = Patient_details.query.filter_by(id = data['patient_id']).first()
 
-        if res and result1:
-            
-            
-            result2 = Medication_summary.query.filter_by(patient_id = data['patient_id']).first()
-            if result2:
-                result2.global_exclusion_of_adverse_reactions = data['global_exclusion_of_adverse_reactions']
-                result2.absence_of_information_statement = data['absence_of_information_statement']
-                result2.absence_of_information_protocol_last_updated = data['absence_of_information_protocol_last_updated']
-            else:
-                entry = Medication_summary(patient_id=data['patient_id'],global_exclusion_of_medication_use=data['global_exclusion_of_adverse_reactions'],absence_of_info_statement=data['absence_of_information_statement'],absence_of_info_protocol_last_updated=data['absence_of_information_protocol_last_updated'])
-                db.session.add(entry)
-            
-            entry_medication = Medication_statement(
-                patient_id=data['patient_id'],
-                medication_item=data['medication_item'],
-                medication_name=data['medication_name'],
-                medication_form=data['medication_form'],
-                strength_concentration=data['strength(concentration)'],
-                medication_category=data['medication_category'],
-                medication_strength_numerator=data['medication_strength_numerator'],
-                medication_strength_numerator_unit=data['medication_strength_numerator_unit'],
-                medication_strength_denominator=data['medication_strength_denominator'],
-                medication_strength_denominator_unit=data['medication_strength_denominator_unit'],
-                unit_of_presentation=data['unit_of_presentation'],
-                strength=data['strength'],
-                manufacturer=data['manufacturer'],
-                batch_id=data['batch_id'],
-                expiry=data['expiry'],
-                amount=data['amount'],
-                amount_unit=data['amount_unit'],
-                alternate_amount=data['alternate_amount'],
-                alternate_amount_unit=data['alternate_amount_unit'],
-                role=data['role'],
-                description=data['description'],
+        if res:
+            data=request.get_json()
+            #patient verification
+            result1 = Patient_details.query.filter_by(id = data['patient_id']).first()
 
-                dose_amount=data['dose_amount'],
-                dose_unit=data['dose_unit'],
-                dose_formula=data['dose_formula'],
-                dose_description=data['dose_description'],
-                dose_frequency_lower=data['dose_frequency_lower'],
-                dose_frequency_lower_rate=data['dose_frequency_lower_rate'],
-                dose_frequency_higher=data['dose_frequency_higher'],
-                dose_frequency_higher_rate=data['dose_frequency_higher_rate'],
-                dose_interval=data['dose_interval'],
-                dose_specific_time=data['dose_specific_time'],
-                dose_specific_time_lower=data['dose_specific_time_lower'],
-                dose_specific_time_upper=data['dose_specific_time_upper'],
-                dose_timing_description=data['dose_timing_description'],
-                dose_exact_timing_critical=data['dose_exact_timing_critical'],
-                as_required=data['as_required'],
-                as_required_criterion=data['as_required_criterion'],
-                dose_event_name=data['dose_event_name'],
-                dose_time_offset=data['dose_time_offset'],
-                dose_on=data['dose_on'],
-                dose_off=data['dose_off'],
-                dose_repetetions=data['dose_repetetions'],
-                route=data['route'],
-                body_site=data['body_site'],
-        
-                time_repetetion_interval=data['time_repetetion_interval'],
-                time_frequency_lower=data['time_frequency_lower'],
-                time_frequency_lower_rate=data['time_frequency_lower_rate'],
-                time_frequency_higher=data['time_frequency_higher'],
-                time_frequency_higher_rate=data['time_frequency_higher_rate'],
-                time_specific_date=data['time_specific_date'],
-                time_specific_date_lower=data['time_specific_date_lower'],
-                time_specific_date_upper=data['time_specific_date_upper'],
-                time_specific_day_of_week=data['time_specific_day_of_week'],
-                time_specific_day_of_month=data['time_specific_day_of_month'],
-                timing_description=data['timing_description'],
-                time_event_name=data['time_event_name'],
-                time_event_time_offset=data['time_event_time_offset'],
-                timing_on=data['timing_on'],
-                timing_off=data['timing_off'],
-                timing_repetetions=data['timing_repetetions']
-            )
+            if result1:
+                result2 = Medication_summary.query.filter_by(patient_id = data['patient_id']).first()
+                if result2:
+                    result2.global_exclusion_of_adverse_reactions = data['global_exclusion_of_adverse_reactions']
+                    result2.absence_of_information_statement = data['absence_of_information_statement']
+                    result2.absence_of_information_protocol_last_updated = data['absence_of_information_protocol_last_updated']
+                else:
+                    entry = Medication_summary(patient_id=data['patient_id'],global_exclusion_of_medication_use=data['global_exclusion_of_adverse_reactions'],absence_of_info_statement=data['absence_of_information_statement'],absence_of_info_protocol_last_updated=data['absence_of_information_protocol_last_updated'])
+                    db.session.add(entry)
                 
-            db.session.add(entry_medication)
+                entry_medication = Medication_statement(
+                    patient_id=data['patient_id'],
+                    medication_item=data['medication_item'],
+                    medication_name=data['medication_name'],
+                    medication_form=data['medication_form'],
+                    strength_concentration=data['strength(concentration)'],
+                    medication_category=data['medication_category'],
+                    medication_strength_numerator=data['medication_strength_numerator'],
+                    medication_strength_numerator_unit=data['medication_strength_numerator_unit'],
+                    medication_strength_denominator=data['medication_strength_denominator'],
+                    medication_strength_denominator_unit=data['medication_strength_denominator_unit'],
+                    unit_of_presentation=data['unit_of_presentation'],
+                    strength=data['strength'],
+                    manufacturer=data['manufacturer'],
+                    batch_id=data['batch_id'],
+                    expiry=data['expiry'],
+                    amount=data['amount'],
+                    amount_unit=data['amount_unit'],
+                    alternate_amount=data['alternate_amount'],
+                    alternate_amount_unit=data['alternate_amount_unit'],
+                    role=data['role'],
+                    description=data['description'],
 
-            db.session.commit() 
-            return jsonify({'success':True,'message':'item added successfully'})
+                    dose_amount=data['dose_amount'],
+                    dose_unit=data['dose_unit'],
+                    dose_formula=data['dose_formula'],
+                    dose_description=data['dose_description'],
+                    dose_frequency_lower=data['dose_frequency_lower'],
+                    dose_frequency_lower_rate=data['dose_frequency_lower_rate'],
+                    dose_frequency_higher=data['dose_frequency_higher'],
+                    dose_frequency_higher_rate=data['dose_frequency_higher_rate'],
+                    dose_interval=data['dose_interval'],
+                    dose_specific_time=data['dose_specific_time'],
+                    dose_specific_time_lower=data['dose_specific_time_lower'],
+                    dose_specific_time_upper=data['dose_specific_time_upper'],
+                    dose_timing_description=data['dose_timing_description'],
+                    dose_exact_timing_critical=data['dose_exact_timing_critical'],
+                    as_required=data['as_required'],
+                    as_required_criterion=data['as_required_criterion'],
+                    dose_event_name=data['dose_event_name'],
+                    dose_time_offset=data['dose_time_offset'],
+                    dose_on=data['dose_on'],
+                    dose_off=data['dose_off'],
+                    dose_repetetions=data['dose_repetetions'],
+                    route=data['route'],
+                    body_site=data['body_site'],
+            
+                    time_repetetion_interval=data['time_repetetion_interval'],
+                    time_frequency_lower=data['time_frequency_lower'],
+                    time_frequency_lower_rate=data['time_frequency_lower_rate'],
+                    time_frequency_higher=data['time_frequency_higher'],
+                    time_frequency_higher_rate=data['time_frequency_higher_rate'],
+                    time_specific_date=data['time_specific_date'],
+                    time_specific_date_lower=data['time_specific_date_lower'],
+                    time_specific_date_upper=data['time_specific_date_upper'],
+                    time_specific_day_of_week=data['time_specific_day_of_week'],
+                    time_specific_day_of_month=data['time_specific_day_of_month'],
+                    timing_description=data['timing_description'],
+                    time_event_name=data['time_event_name'],
+                    time_event_time_offset=data['time_event_time_offset'],
+                    timing_on=data['timing_on'],
+                    timing_off=data['timing_off'],
+                    timing_repetetions=data['timing_repetetions']
+                )
+                    
+                db.session.add(entry_medication)
 
+                db.session.commit() 
+                return jsonify({'success':True,'message':'item added successfully'})
 
+            else:
+                return jsonify({'success':False, 'messahe':'Invalid Patient'}), 404
         else:
-            return jsonify({'success':False,'message':'invalid email/password'}), 404
+            return jsonify({'success':False,'message':'Not Authorised'}), 401
     except:
         return jsonify({'success':False,'message':'Request misses token/json data'}), 400
 
 
-# APIS FOR PRESCRIPTION
+#2. PRESCRIPTION
 # ADD prescription POST 
 @app.route('/api/addPrescription', methods=['POST'])
 def addPrescription():
     try:
-        token = request.headers['token']    #doctor token
+        #doctor verification
+        token = request.headers['token']
         value = jwt.decode(token, options={"verify_signature": False})
         email = value["email"]
         password = value["password"]
@@ -494,6 +506,7 @@ def addPrescription():
             docId = docResult.id
             data = request.get_json()
             patId = data['patient_id']
+            #patient verification
             result = Patient_details.query.filter_by(id = patId).first()
             if result:
                
@@ -550,7 +563,7 @@ def addPrescription():
             else:
                 return jsonify({'success':False,'message':'Invalid Patient'}),404
         else:
-            return jsonify({'success':False,'message':'Not Authorised'}),404
+            return jsonify({'success':False,'message':'Not Authorised'}),401
 
     except Exception as e :
         print(e)
@@ -561,13 +574,13 @@ def addPrescription():
 @app.route('/api/getAllPrescriptionsForPatient', methods=['GET'])
 def getAllPrescriptionsForPatient():
     try:
-        token = request.headers['token']    #patient token
+        #patient verification
+        token = request.headers['token']    
         value = jwt.decode(token, options={"verify_signature": False})
         email = value["email"]
         password = value["password"]
-
-        
         patRes = Patient_details.query.filter_by(email=email,password=password).first()
+
         if patRes:
             patId = patRes.id
             prescriptions = Prescription.query.filter_by(patientId=patId).all()
@@ -582,7 +595,7 @@ def getAllPrescriptionsForPatient():
             return jsonify({'allPrescriptions':result})        
             
         else:
-            return jsonify({'success':False,'message':'Not Authorised'}),404
+            return jsonify({'success':False,'message':'Not Authorised'}),401
 
     except Exception as e:
         print(e)
@@ -595,7 +608,8 @@ def getAllPrescriptionsForPatient():
 def getAllPrescriptionsForDoctor():
 
     try:
-        token = request.headers['token']    #doctor token
+        #doctor verification
+        token = request.headers['token'] 
         value = jwt.decode(token, options={"verify_signature": False})
         email = value["email"]
         password = value["password"]
@@ -614,9 +628,8 @@ def getAllPrescriptionsForDoctor():
                 result.append(obj)
             return jsonify({'allPrescriptions':result})
             
-            
         else:
-            return jsonify({'success':False,'message':'Not Authorised'}),404
+            return jsonify({'success':False,'message':'Not Authorised'}),401
 
     except Exception as e:
         print(e)
@@ -629,11 +642,11 @@ def getAllPrescriptionsForDoctor():
 @app.route('/api/getPrescriptionByIdForDoctor/<int:presId>', methods=['GET'])
 def getPrescriptionByIdForDoct(presId):
     try:
-        token = request.headers['token']    #doctor token
+        #doctor Verification
+        token = request.headers['token'] 
         value = jwt.decode(token, options={"verify_signature": False})
         email = value["email"]
         password = value["password"]
-
         docRes = doctor_details.query.filter_by(email=email,password=password).first()
         
         if docRes:
@@ -654,7 +667,7 @@ def getPrescriptionByIdForDoct(presId):
                 else:
                     return jsonify({'success':False,'message':'Invalid prescription id'}),404
             else:
-                return jsonify({'success':False,'message':'Not Authorised'}),404
+                return jsonify({'success':False,'message':'Not Authorised'}),401
         else:
             return jsonify({'success':False,'message':'Not Authorised, Not a Doctor'}),404
 
@@ -690,7 +703,7 @@ def getPrescriptionByIdForPat(presId):
                 else:
                     return jsonify({'success':False,'message':'Invalid prescription id'}),404
             else:
-                return jsonify({'success':False,'message':'Not Authorised'}),404
+                return jsonify({'success':False,'message':'Not Authorised'}),401
         else:
             return jsonify({'success':False,'message':'Not Authorised, Not a Patient'}),404
 
@@ -756,7 +769,7 @@ def getMedicationOrderByIdForDoctor(medId):
                 else:
                     return jsonify({'success':False,'message':'Invalid Med Id'}),404
             else:
-                return jsonify({'success':False,'message':'Not Authorised'}),404
+                return jsonify({'success':False,'message':'Not Authorised'}),401
         else:
             return jsonify({'success':False,'message':'Not Authorised, Not a Doctor'}),404
 
@@ -823,7 +836,7 @@ def getMedicationOrderByIdForPatient(medId):
                 else:
                     return jsonify({'success':False,'message':'Invalid Med Id'}),404
             else:
-                return jsonify({'success':False,'message':'Not Authorised'}),404
+                return jsonify({'success':False,'message':'Not Authorised'}),401
         else:
             return jsonify({'success':False,'message':'Not Authorised, Not a Patient'}),404
 
@@ -832,33 +845,40 @@ def getMedicationOrderByIdForPatient(medId):
         return jsonify({'success':False,'message':'not recieved JSON/Token data'}),400 
 
 
-# Ajay
-
+#3. Pregnancy
 # API for POST PREGNANCY 
 @app.route('/api/addPregnancyDetails',methods=['POST'])
 def addPregnancyDetails():
     try:
+        #admin Verification
         token = request.headers['token']
         decoded = jwt.decode(token, options={"verify_signature": False})
         admin_check= Admin_Login.query.filter_by(email=decoded["email"], password=decoded['password']).first()
         if admin_check:
             data=request.get_json()
-            entry = Pregnancy(
-                patient_uid=data['patient_id'],
-                pregnancy_status = data['pregnancy_status'],
-                pregnancy_outcome = data['pregnancy_outcome'],
-                estimated_date_of_delivery_by_date_of_conseption = data['estimated_date_of_delivery_by_date_of_conseption'],
-                estimated_date_of_delivery_by_cycle = data['estimated_date_of_delivery_by_cycle'],
-                estimated_date_of_delivery_by_ultrasound = data['estimated_date_of_delivery_by_ultrasound'],
-                agreed_date = data['agreed_date'],
-                protocol_last_updated = data['protocol_last_updated'],
-                exclusion_of_pregnancy_statement = data['exclusion_of_pregnancy_statement']
-            )
-            db.session.add(entry)
-            db.session.commit()
-            return jsonify({'success':True,'message':'pregnancy details Added successfully'})
+            #patient verification
+            patient = Patient_details.query.filter_by(id = data['patient_id']).first()
+
+            if patient:
+                entry = Pregnancy(
+                    patient_uid=data['patient_id'],
+                    pregnancy_status = data['pregnancy_status'],
+                    pregnancy_outcome = data['pregnancy_outcome'],
+                    estimated_date_of_delivery_by_date_of_conseption = data['estimated_date_of_delivery_by_date_of_conseption'],
+                    estimated_date_of_delivery_by_cycle = data['estimated_date_of_delivery_by_cycle'],
+                    estimated_date_of_delivery_by_ultrasound = data['estimated_date_of_delivery_by_ultrasound'],
+                    agreed_date = data['agreed_date'],
+                    protocol_last_updated = data['protocol_last_updated'],
+                    exclusion_of_pregnancy_statement = data['exclusion_of_pregnancy_statement']
+                )
+                db.session.add(entry)
+                db.session.commit()
+                return jsonify({'success':True,'message':'pregnancy details Added successfully'})
+
+            else:
+                return jsonify({'success':True,'message':'Invalid patient'}), 404
         else:
-            return jsonify({'success':False,'message':'Not Authorised'}), 404
+            return jsonify({'success':False,'message':'Not Authorised'}), 401
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'Request misses token/json data'}), 400
@@ -868,9 +888,11 @@ def addPregnancyDetails():
 @app.route('/api/getPregnancyRecordForPatient',methods=['GET'])
 def getPregnancyRecordForPatient():
     try:
+        #patient verification
         token=request.headers['token']
         value = jwt.decode(token, options={"verify_signature": False})
         res = Patient_details.query.filter_by(email=value['email'], password=value['password']).first()
+        
         if res:
             result = db.session.query(Pregnancy).filter(Pregnancy.patient_uid==res.id).all()
             output=[]     
@@ -889,7 +911,7 @@ def getPregnancyRecordForPatient():
                     
             return jsonify({"history":output}) 
         else:
-            return jsonify({'success':False,'message':'not authorised'}), 404       
+            return jsonify({'success':False,'message':'not authorised'}), 401     
     except:
         return jsonify({'success':False,'message':'not recieved JSON data'}),400      
     
@@ -898,65 +920,83 @@ def getPregnancyRecordForPatient():
 @app.route('/api/getPregnancyRecordForDoctor/<int:patient_id>',methods=['GET'])
 def getPregnancyRecordForDoctor(patient_id):
     try:
+        #doctor verification
         token=request.headers['token']
         value = jwt.decode(token, options={"verify_signature": False})
-        res = doctor_details.query.filter_by(email=value['email'], password=value['password']).first()
-        if res:
-            result = db.session.query(Pregnancy).filter(Pregnancy.patient_uid==patient_id).all()
-            output=[]     
-            for value in result:
-                pat = {}
-                pat['patient_id']=value.patient_uid
-                pat['pregnancy_status']=value.pregnancy_status
-                pat['pregnancy_outcome']=value.pregnancy_outcome
-                pat['estimated_date_of_delivery_by_date_of_conseption']=value.estimated_date_of_delivery_by_date_of_conseption
-                pat['estimated_date_of_delivery_by_cycle']=value.estimated_date_of_delivery_by_cycle
-                pat['estimated_date_of_delivery_by_ultrasound']=value.estimated_date_of_delivery_by_ultrasound
-                pat['agreed_date']=value.agreed_date
-                pat['protocol_last_updated']=value.protocol_last_updated
-                pat['exclusion_of_pregnancy_statement']=value.exclusion_of_pregnancy_statement
-                output.append(pat)
-            return jsonify({"history":output})
+        doctor = doctor_details.query.filter_by(email=value['email'], password=value['password']).first()
+        
+        if doctor:
+            #patient verification
+            patient = Patient_details.query.filter_by(id = patient_id).first()
+            if patient:
+                result = db.session.query(Pregnancy).filter(Pregnancy.patient_uid==patient_id).all()
+                output=[]     
+                for value in result:
+                    pat = {}
+                    pat['patient_id']=value.patient_uid
+                    pat['pregnancy_status']=value.pregnancy_status
+                    pat['pregnancy_outcome']=value.pregnancy_outcome
+                    pat['estimated_date_of_delivery_by_date_of_conseption']=value.estimated_date_of_delivery_by_date_of_conseption
+                    pat['estimated_date_of_delivery_by_cycle']=value.estimated_date_of_delivery_by_cycle
+                    pat['estimated_date_of_delivery_by_ultrasound']=value.estimated_date_of_delivery_by_ultrasound
+                    pat['agreed_date']=value.agreed_date
+                    pat['protocol_last_updated']=value.protocol_last_updated
+                    pat['exclusion_of_pregnancy_statement']=value.exclusion_of_pregnancy_statement
+                    output.append(pat)
+                return jsonify({"history":output})
+
+            else:
+                return jsonify({'success':False, 'message':'Invalid patient'}), 404
         else:
-            return jsonify({'success':False,'message':'not authorised'}), 404       
+            return jsonify({'success':False,'message':'not authorised'}), 401       
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'not recieved JSON data'}),400      
 
 
-# API to add History of procedure
+#4. History of Proceedures
 @app.route('/api/addHistoryOfProcedure',methods=['POST'])
 def historyOfProcedure():
     try:
+        #Admin verification
         token = request.headers['token']
         decoded = jwt.decode(token, options={"verify_signature": False})
         admin_check= Admin_Login.query.filter_by(email=decoded["email"], password=decoded['password']).first()
+        
         if admin_check:
             data=request.get_json()
-            procedures = db.session.query(history_of_procedures).filter(history_of_procedures.patient_uid==data['patient_id']).first()
-            if not procedures:
-                entry = history_of_procedures(
-                    patient_uid=data['patient_id'],
-                    absence_of_info_absence_statement = data['absence_of_info_absence_statement'],
-                    absence_of_info_protocol_last_updated = data['absence_of_info_protocol_last_updated'],
-                    global_exclusion_of_procedures = data['global_exclusion_of_procedures']
-                )
-                db.session.add(entry)
-            else:
-                procedures.absence_of_info_absence_statement = data['absence_of_info_absence_statement'],
-                procedures.absence_of_info_protocol_last_updated = data['absence_of_info_protocol_last_updated'],
-                procedures.global_exclusion_of_procedures = data['global_exclusion_of_procedures']
+            #patient verification
+            patient = Patient_details.query.filter_by(id = data['patient_id']).first()
 
-            entry1=Procedure(
-                patient_uid=data['patient_id'],
-                procedure_name = data['procedure_name'],
-                body_site = data['body_site']
-            )
-            db.session.add(entry1)
-            db.session.commit()
-            return jsonify({'success':True,'message':'history of procedure added successfully'})
+            if patient:
+                # Check for pre existing proceedures
+                procedures = db.session.query(history_of_procedures).filter(history_of_procedures.patient_uid==data['patient_id']).first()
+                
+                if not procedures:
+                    entry = history_of_procedures(
+                        patient_uid=data['patient_id'],
+                        absence_of_info_absence_statement = data['absence_of_info_absence_statement'],
+                        absence_of_info_protocol_last_updated = data['absence_of_info_protocol_last_updated'],
+                        global_exclusion_of_procedures = data['global_exclusion_of_procedures']
+                    )
+                    db.session.add(entry)
+                else:
+                    procedures.absence_of_info_absence_statement = data['absence_of_info_absence_statement'],
+                    procedures.absence_of_info_protocol_last_updated = data['absence_of_info_protocol_last_updated'],
+                    procedures.global_exclusion_of_procedures = data['global_exclusion_of_procedures']
+
+                entry1=Procedure(
+                    patient_uid=data['patient_id'],
+                    procedure_name = data['procedure_name'],
+                    body_site = data['body_site']
+                )
+                db.session.add(entry1)
+                db.session.commit()
+                return jsonify({'success':True,'message':'history of procedure added successfully'})
+            else:
+                return jsonify({'success':False, 'message':'Invalid patient'}), 404
         else:
-            return jsonify({'success':False,'message':'Not Authorised'}), 404
+            return jsonify({'success':False,'message':'Not Authorised'}), 401
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'Request misses token/json data'}), 400
@@ -967,29 +1007,42 @@ def historyOfProcedure():
 @app.route('/api/getHistoryOfProcedureforDoctor/<int:patient_id>',methods=['GET'])
 def getHistoryOfProcedureForDoctor(patient_id):
     try:
+        #doctor verification
         token = request.headers['token']
         decoded = jwt.decode(token, options={"verify_signature": False})
         doctor_check= doctor_details.query.filter_by(email=decoded["email"], password=decoded['password']).first()
+        
         if doctor_check:
             patient_uid = patient_id
-            result1 = db.session.query(history_of_procedures).filter(history_of_procedures.patient_uid==patient_uid).first()
-            result2 = db.session.query(Procedure).filter(Procedure.patient_uid==patient_uid).all()   
-            pat = {}
-            pat['patient_id']=result1.patient_uid
-            pat['absence_of_info_absence_statement']=result1.absence_of_info_absence_statement
-            pat['absence_of_info_protocol_last_updated']=result1.absence_of_info_protocol_last_updated
-            pat['global_exclusion_of_procedures']=result1.global_exclusion_of_procedures
-            output=[]
-            for value in result2:  
-                obj={}  
-                obj['procedure_name']=value.procedure_name
-                obj['body_site']=value.body_site
-                output.append(obj)
-            pat['procedures']=output
-                    
-            return jsonify({"history_of_procedure":pat})
+            #patient verification
+            patient = Patient_details.query.filter_by(id=patient_uid).first()
+            if patient:
+                pat = {}
+                result1 = db.session.query(history_of_procedures).filter(history_of_procedures.patient_uid==patient_uid).first()
+                
+                if result1:
+                    pat['patient_id']=result1.patient_uid
+                    pat['absence_of_info_absence_statement']=result1.absence_of_info_absence_statement
+                    pat['absence_of_info_protocol_last_updated']=result1.absence_of_info_protocol_last_updated
+                    pat['global_exclusion_of_procedures']=result1.global_exclusion_of_procedures
+
+                    result2 = db.session.query(Procedure).filter(Procedure.patient_uid==patient_uid).all()   
+                    output=[]
+
+                    for value in result2:  
+                        obj={}  
+                        obj['procedure_name']=value.procedure_name
+                        obj['body_site']=value.body_site
+                        output.append(obj)
+
+                    pat['procedures']=output
+                        
+                return jsonify({"history_of_procedure":pat})
+
+            else:
+                return jsonify({'success':False, 'message':'Invalid Patient'}), 404
         else:
-            return jsonify({'success':False,'message':'Not Authorised, Not a Doctor'}), 404
+            return jsonify({'success':False,'message':'Not Authorised'}), 401
 
     except Exception as e:
         print(e)
@@ -1000,27 +1053,35 @@ def getHistoryOfProcedureForDoctor(patient_id):
 @app.route('/api/getHistoryOfProcedureforPatient',methods=['GET'])
 def getHistoryOfProcedureForPatient():
     try:
+        #patient verification
         token = request.headers['token']
         decoded = jwt.decode(token, options={"verify_signature": False})
         patient_check= Patient_details.query.filter_by(email=decoded["email"], password=decoded['password']).first()
+        
         if patient_check:
             patient_uid = patient_check.id
-            result1 = db.session.query(history_of_procedures).filter(history_of_procedures.patient_uid==patient_uid).first()
-            result2 = db.session.query(Procedure).filter(Procedure.patient_uid==patient_uid).all()   
             pat = {}
-            pat['patient_id']=result1.patient_uid
-            pat['absence_of_info_absence_statement']=result1.absence_of_info_absence_statement
-            pat['absence_of_info_protocol_last_updated']=result1.absence_of_info_protocol_last_updated
-            pat['global_exclusion_of_procedures']=result1.global_exclusion_of_procedures
-            output=[]
-            for value in result2:  
-                obj={}  
-                obj['procedure_name']=value.procedure_name
-                obj['body_site']=value.body_site
-                output.append(obj)
-            pat['procedures']=output
-                    
+            result1 = db.session.query(history_of_procedures).filter(history_of_procedures.patient_uid==patient_uid).first()
+            
+            if result1:
+                pat['patient_id']=result1.patient_uid
+                pat['absence_of_info_absence_statement']=result1.absence_of_info_absence_statement
+                pat['absence_of_info_protocol_last_updated']=result1.absence_of_info_protocol_last_updated
+                pat['global_exclusion_of_procedures']=result1.global_exclusion_of_procedures
+
+                result2 = db.session.query(Procedure).filter(Procedure.patient_uid==patient_uid).all()   
+                output=[]
+
+                for value in result2:  
+                    obj={}  
+                    obj['procedure_name']=value.procedure_name
+                    obj['body_site']=value.body_site
+                    output.append(obj)
+
+                pat['procedures']=output
+
             return jsonify({"history_of_procedure":pat})
+
         else:
             return jsonify({'success':False,'message':'Not Authorised, Not a Patient'}), 404
 
@@ -1028,37 +1089,50 @@ def getHistoryOfProcedureForPatient():
         print(e)
         return jsonify({'success':False,'message':'not recieved JSON data'}),400
 
+
+#5. Immunization
 # POST for add immunization by Admin
 @app.route('/api/addImmunizations',methods=['POST'])
 def addImmunizations():
     try:
+        #admin verification
         token = request.headers['token']
         decoded = jwt.decode(token, options={"verify_signature": False})
         admin_check= Admin_Login.query.filter_by(email=decoded["email"], password=decoded['password']).first()
+        
         if admin_check:
+            
             data=request.get_json()
-            immunizations = db.session.query(Immunizations).filter(Immunizations.patient_uid==data['patient_id']).first()
-            if not immunizations:
-                entry = Immunizations(
+            #patient verification
+            patient = Patient_details.query.filter_by(id = data['patient_id']).first()
+            
+            if patient:
+                immunizations = db.session.query(Immunizations).filter(Immunizations.patient_uid==data['patient_id']).first()
+                if not immunizations:
+                    entry = Immunizations(
+                        patient_uid=data['patient_id'],
+                        absence_of_info_absence_statement = data['absence_of_info_absence_statement'],
+                        absence_of_info_protocol_last_updated = data['absence_of_info_protocol_last_updated']
+                    )
+                    db.session.add(entry)
+                else:
+                    immunizations.absence_of_info_absence_statement = data['absence_of_info_absence_statement'],
+                    immunizations.absence_of_info_protocol_last_updated = data['absence_of_info_protocol_last_updated']
+
+                entry1=Immunization(
                     patient_uid=data['patient_id'],
-                    absence_of_info_absence_statement = data['absence_of_info_absence_statement'],
-                    absence_of_info_protocol_last_updated = data['absence_of_info_protocol_last_updated']
+                    administration_details_route = data['administration_details_route'],
+                    administration_details_target_site = data['administration_details_target_site'],
+                    sequence_number = data['sequence_number']
                 )
-                db.session.add(entry)
+                db.session.add(entry1)
+                db.session.commit()
+                return jsonify({'success':True,'message':'Immunizations added successfully'})
+
             else:
-                immunizations.absence_of_info_absence_statement = data['absence_of_info_absence_statement'],
-                immunizations.absence_of_info_protocol_last_updated = data['absence_of_info_protocol_last_updated']
-            entry1=Immunization(
-                patient_uid=data['patient_id'],
-                administration_details_route = data['administration_details_route'],
-                administration_details_target_site = data['administration_details_target_site'],
-                sequence_number = data['sequence_number']
-            )
-            db.session.add(entry1)
-            db.session.commit()
-            return jsonify({'success':True,'message':'Immunizations added successfully'})
+                return jsonify({'success':False, 'message':'Invalid patient'}), 404
         else:
-            return jsonify({'success':False,'message':'Not Authorised'}), 404
+            return jsonify({'success':False,'message':'Not Authorised'}), 401
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'Request misses token/json data'}), 400
@@ -1068,19 +1142,25 @@ def addImmunizations():
 @app.route('/api/getImmunizationsForPatient',methods=['GET'])
 def getImmunizationsForPatient():
     try:
+        #patient verification
         token = request.headers['token']
         decoded = jwt.decode(token, options={"verify_signature": False})
         patient_check= Patient_details.query.filter_by(email=decoded["email"], password=decoded['password']).first()
+        
         if patient_check:
             patient_uid = patient_check.id
+
+            pat = {}
             result1 = db.session.query(Immunizations).filter(Immunizations.patient_uid==patient_uid).first()
-            result2 = db.session.query(Immunization).filter(Immunization.patient_uid==patient_uid).all()
+            
             if result1:
-                pat = {}
                 pat['patient_uid']=result1.patient_uid
                 pat['absence_of_info_absence_statement']=result1.absence_of_info_absence_statement
                 pat['absence_of_info_protocol_last_updated']=result1.absence_of_info_protocol_last_updated
+                
+                result2 = db.session.query(Immunization).filter(Immunization.patient_uid==patient_uid).all()
                 output=[]
+
                 for value in result2:  
                     obj={}  
                     obj['patient_id']=value.patient_uid
@@ -1088,10 +1168,10 @@ def getImmunizationsForPatient():
                     obj['administration_details_target_site']=value.administration_details_target_site
                     obj['sequence_number']=value.sequence_number
                     output.append(obj)
+
                 pat['immunizations']=output  
-                return jsonify({"immunization":pat})
-            else:
-                return jsonify({'success':False,'message':'patient does not have immunization data'})
+            return jsonify({"immunization":pat})
+            
         else:
             return jsonify({'success':False,'message':'Not Authorised, Not a Patient'}), 404
     except Exception as e:
@@ -1103,71 +1183,92 @@ def getImmunizationsForPatient():
 def getImmunizationsForDoctor(patient_id):
 
     try:
+        #doctor verification
         token = request.headers['token']
         decoded = jwt.decode(token, options={"verify_signature": False})
         doctor_check= doctor_details.query.filter_by(email=decoded["email"], password=decoded['password']).first()
         
         if doctor_check:
-            
             patient_uid = patient_id
-            result1 = db.session.query(Immunizations).filter(Immunizations.patient_uid==patient_uid).first()
-            result2 = db.session.query(Immunization).filter(Immunization.patient_uid==patient_uid).all()   
-            if result1:
-                
+            #patient verification
+            patient = Patient_details.query.filter_by(id = patient_uid).first()
+
+            if patient:
+
                 pat = {}
-                pat['patient_uid']=result1.patient_uid
-                pat['absence_of_info_absence_statement']=result1.absence_of_info_absence_statement
-                pat['absence_of_info_protocol_last_updated']=result1.absence_of_info_protocol_last_updated
-                output=[]
-                for value in result2:
-                    obj={}  
-                    obj['administration_details_route']=value.administration_details_route
-                    obj['administration_details_target_site']=value.administration_details_target_site
-                    obj['sequence_number']=value.sequence_number
-                    output.append(obj)
-                pat['immunizations']=output 
+                result1 = db.session.query(Immunizations).filter(Immunizations.patient_uid==patient_uid).first()
+                
+                if result1:
+                    pat['patient_uid']=result1.patient_uid
+                    pat['absence_of_info_absence_statement']=result1.absence_of_info_absence_statement
+                    pat['absence_of_info_protocol_last_updated']=result1.absence_of_info_protocol_last_updated
+                    
+                    result2 = db.session.query(Immunization).filter(Immunization.patient_uid==patient_uid).all()
+                    output=[]
+
+                    for value in result2:  
+                        obj={}  
+                        obj['patient_id']=value.patient_uid
+                        obj['administration_details_route']=value.administration_details_route
+                        obj['administration_details_target_site']=value.administration_details_target_site
+                        obj['sequence_number']=value.sequence_number
+                        output.append(obj)
+
+                    pat['immunizations']=output 
+
                 return jsonify({"immunization":pat})
+
             else:
-                return jsonify({'success':False,'message':'patient does not have immunization data'})
+                return jsonify({'success':False,'message':'Invalid patient'}), 404
         else:
-            return jsonify({'success':False,'message':'Not Authorised, Not a Doctor'}), 404
+            return jsonify({'success':False,'message':'Not Authorised, Not a Doctor'}), 401
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'not recieved JSON data'}),400
 
+
+#6. Medical Devices
 # API for POST Medical Device
 @app.route('/api/addMedicalDevice',methods=['POST'])
 def addMedicalDevice():
     try:
+        #Admin verification
         token = request.headers['token']
         decoded = jwt.decode(token, options={"verify_signature": False})
         admin_check= Admin_Login.query.filter_by(email=decoded["email"], password=decoded['password']).first()
+        
         if admin_check:
             data=request.get_json()
-            entry = Medical_devices(
-                patient_uid=data['patient_id'],
-                device_name = data['device_name'],
-                body_site = data['body_site'],
-                type = data['type'],
-                description = data['description'],
-                UDI = data['UDI'],
-                manufacturer = data['manufacturer'],
-                date_of_manufacture = data['date_of_manufacture'],
-                serial_number = data['serial_number'],
-                catalogue_number = data['catalogue_number'],
-                model_number = data['model_number'],
-                batch_number = data['batch_number'],
-                software_version = data['software_version'],
-                date_of_expiry = data['date_of_expiry'],
-                other_identifier = data['other_identifier'],
-                comment = data['comment']
+            #patient verification
+            patient = Patient_details.query.filter_by(id = data['patient_id']).first()
 
-            )
-            db.session.add(entry)
-            db.session.commit()
-            return jsonify({'success':True,'message':'Medical Devices Added successfully'})
+            if patient:
+                entry = Medical_devices(
+                    patient_uid=data['patient_id'],
+                    device_name = data['device_name'],
+                    body_site = data['body_site'],
+                    type = data['type'],
+                    description = data['description'],
+                    UDI = data['UDI'],
+                    manufacturer = data['manufacturer'],
+                    date_of_manufacture = data['date_of_manufacture'],
+                    serial_number = data['serial_number'],
+                    catalogue_number = data['catalogue_number'],
+                    model_number = data['model_number'],
+                    batch_number = data['batch_number'],
+                    software_version = data['software_version'],
+                    date_of_expiry = data['date_of_expiry'],
+                    other_identifier = data['other_identifier'],
+                    comment = data['comment']
+                )
+                db.session.add(entry)
+                db.session.commit()
+                return jsonify({'success':True,'message':'Medical Devices Added successfully'})
+            
+            else:
+                return jsonify({'success':False, 'message':'Invalid Patient'}), 404
         else:
-            return jsonify({'success':False,'message':'Not Authorised'}), 404
+            return jsonify({'success':False,'message':'Not Authorised'}), 401
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'Request misses token/json data'}), 400
@@ -1177,13 +1278,15 @@ def addMedicalDevice():
 @app.route('/api/getMedicalDeviceForPatient',methods=['GET'])
 def getMedicalDeviceForPatient():
     try:
+        #patient verification
         token=request.headers['token']
         value = jwt.decode(token, options={"verify_signature": False})
         res = Patient_details.query.filter_by(email=value['email'], password=value['password']).first()
+        
         if res:
             result = db.session.query(Medical_devices).filter(Medical_devices.patient_uid==res.id).all()
-            print(result)
-            output=[]   
+            output=[]  
+
             for value in result:
                 pat = {}
                 pat['patient_id']=value.patient_uid
@@ -1203,58 +1306,74 @@ def getMedicalDeviceForPatient():
                 pat['other_identifier']=value.other_identifier
                 pat['comment']=value.comment
                 output.append(pat)  
+    
             return jsonify({"medical_devices":output})
+
         else:
-            return jsonify({'success':False,'message':'not authorised'}), 404       
+            return jsonify({'success':False,'message':'not authorised'}), 401       
     except:
         return jsonify({'success':False,'message':'not recieved JSON data'}),400      
+
 
 # Api for Get MedicalDevice For Doctor 
 @app.route('/api/getMedicalDeviceForDoctor/<int:patient_id>',methods=['GET'])
 def getMedicalDeviceForDoctor(patient_id):
     try:
+        #doctor verification
         token=request.headers['token']
         value = jwt.decode(token, options={"verify_signature": False})
         res = doctor_details.query.filter_by(email=value['email'], password=value['password']).first()
+        
         if res:
-            result = db.session.query(Medical_devices).filter(Medical_devices.patient_uid==patient_id).all()
-            output=[]   
-            for value in result:
-                pat = {}
-                pat['patient_id']=value.patient_uid
-                pat['device_name']=value.device_name
-                pat['body_site']=value.body_site
-                pat['type']=value.type
-                pat['description']=value.description
-                pat['UDI']=value.UDI
-                pat['manufacturer']=value.manufacturer
-                pat['date_of_manufacture']=value.date_of_manufacture
-                pat['serial_number']=value.serial_number
-                pat['catalogue_number']=value.catalogue_number
-                pat['model_number']=value.model_number
-                pat['batch_number']=value.batch_number
-                pat['software_version']=value.software_version
-                pat['date_of_expiry']=value.date_of_expiry
-                pat['other_identifier']=value.other_identifier
-                pat['comment']=value.comment
-                output.append(pat)
-            return jsonify({"medical_devices":output})
+
+            #patient verification
+            patient = Patient_details.query.filter_by(id = patient_id).first()
+            if patient:
+                result = db.session.query(Medical_devices).filter(Medical_devices.patient_uid==patient_id).all()
+                output=[]   
+
+                for value in result:
+                    pat = {}
+                    pat['patient_id']=value.patient_uid
+                    pat['device_name']=value.device_name
+                    pat['body_site']=value.body_site
+                    pat['type']=value.type
+                    pat['description']=value.description
+                    pat['UDI']=value.UDI
+                    pat['manufacturer']=value.manufacturer
+                    pat['date_of_manufacture']=value.date_of_manufacture
+                    pat['serial_number']=value.serial_number
+                    pat['catalogue_number']=value.catalogue_number
+                    pat['model_number']=value.model_number
+                    pat['batch_number']=value.batch_number
+                    pat['software_version']=value.software_version
+                    pat['date_of_expiry']=value.date_of_expiry
+                    pat['other_identifier']=value.other_identifier
+                    pat['comment']=value.comment
+                    output.append(pat)
+                return jsonify({"medical_devices":output})
+            else:
+                return jsonify({'success':False, 'message': 'Invalid patient'}), 404
         else:
-            return jsonify({'success':False,'message':'not authorised'}), 404       
+            return jsonify({'success':False,'message':'not authorised'}), 401       
     except:
         return jsonify({'success':False,'message':'not recieved JSON data'}),400      
 
 #prashast
-#apis for allergies
+
+#7. Allergies
 #add allergy
 @app.route('/api/add_allergies_and_intolerances', methods=['POST'])
 def add_allergies_and_intolerances():
     try:
+        #Admin verification
         token=request.headers['token']
         value = jwt.decode(token, options={"verify_signature": False})
         admin = Admin_Login.query.filter_by(email=value['email'], password=value['password']).first()
+        
         if admin:
             data = request.get_json()
+            #patient verification
             result = Patient_details.query.filter_by(id = data['patient_id']).first()
             if result:
                 result_allergies = allergies_and_intolerances.query.filter_by(patient_id = data['patient_id']).first()
@@ -1282,35 +1401,40 @@ def add_allergies_and_intolerances():
 @app.route('/api/get_all_allergies_and_intolerances_for_doctor/<int:patient_id>', methods=['GET'])
 def getallAllergiesForDoctor(patient_id):
     try:
-        token = request.headers['token']    #doctor token
+        #doctor verification
+        token = request.headers['token'] 
         value = jwt.decode(token, options={"verify_signature": False})
         email = value["email"]
         password = value["password"]
-        
         doctor = doctor_details.query.filter_by(email=email,password=password).first()
+
         if doctor:
-            
-            result = allergies_and_intolerances.query.filter_by(patient_id = patient_id).first()
-            if result:
+            #patient verification
+            patient = Patient_details.query.filter_by(id = patient_id).first()
+            if patient:
                 output = {}
-                output['global_exclusion_of_adverse_reactions'] = result.global_exclusion_of_adverse_reactions
-                output['absence_of_information_statement'] = result.absence_of_information_statement
-                output['absence_of_information_protocol_last_updated'] = result.absence_of_information_protocol_last_updated
-                
-                allergy_list = []
-                allergies = Allergy.query.filter_by(patient_id = patient_id).all()
-                for allergy in allergies:
-                    obj = {}
-                    obj['substance']= allergy.substance
-                    obj['allergy_id']= allergy.id
-                    allergy_list.append(obj)
-                output['allergy_list'] = allergy_list
+                result = allergies_and_intolerances.query.filter_by(patient_id = patient_id).first()
+                if result:
+                    
+                    output['global_exclusion_of_adverse_reactions'] = result.global_exclusion_of_adverse_reactions
+                    output['absence_of_information_statement'] = result.absence_of_information_statement
+                    output['absence_of_information_protocol_last_updated'] = result.absence_of_information_protocol_last_updated
+                    
+                    allergy_list = []
+                    allergies = Allergy.query.filter_by(patient_id = patient_id).all()
+                    for allergy in allergies:
+                        obj = {}
+                        obj['substance']= allergy.substance
+                        obj['allergy_id']= allergy.id
+                        allergy_list.append(obj)
+                    output['allergy_list'] = allergy_list
 
                 return jsonify({'all_allergies_and_intolerances':output}), 200
+
             else:
-                return jsonify({'success':False,'message':'no record for this id'}), 404
+                return jsonify({'success':False,'message':'Invalid Patient'}), 404
         else:
-            return jsonify({'success':False,'message':'Not Authorised, not a Doctor'}), 404
+            return jsonify({'success':False,'message':'Not Authorised, not a Doctor'}), 401
 
     except Exception as e:
         print(e)
@@ -1330,25 +1454,27 @@ def getallAllergiesForPatient():
 
         patient = Patient_details.query.filter_by(email=email,password=password).first()
         if patient:
+            output = {}
             result = allergies_and_intolerances.query.filter_by(patient_id = patient.id).first()
+            
             if result:
-                output = {}
                 output['global_exclusion_of_adverse_reactions'] = result.global_exclusion_of_adverse_reactions
                 output['absence_of_information_statement'] = result.absence_of_information_statement
                 output['absence_of_information_protocol_last_updated'] = result.absence_of_information_protocol_last_updated
                 
                 allergy_list = []
                 allergies = Allergy.query.filter_by(patient_id = patient.id).all()
+
                 for allergy in allergies:
                     obj = {}
                     obj['substance']= allergy.substance
                     obj['allergy_id']= allergy.id
                     allergy_list.append(obj)
-                output['allergy_list'] = allergy_list
 
-                return jsonify({'all_allergies_and_intolerances':output}), 200
-            else:
-                return jsonify({'success':False,'message':'no record for this id'}), 404
+                output['allergy_list'] = allergy_list
+            
+            return jsonify({'all_allergies_and_intolerances':output}), 200
+            
         else:
             return jsonify({'success':False,'message':'Not Authorised, not a Patient'}), 404
     except Exception as e:
@@ -1361,17 +1487,18 @@ def getallAllergiesForPatient():
 @app.route('/api/get_allergy_by_id_for_doctor/<int:allergy_id>', methods = ['GET'])
 def getAllergyByIdForDoctor(allergy_id):
     try:
-        token = request.headers['token']    #doctor token
+        #doctor verification
+        token = request.headers['token']   
         value = jwt.decode(token, options={"verify_signature": False})
         email = value["email"]
         password = value["password"]
-        
         doctor = doctor_details.query.filter_by(email=email,password=password).first()
+        
         if doctor:
-
+            output = {}
             result = Allergy.query.filter_by(id = allergy_id).first()
+
             if result:
-                output = {}
                 output['substance'] = result.substance
                 output['verification_status'] = result.verification_status
                 output['critically'] = result.critically
@@ -1382,9 +1509,10 @@ def getAllergyByIdForDoctor(allergy_id):
                 output['severity'] = result.severity
                 output['protocol_last_updated'] = result.protocol_last_updated
 
-                return jsonify({'allergy':output}), 200
-            else:
-                return jsonify({'success':False, "message":"Allergy does not exist"}), 404
+            return jsonify({'allergy':output}), 200
+
+        else:
+            return jsonify({'success':False, "message":"Not Authorised"}), 401
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'not recieved JSON data'}),400 
@@ -1395,12 +1523,13 @@ def getAllergyByIdForDoctor(allergy_id):
 @app.route('/api/get_allergy_by_id_for_patient/<int:allergy_id>', methods = ['GET'])
 def getAllergyByIdForPatient(allergy_id):
     try:
-        token = request.headers['token']    #patient token
+        #patient verification
+        token = request.headers['token']
         value = jwt.decode(token, options={"verify_signature": False})
         email = value["email"]
         password = value["password"]
-        
         patient = Patient_details.query.filter_by(email=email,password=password).first()
+        
         if patient:
             result = Allergy.query.filter_by(id = allergy_id, patient_id=patient.id).first()
             if result:
@@ -1417,15 +1546,15 @@ def getAllergyByIdForPatient(allergy_id):
 
                 return jsonify({'allergy':output}), 200
             else:
-                return jsonify({'success':False, "message":"This Allergy does not exist"}), 404
+                return jsonify({'success':False, "message":"Not Authorised"}), 401
         else:
-            return jsonify({'success':False,'message':'Not Authorised, not a Patient'}), 404
+            return jsonify({'success':False,'message':'Not Authorised, not a Patient'}), 401
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'not recieved JSON data'}),400 
 
 
-#APIs for vital signs
+#8. Vital signs
 #add/update vital signs
 @app.route('/api/add_vital_signs', methods=['POST'])
 def add_vital_signs():
@@ -1434,8 +1563,10 @@ def add_vital_signs():
         token=request.headers['token']
         value = jwt.decode(token, options={"verify_signature": False})
         admin = Admin_Login.query.filter_by(email=value['email'], password=value['password']).first()
+       
         if admin:
             data = request.get_json()
+            #patient verification
             result = Patient_details.query.filter_by(id = data['patient_id']).first()
             if result:
                 result_vitals = vital_signs.query.filter_by(patient_id= data['patient_id']).first()
@@ -1473,19 +1604,21 @@ def add_vital_signs():
 @app.route('/api/get_vital_signs_for_doctor/<int:patient_id>', methods=['GET'])
 def get_vital_signs_for_doctor(patient_id):
     try:
-        token = request.headers['token']    #doctor token
+        #doctor verification
+        token = request.headers['token']    
         value = jwt.decode(token, options={"verify_signature": False})
         email = value["email"]
         password = value["password"]
-        
         doctor = doctor_details.query.filter_by(email=email,password=password).first()
+
         if doctor:
-            p_id = patient_id
-            patient = Patient_details.query.filter_by(id = p_id).first()
+            patient = Patient_details.query.filter_by(id = patient_id).first()
+
             if patient:
+                obj = {}
                 result_vitals = vital_signs.query.filter_by(patient_id = patient.id).first()
+
                 if result_vitals:
-                    obj = {}
                     obj['body_weight']=result_vitals.body_weight 
                     obj['body_weight_unit']=result_vitals.body_weight_unit 
                     obj['height']=result_vitals.height
@@ -1501,13 +1634,12 @@ def get_vital_signs_for_doctor(patient_id):
                     obj['body_mass_index_unit']=result_vitals.body_mass_index_unit 
                     obj['blood_pressure_systolic']=result_vitals.blood_pressure_systolic 
                     obj['blood_pressure_diastolic']=result_vitals.blood_pressure_diastolic
-                    return jsonify({'data':obj}), 200
-                else:
-                    return jsonify({'success':False,'message':'no vital signs recorded for patient id'}), 404
+                return jsonify({'data':obj}), 200
+                
             else:
                 return jsonify({'success':False,'message':'wrong patient id'}), 404
         else:
-            return jsonify({'success':False,'message':'Not Authorised, not a doctor'}), 404
+            return jsonify({'success':False,'message':'Not Authorised, not a doctor'}), 401
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'not recieved JSON data'}),400 
@@ -1522,12 +1654,13 @@ def get_vital_signs_for_patient():
         value = jwt.decode(token, options={"verify_signature": False})
         email = value["email"]
         password = value["password"]
-        
         patient = Patient_details.query.filter_by(email=email,password=password).first()
+
         if patient:
+            obj = {}
             result_vitals = vital_signs.query.filter_by(patient_id = patient.id).first()
+
             if result_vitals:
-                obj = {}
                 obj['body_weight']=result_vitals.body_weight 
                 obj['body_weight_unit']=result_vitals.body_weight_unit 
                 obj['height']=result_vitals.height
@@ -1543,16 +1676,15 @@ def get_vital_signs_for_patient():
                 obj['body_mass_index_unit']=result_vitals.body_mass_index_unit 
                 obj['blood_pressure_systolic']=result_vitals.blood_pressure_systolic 
                 obj['blood_pressure_diastolic']=result_vitals.blood_pressure_diastolic
-                return jsonify({'data':obj}), 200
-            else:
-                return jsonify({'success':False,'message':'no vital signs recorded'}), 404
+            return jsonify({'data':obj}), 200
+            
         else:
-            return jsonify({'success':False,'message':'Not Authorised, not a patient'}), 404
+            return jsonify({'success':False,'message':'Not Authorised, not a patient'}), 401
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'not recieved JSON data'}),400 
 
-#APIs for dignostics
+#9. Dignostics
 #add dignosis
 @app.route('/api/add_dignostics_results', methods=['POST'])
 def add_dignostics_results():
@@ -1563,6 +1695,7 @@ def add_dignostics_results():
         admin = Admin_Login.query.filter_by(email=value['email'], password=value['password']).first()
         if admin:
             data = request.get_json()
+            #patient verification
             patient = Patient_details.query.filter_by(id = data['patient_id']).first()
             if patient:
                 #diagnostic_lab_test_result
@@ -1623,29 +1756,33 @@ def add_dignostics_results():
 @app.route('/api/get_dignosis_results_for_doctor/<int:patient_id>', methods=['GET'])
 def getDignosisResultsForDoctor(patient_id):
     try:
-        token = request.headers['token']    #doctor token
+        #doctor verification
+        token = request.headers['token']   
         value = jwt.decode(token, options={"verify_signature": False})
         email = value["email"]
         password = value["password"]
-        
         doctor = doctor_details.query.filter_by(email=email,password=password).first()
+
         if doctor:
             patient = Patient_details.query.filter_by(id = patient_id).first()
+
             if patient:
                 results = dignostic_test_result.query.filter_by(patient_id=patient.id).all()
                 output =[]
+
                 for result in results:
                     obj ={}
                     obj['dignostic_id']= result.id
                     obj['lab_test_name'] = result.lab_test_name
                     obj['imaging_test_name'] = result.imaging_test_name
                     output.append(obj)
+
                 return jsonify({'dignostic_test_result':output}), 200
+
             else:
                 return jsonify({'success':False,'message':'wrong patient id'}), 404
         else:
-            return jsonify({'success':False,'message':'Not Authorised, not a doctor'}), 404
-
+            return jsonify({'success':False,'message':'Not Authorised, not a doctor'}), 401
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'not recieved JSON data'}),400 
@@ -1656,42 +1793,49 @@ def getDignosisResultsForDoctor(patient_id):
 @app.route('/api/get_dignosis_results_for_patient', methods=['GET'])
 def getDignosisResultsForPatient():
     try:
-        token = request.headers['token']    #patient token
+        #patient verification
+        token = request.headers['token']   
         value = jwt.decode(token, options={"verify_signature": False})
         email = value["email"]
         password = value["password"]
-        
         patient = Patient_details.query.filter_by(email=email,password=password).first()
+
         if patient:
             results = dignostic_test_result.query.filter_by(patient_id=patient.id).all()
             output =[]
+
             for result in results:
                 obj ={}
                 obj['dignosis_id']= result.id
                 obj['lab_test_name'] = result.lab_test_name
                 obj['imaging_test_name'] = result.imaging_test_name
                 output.append(obj)
+            
             return jsonify({'dignostic_test_result':output}), 200
+
         else:
-            return jsonify({'success':False,'message':'Not Authorised, not a patient'}), 404
+            return jsonify({'success':False,'message':'Not Authorised, not a patient'}), 401
 
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'not recieved JSON data/token'}),400 
+
 
 #get dignostics_by_id
     #for doctor
 @app.route('/api/get_dognostics_by_id_for_doctor/<int:dignostic_id>', methods=['GET'])
 def getDignosticsByIdForDoctor(dignostic_id):
     try:
-        token = request.headers['token']    #doctor token
+        #doctor verification
+        token = request.headers['token']    
         value = jwt.decode(token, options={"verify_signature": False})
         email = value["email"]
         password = value["password"]
-        
         doctor = doctor_details.query.filter_by(email=email,password=password).first()
+
         if doctor:
             result = dignostic_test_result.query.filter_by(id = dignostic_id).first()
+
             if result:
                 obj = {}
                 obj['lab_test_name'] = result.lab_test_name
@@ -1731,11 +1875,12 @@ def getDignosticsByIdForDoctor(dignostic_id):
                 obj['position'] = result.position
                 obj['image_datetime'] = result.image_datetime
                 obj['image'] = result.image
-                return jsonify({'dignostic':obj})
+                return jsonify({'success':True,'dignostic':obj}), 200
+
             else:
                 return jsonify({'success':False,'message':'Wrong dignostic id'}), 404
         else:
-            return jsonify({'success':False,'message':'Not Authorised, not a doctor'}), 404
+            return jsonify({'success':False,'message':'Not Authorised, not a doctor'}), 401
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'not recieved JSON data/token'}),400 
@@ -1746,14 +1891,16 @@ def getDignosticsByIdForDoctor(dignostic_id):
 @app.route('/api/get_dognostics_by_id_for_patient/<int:dignostic_id>', methods=['GET'])
 def getDignosticsByIdForPatient(dignostic_id):
     try:
-        token = request.headers['token']    #doctor token
+        #patient verification
+        token = request.headers['token']    
         value = jwt.decode(token, options={"verify_signature": False})
         email = value["email"]
         password = value["password"]
-        
         patient = Patient_details.query.filter_by(email=email,password=password).first()
+
         if patient:
             result = dignostic_test_result.query.filter_by(id = dignostic_id, patient_id = patient.id).first()
+            
             if result:
                 obj = {}
                 obj['lab_test_name'] = result.lab_test_name
@@ -1793,16 +1940,18 @@ def getDignosticsByIdForPatient(dignostic_id):
                 obj['position'] = result.position
                 obj['image_datetime'] = result.image_datetime
                 obj['image'] = result.image
-                return jsonify({'dignostic':obj})
+                return jsonify({'success':True,'dignostic':obj}), 200
+
             else:
-                return jsonify({'success':False,'message':'This dignostic result is not available for this patient'}), 404
+                return jsonify({'success':False,'message':'Not Authorised'}), 401
         else:
-            return jsonify({'success':False,'message':'Not Authorised, not a doctor'}), 404
+            return jsonify({'success':False,'message':'Not Authorised, not a patient'}), 401
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'not recieved JSON data/token'}),400 
 
-
+# GET PATIENT
+    # for doctor
 @app.route('/api/getPatientForDoctor', methods=['GET'])
 def getPatientForDoctor():
     try:
@@ -1824,16 +1973,19 @@ def getPatientForDoctor():
                 obj['contact'] = patient.contact
                 obj['gender'] = patient.gender
                 obj['address'] = patient.address
-                return jsonify({"patient":obj})
+                return jsonify({"success":True,"patient":obj}), 200
+
             else:
-                return jsonify({'success':False,'message':'Not a patient'}), 404
+                return jsonify({'success':False,'message':'Invalid Patient'}), 404
         else:
-            return jsonify({'success':False,'message':'Not Authorised, not a doctor'}), 404
+            return jsonify({'success':False,'message':'Not Authorised, not a doctor'}), 401
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'not recieved JSON data/token'}),400 
         
 
+# GET PATIENT
+    # for admin
 @app.route('/api/getPatientForAdmin', methods=['GET'])
 def getPatientForAdmin():
     try:
@@ -1855,28 +2007,34 @@ def getPatientForAdmin():
                 obj['contact'] = patient.contact
                 obj['gender'] = patient.gender
                 obj['address'] = patient.address
-                return jsonify({"patient":obj})
+                return jsonify({"success":True,"patient":obj}), 200
+
             else:
-                return jsonify({'success':False,'message':'Not a patient'}), 404
+                return jsonify({'success':False,'message':'Invalid Patient'}), 404
         else:
-            return jsonify({'success':False,'message':'Not Authorised, not Admin'}), 404
+            return jsonify({'success':False,'message':'Not Authorised, not Admin'}), 401
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'not recieved JSON data/token'}),400 
         
         
 #Twinkle
+
+#10. Past History of patient
 # Api for Get past history of Patient BY Patient Id
 @app.route('/api/getpasthistoryofpatient',methods=['GET'])
 def getPastHistoryPatient():
     try:
-        token=request.headers['token'] #patient token
+        #patient verification
+        token=request.headers['token'] 
         value = jwt.decode(token, options={"verify_signature": False})
         res = Patient_details.query.filter_by(email=value['email'], password=value['password']).first()
+        
         if res:
             result = db.session.query(Past_history_of_illnesses).filter(Past_history_of_illnesses.patient_id==res.id).all()
             output=[] 
-            c = 1    
+            c = 1   
+
             for value in result:
                 pat = {}
                 pat['id'] = c
@@ -1894,13 +2052,11 @@ def getPastHistoryPatient():
                 pat['diagnostic_certainity']=value.diagnostic_certainity
                 pat['protocol_last_updated']=value.protocol_last_updated
                 output.append(pat)
-                print(output)
-            if output:    
-                return jsonify({"history":output})
-            else:
-                return jsonify({'success':False,'message':'patient_id is not present'}) 
+                
+            return jsonify({"success":True,"history":output})
+        
         else:
-            return jsonify({'success':False,'message':'Not Authorised'}), 404       
+            return jsonify({'success':False,'message':'Not Authorised'}), 401       
     except:
         return jsonify({'success':False,'message':'not recieved JSON data'}),400 
 
@@ -1911,172 +2067,240 @@ def getPastHistoryDoctor(patient_id):
         token=request.headers['token'] #patient token
         value = jwt.decode(token, options={"verify_signature": False})
         res = doctor_details.query.filter_by(email=value['email'], password=value['password']).first()
+        
         if res:
-            result = db.session.query(Past_history_of_illnesses).filter(Past_history_of_illnesses.patient_id==patient_id).all()
-            output=[]     
-            for value in result:
-                pat = {}
-                pat['patient_id']=value.patient_id
-                pat['problem_name']=value.problem_name
-                pat['body_site']=value.body_site
-                pat['datetime_of_onset']=value.datetime_of_onset
-                pat['severity']=value.severity
-                pat['date_of_abatebent']=value.date_of_abatebent
-                pat['active_or_inactive']=value.active_or_inactive
-                pat['resolution_phase']=value.resolution_phase
-                pat['remission_status']=value.remission_status
-                pat['occurrence']=value.occurrence
-                pat['diagnostic_certainity']=value.diagnostic_certainity
-                pat['protocol_last_updated']=value.protocol_last_updated
-                output.append(pat)
-                print(output)
-            if output:    
-                return jsonify({"history":output})
+            #patient verification
+            patient = Patient_details.query.filter_by(id = patient_id).first()
+
+            if patient: 
+                result = db.session.query(Past_history_of_illnesses).filter(Past_history_of_illnesses.patient_id==patient_id).all()
+                output=[]     
+
+                for value in result:
+                    pat = {}
+                    pat['patient_id']=value.patient_id
+                    pat['problem_name']=value.problem_name
+                    pat['body_site']=value.body_site
+                    pat['datetime_of_onset']=value.datetime_of_onset
+                    pat['severity']=value.severity
+                    pat['date_of_abatebent']=value.date_of_abatebent
+                    pat['active_or_inactive']=value.active_or_inactive
+                    pat['resolution_phase']=value.resolution_phase
+                    pat['remission_status']=value.remission_status
+                    pat['occurrence']=value.occurrence
+                    pat['diagnostic_certainity']=value.diagnostic_certainity
+                    pat['protocol_last_updated']=value.protocol_last_updated
+                    output.append(pat)
+                        
+                return jsonify({"success":True,"history":output})
+
             else:
-                return jsonify({'success':False,'message':'doctor_id is not present'}) 
+                return jsonify({'success':False,'message':'Invalid Patient'}), 404 
         else:
-            return jsonify({'success':False,'message':'Not Authorised'}), 404       
+            return jsonify({'success':False,'message':'Not Authorised'}), 401      
     except:
         return jsonify({'success':False,'message':'not recieved JSON data'}),400              
 
 
 # Api for get past history of patient by patient id and past history id
    
-
-
-
 # Api for create past history of patient
 @app.route('/api/createpasthistoryofpatient',methods=['POST'])
 def createPastHistoryOfPatient():
     try:
-        token = request.headers['token'] #Admin Token
+        #Admin Verification
+        token = request.headers['token'] 
         decoded = jwt.decode(token, options={"verify_signature": False})
         admin_check= Admin_Login.query.filter_by(email=decoded["email"], password=decoded['password']).first()
+        
         if admin_check:
             data=request.get_json()
-            #p_id = Past_history_of_illnesses.query.filter_by(patient_id=data['patient_uid'],problem_name=data['problem_name'],body_site=data['body_site'],datetime_of_onset=data['datetime_of_onset'],severity=data['severity'],date_of_abatebent=data['date_of_abatebent'],active_or_inactive=data['active_or_inactive'],resolution_phase=data['resolution_phase'],remission_status=data['remission_status'],occurrence=data['occurrence'],diagnostic_certainity=data['diagnostic_certainity'],protocol_last_updated=data['protocol_last_updated']).first()
-            #if not p_id:
-            entry = Past_history_of_illnesses(patient_id=data['patient_id'],problem_name=data['problem_name'],body_site=data['body_site'],datetime_of_onset=data['datetime_of_onset'],severity=data['severity'],date_of_abatebent=data['date_of_abatebent'],active_or_inactive=data['active_or_inactive'],resolution_phase=data['resolution_phase'],remission_status=data['remission_status'],occurrence=data['occurrence'],diagnostic_certainity=data['diagnostic_certainity'],protocol_last_updated=data['protocol_last_updated'])
-            db.session.add(entry)
-            db.session.commit()
-            return jsonify({'success':True,'message':'history added successfully'})
-            # else:
-            #     return jsonify({'success':False,'message':'history already present'}), 404
+            #patient verification
+            patient = Patient_details.query.filter_by(id = data['patient_id']).first()
+
+            if patient:
+                entry = Past_history_of_illnesses(
+                        patient_id=data['patient_id'],
+                        problem_name=data['problem_name'],
+                        body_site=data['body_site'],
+                        datetime_of_onset=data['datetime_of_onset'],
+                        severity=data['severity'],
+                        date_of_abatebent=data['date_of_abatebent'],
+                        active_or_inactive=data['active_or_inactive'],
+                        resolution_phase=data['resolution_phase'],
+                        remission_status=data['remission_status'],
+                        occurrence=data['occurrence'],
+                        diagnostic_certainity=data['diagnostic_certainity'],
+                        protocol_last_updated=data['protocol_last_updated'])
+
+                db.session.add(entry)
+                db.session.commit()
+                return jsonify({'success':True,'message':'history added successfully'})
+
+            else:
+                return jsonify({'success':False,'message':'Invalid patient'}), 404
         else:
-            return jsonify({'success':False,'message':'Not Authorised'}), 404
+            return jsonify({'success':False,'message':'Not Authorised'}), 401
     except:
         return jsonify({'success':False,'message':'Request misses token/json data'}), 400
 
-# Api gor Get prblem List of Patient
+
+#11. problem List
+
+# Api gor Get problem List of Patient
 @app.route('/api/getproblemlistbypatient',methods=['GET'])
 def getProblemListByPatient():
     try:
         token=request.headers['token']   #Patient Token
         value = jwt.decode(token, options={"verify_signature": False})
         res = Patient_details.query.filter_by(email=value['email'], password=value['password']).first()
+        
         if res:
-            result1 = db.session.query(Problem_list).filter(Problem_list.patient_id==res.id).first()
-            result2 = db.session.query(Problem).filter(Problem.patient_id==res.id).all()     
             output = {}
-            output['patient_id']=result1.patient_id
-            output['global_exclusion_of_adverse_reactions']=result1.global_exclusion_of_adverse_reactions
-            output['absence_of_information_statement']=result1.absence_of_information_statement
-            output['absence_of_information_protocol_last_updated']=result1.absence_of_information_protocol_last_updated
-            pat =[]
-            c = 1
-            for value in result2:
-                obj={}
-                obj['id']= c
-                c += 1
-                obj['patient_id']=value.patient_id
-                obj['problem_name']=value.problem_name
-                obj['body_site']=value.body_site
-                obj['datetime_of_onset']=value.datetime_of_onset
-                obj['severity']=value.severity
-                obj['date_of_abatebent']=value.date_of_abatebent
-                obj['active_or_inactive']=value.active_or_inactive
-                obj['resolution_phase']=value.resolution_phase
-                obj['remission_status']=value.resolution_phase
-                obj['occurrence']=value.occurrence
-                obj['diagnostic_certainity']=value.diagnostic_certainity
-                obj['protocol_last_updated']=value.protocol_last_updated
-                pat.append(obj)
-            output['problem list'] = pat    
-            if output:    
-                return jsonify({"history":output})
-            else:
-                return jsonify({'success':False,'message':'patient_id is not present'})
+            result1 = db.session.query(Problem_list).filter(Problem_list.patient_id==res.id).first()
+            
+            if result1:  
+                output['patient_id']=result1.patient_id
+                output['global_exclusion_of_adverse_reactions']=result1.global_exclusion_of_adverse_reactions
+                output['absence_of_information_statement']=result1.absence_of_information_statement
+                output['absence_of_information_protocol_last_updated']=result1.absence_of_information_protocol_last_updated
+                pat =[]
+                result2 = db.session.query(Problem).filter(Problem.patient_id==res.id).all()   
+                c = 1
+                for value in result2:
+                    obj={}
+                    obj['id']= c
+                    c += 1
+                    obj['patient_id']=value.patient_id
+                    obj['problem_name']=value.problem_name
+                    obj['body_site']=value.body_site
+                    obj['datetime_of_onset']=value.datetime_of_onset
+                    obj['severity']=value.severity
+                    obj['date_of_abatebent']=value.date_of_abatebent
+                    obj['active_or_inactive']=value.active_or_inactive
+                    obj['resolution_phase']=value.resolution_phase
+                    obj['remission_status']=value.resolution_phase
+                    obj['occurrence']=value.occurrence
+                    obj['diagnostic_certainity']=value.diagnostic_certainity
+                    obj['protocol_last_updated']=value.protocol_last_updated
+                    pat.append(obj)
+                output['problem list'] = pat    
+
+            return jsonify({"success":True,"history":output}), 200
+
         else:
-            return jsonify({'success':False,'message':'not Authorised'}), 404 
+            return jsonify({'success':False,'message':'not Authorised'}), 401 
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'not recieved JSON data'}),400     
 
-# Api for Get prblem List of Patient by doctor
+# Api for Get problem List of Patient by doctor
 @app.route('/api/getproblemlistbydoctor/<int:patient_id>',methods=['GET'])
 def getProblemListByDoctor(patient_id):
     try:
         token=request.headers['token']   #Doctor Token
         value = jwt.decode(token, options={"verify_signature": False})
         res = doctor_details.query.filter_by(email=value['email'], password=value['password']).first()
+        
         if res:
-            result1 = db.session.query(Problem_list).filter(Problem_list.patient_id==patient_id).first()
-            result2 = db.session.query(Problem).filter(Problem.patient_id==patient_id).all()
-            output = {}
-            output['patient_id']=result1.patient_id
-            output['global_exclusion_of_adverse_reactions']=result1.global_exclusion_of_adverse_reactions
-            output['absence_of_information_statement']=result1.absence_of_information_statement
-            output['absence_of_information_protocol_last_updated']=result1.absence_of_information_protocol_last_updated
-            pat =[]
-            for value in result2:
-                obj={}  
-                obj['problem_name']=value.problem_name
-                obj['body_site']=value.body_site
-                obj['datetime_of_onset']=value.datetime_of_onset
-                obj['severity']=value.severity
-                obj['date_of_abatebent']=value.date_of_abatebent
-                obj['active_or_inactive']=value.active_or_inactive
-                obj['resolution_phase']=value.resolution_phase
-                obj['remission_status']=value.resolution_phase
-                obj['occurrence']=value.occurrence
-                obj['diagnostic_certainity']=value.diagnostic_certainity
-                obj['protocol_last_updated']=value.protocol_last_updated
-                pat.append(obj)
-            output['problem list'] = pat    
-            if output:    
-                return jsonify({"history":output})
+            #patient verification
+            patient = Patient_details.query.filter_by(id = patient_id).first()
+            
+            if patient:
+                output = {}
+                result1 = db.session.query(Problem_list).filter(Problem_list.patient_id==patient_id).first()
+                
+                if result1:     
+                    output['patient_id']=result1.patient_id
+                    output['global_exclusion_of_adverse_reactions']=result1.global_exclusion_of_adverse_reactions
+                    output['absence_of_information_statement']=result1.absence_of_information_statement
+                    output['absence_of_information_protocol_last_updated']=result1.absence_of_information_protocol_last_updated
+                    pat =[]
+                    result2 = db.session.query(Problem).filter(Problem.patient_id==res.id).all()
+                    c = 1
+
+                    for value in result2:
+                        obj={}
+                        obj['id']= c
+                        c += 1
+                        obj['patient_id']=value.patient_id
+                        obj['problem_name']=value.problem_name
+                        obj['body_site']=value.body_site
+                        obj['datetime_of_onset']=value.datetime_of_onset
+                        obj['severity']=value.severity
+                        obj['date_of_abatebent']=value.date_of_abatebent
+                        obj['active_or_inactive']=value.active_or_inactive
+                        obj['resolution_phase']=value.resolution_phase
+                        obj['remission_status']=value.resolution_phase
+                        obj['occurrence']=value.occurrence
+                        obj['diagnostic_certainity']=value.diagnostic_certainity
+                        obj['protocol_last_updated']=value.protocol_last_updated
+                        pat.append(obj)
+                    output['problem list'] = pat  
+
+                return jsonify({"success":True,"history":output}), 200
+            
             else:
-                return jsonify({'success':False,'message':'patient_id is not present'})
+                return jsonify({'success':True, "message":'Invalid patient'}), 404
         else:
-            return jsonify({'success':False,'message':'not Authorised'}), 404 
+            return jsonify({'success':False,'message':'not Authorised'}), 401 
     except:
         return jsonify({'success':False,'message':'not recieved JSON data'}),400
 
 
 # Api for Create problem List
 @app.route('/api/addproblemlist',methods=['POST'])
-def problemList():
+def addproblemList():
     try:
+        #admin verification
         token = request.headers['token']  #Admin Token
         decoded = jwt.decode(token, options={"verify_signature": False})
-        patient_check= Admin_Login.query.filter_by(email=decoded["email"], password=decoded['password']).first()
-        if patient_check:
+        admin= Admin_Login.query.filter_by(email=decoded["email"], password=decoded['password']).first()
+        
+        if admin:
             data=request.get_json()
-            # p_id = db.session.query(Problem_list,Problem).filter(Problem_list.patient_id==data['p_patient_uid'],Problem.patient_id==data['patient_uid']).first()
-            # if not p_id:
-            entry = Problem_list(patient_id=data['patient_id'],global_exclusion_of_adverse_reactions=data['global_exclusion_of_adverse_reactions'],absence_of_information_statement=data['absence_of_information_statement'],absence_of_information_protocol_last_updated=data['absence_of_information_protocol_last_updated'])
-            db.session.add(entry)
-            entry1=Problem(patient_id=data['patient_id'],problem_name=data['problem_name'],body_site=data['body_site'],datetime_of_onset=data['datetime_of_onset'],severity=data['severity'],date_of_abatebent=data['date_of_abatebent'],active_or_inactive=data['active_or_inactive'],resolution_phase=data['resolution_phase'],remission_status=data['remission_status'],occurrence=data['occurrence'],diagnostic_certainity=data['diagnostic_certainity'],protocol_last_updated=data['protocol_last_updated'])
-            db.session.add(entry1)
-            db.session.commit()
-            return jsonify({'success':True,'message':'Problem added successfully'})
-            # else:
-            #     return jsonify({'success':False,'message':'history already present'}), 404
+            #patient verification
+            patient = Patient_details.query.filter_by(id = data['patient_id']).first()
+            if patient:
+                problem_list = Problem_list.query.filter_by(patient_id = patient.id).first()
+                if problem_list:
+                    problem_list.global_exclusion_of_adverse_reactions=data['global_exclusion_of_adverse_reactions']
+                    problem_list.absence_of_information_statement=data['absence_of_information_statement']
+                    problem_list.absence_of_information_protocol_last_updated=data['absence_of_information_protocol_last_updated']
+                else:
+                    entry = Problem_list(
+                        patient_id=data['patient_id'],
+                        global_exclusion_of_adverse_reactions=data['global_exclusion_of_adverse_reactions'],
+                        absence_of_information_statement=data['absence_of_information_statement'],
+                        absence_of_information_protocol_last_updated=data['absence_of_information_protocol_last_updated'])
+                    db.session.add(entry)
+
+                entry1=Problem(
+                    patient_id=data['patient_id'],
+                    problem_name=data['problem_name'],
+                    body_site=data['body_site'],
+                    datetime_of_onset=data['datetime_of_onset'],
+                    severity=data['severity'],
+                    date_of_abatebent=data['date_of_abatebent'],
+                    active_or_inactive=data['active_or_inactive'],
+                    resolution_phase=data['resolution_phase'],
+                    remission_status=data['remission_status'],
+                    occurrence=data['occurrence'],
+                    diagnostic_certainity=data['diagnostic_certainity'],
+                    protocol_last_updated=data['protocol_last_updated'])
+                db.session.add(entry1)
+                db.session.commit()
+                return jsonify({'success':True,'message':'Problem added successfully'})
+
+            else:
+                return jsonify({'success':False,'message':'Invalid Patient'}), 404
         else:
-            return jsonify({'success':False,'message':'Not Authorised'}), 404
+            return jsonify({'success':False,'message':'Not Authorised'}), 401
     except:
         return jsonify({'success':False,'message':'Request misses token/json data'}), 400
 
+
+#12. Advanced Directives
 # Api for get advance directives by patient 
 @app.route('/api/getadvanceddirectivesbypatient',methods=['GET'])
 def getAdvanceDirectivesByPatient():
@@ -2085,46 +2309,50 @@ def getAdvanceDirectivesByPatient():
         value = jwt.decode(token, options={"verify_signature": False})
         res = Patient_details.query.filter_by(email=value['email'], password=value['password']).first()
         if res:
+            output={} 
             c = 0
             result1 = db.session.query(Advance_care_directive).filter(Advance_care_directive.patient_id==res.id).first()
-            result2 = db.session.query(Limitation_of_treatment).filter(Limitation_of_treatment.patient_id==res.id).all()
-            output={}      
-            output['patient_id']=result1.patient_id
-            output['type_of_directive']=result1.type_of_directive
-            output['a_status']=result1.status
-            output['description']=result1.description
-            output['condition']=result1.condition
-            output['directive_location']=result1.directive_location
-            output['a_comment']=result1.comment
-            output['valid_period_start']=result1.valid_period_start
-            output['valid_period_end']=result1.valid_period_end
-            output['review_due_date']=result1.review_due_date
-            output['last_updated']=result1.last_updated
-            output['mandate']=result1.mandate
-            pat =[]  
-            for value in result2:  
-                obj={}  
-                obj['id'] = c
-                c += 1
-                obj['patient_id']=value.patient_id
-                obj['status']=value.status
-                obj['type_of_limitation']=value.type_of_limitation
-                obj['decision']=value.decision
-                obj['qualification']=value.qualification
-                obj['rationale']=value.rationale
-                obj['patient_awareness']=value.patient_awareness
-                obj['carer_awareness']=value.carer_awareness
-                obj['comment']=value.comment
-                obj['element']=value.element
-                obj['protocol_review_date']=value.protocol_review_date
-                pat.append(obj)
-            output['advance_directive']=pat       
-            if output:    
-                return jsonify({"history":output})
-            else:
-                return jsonify({'success':False,'message':'patient_id is not present'})
+
+            if result1:
+                output['patient_id']=result1.patient_id
+                output['type_of_directive']=result1.type_of_directive
+                output['a_status']=result1.status
+                output['description']=result1.description
+                output['condition']=result1.condition
+                output['directive_location']=result1.directive_location
+                output['a_comment']=result1.comment
+                output['valid_period_start']=result1.valid_period_start
+                output['valid_period_end']=result1.valid_period_end
+                output['review_due_date']=result1.review_due_date
+                output['last_updated']=result1.last_updated
+                output['mandate']=result1.mandate
+
+                pat =[]  
+                result2 = db.session.query(Limitation_of_treatment).filter(Limitation_of_treatment.patient_id==res.id).all()
+                
+                for value in result2:  
+                    obj={}  
+                    obj['id'] = c
+                    c += 1
+                    obj['patient_id']=value.patient_id
+                    obj['status']=value.status
+                    obj['type_of_limitation']=value.type_of_limitation
+                    obj['decision']=value.decision
+                    obj['qualification']=value.qualification
+                    obj['rationale']=value.rationale
+                    obj['patient_awareness']=value.patient_awareness
+                    obj['carer_awareness']=value.carer_awareness
+                    obj['comment']=value.comment
+                    obj['element']=value.element
+                    obj['protocol_review_date']=value.protocol_review_date
+                    pat.append(obj)
+
+                output['advance_directive']=pat     
+
+            return jsonify({"success":True,"history":output}), 200
+            
         else:
-            return jsonify({'success':False,'message':'not authorised'}), 404
+            return jsonify({'success':False,'message':'not authorised'}), 401
     except:
         return jsonify({'success':False,'message':'not recieved JSON data'}),400 
 
@@ -2137,97 +2365,168 @@ def getAdvanceDirectivesByDoctor(patient_id):
         value = jwt.decode(token, options={"verify_signature": False})
         res = doctor_details.query.filter_by(email=value['email'], password=value['password']).first()
         if res:
-            result1 = db.session.query(Advance_care_directive).filter(Advance_care_directive.patient_id==patient_id).first()
-            result2 = db.session.query(Limitation_of_treatment).filter(Limitation_of_treatment.patient_id==patient_id).all()
-            output={}      
-            output['patient_id']=result1.patient_id
-            output['type_of_directive']=result1.type_of_directive
-            output['a_status']=result1.status
-            output['description']=result1.description
-            output['condition']=result1.condition
-            output['directive_location']=result1.directive_location
-            output['a_comment']=result1.comment
-            output['valid_period_start']=result1.valid_period_start
-            output['valid_period_end']=result1.valid_period_end
-            output['review_due_date']=result1.review_due_date
-            output['last_updated']=result1.last_updated
-            output['mandate']=result1.mandate
-            pat =[]  
-            for value in result2:  
-                obj={}  
-                obj['patient_id']=value.patient_id
-                obj['status']=value.status
-                obj['type_of_limitation']=value.type_of_limitation
-                obj['decision']=value.decision
-                obj['qualification']=value.qualification
-                obj['rationale']=value.rationale
-                obj['patient_awareness']=value.patient_awareness
-                obj['carer_awareness']=value.carer_awareness
-                obj['comment']=value.comment
-                obj['element']=value.element
-                obj['protocol_review_date']=value.protocol_review_date
-                pat.append(obj)
-            output['advance_directive']=pat  
-            if output:    
-                return jsonify({"history":output})
+            #patient verification
+            patient = Patient_details.query.filter_by(id = patient_id).first()
+
+            if patient:
+                output={} 
+                c = 0
+                result1 = db.session.query(Advance_care_directive).filter(Advance_care_directive.patient_id==res.id).first()
+
+                if result1:
+                    output['patient_id']=result1.patient_id
+                    output['type_of_directive']=result1.type_of_directive
+                    output['a_status']=result1.status
+                    output['description']=result1.description
+                    output['condition']=result1.condition
+                    output['directive_location']=result1.directive_location
+                    output['a_comment']=result1.comment
+                    output['valid_period_start']=result1.valid_period_start
+                    output['valid_period_end']=result1.valid_period_end
+                    output['review_due_date']=result1.review_due_date
+                    output['last_updated']=result1.last_updated
+                    output['mandate']=result1.mandate
+
+                    pat =[]  
+                    result2 = db.session.query(Limitation_of_treatment).filter(Limitation_of_treatment.patient_id==res.id).all()
+                    
+                    for value in result2:  
+                        obj={}  
+                        obj['id'] = c
+                        c += 1
+                        obj['patient_id']=value.patient_id
+                        obj['status']=value.status
+                        obj['type_of_limitation']=value.type_of_limitation
+                        obj['decision']=value.decision
+                        obj['qualification']=value.qualification
+                        obj['rationale']=value.rationale
+                        obj['patient_awareness']=value.patient_awareness
+                        obj['carer_awareness']=value.carer_awareness
+                        obj['comment']=value.comment
+                        obj['element']=value.element
+                        obj['protocol_review_date']=value.protocol_review_date
+                        pat.append(obj)
+
+                    output['advance_directive']=pat     
+
+                return jsonify({"success":True,"history":output}), 200
+            
             else:
-                return jsonify({'success':False,'message':'patient_id is not present'})
+                return jsonify({'success':False,'message':'Invalid patient'}), 404
         else:
-            return jsonify({'success':False,'message':'not authorised'}), 404
+            return jsonify({'success':False,'message':'not authorised'}), 401
     except:
         return jsonify({'success':False,'message':'not recieved JSON data'}),400 
 
 
 # Api for create Advance directives history  
 @app.route('/api/addadvanceddirectives',methods=['POST'])
-def advancedDirectives():
+def addadvancedDirectives():
     try:
         token = request.headers['token']   #Admin Token
         decoded = jwt.decode(token, options={"verify_signature": False})
-        patient_check= Admin_Login.query.filter_by(email=decoded["email"], password=decoded['password']).first()
-        if patient_check:
+        admin_check= Admin_Login.query.filter_by(email=decoded["email"], password=decoded['password']).first()
+        if admin_check:
             data=request.get_json()
-            # p_id = db.session.query(Advance_care_directive,Limitation_of_treatment).filter(Advance_care_directive.patient_id==data['a_patient_uid'],Limitation_of_treatment.patient_id==data['patient_uid']).first()
-            # if not p_id:
-            entry = Advance_care_directive(patient_id=data['patient_id'],type_of_directive=data['type_of_directive'],status=data['a_status'],description=data['description'],condition=data['condition'],directive_location=data['directive_location'],comment=data['a_comment'],valid_period_start=data['valid_period_start'],valid_period_end=data['valid_period_end'],review_due_date=data['review_due_date'],last_updated=data['last_updated'],mandate=data['mandate'])
-            db.session.add(entry)
-            entry1=Limitation_of_treatment(patient_id=data['patient_id'],status=data['status'],type_of_limitation=data['type_of_limitation'],decision=data['decision'],qualification=data['qualification'],rationale=data['rationale'],patient_awareness=data['patient_awareness'],carer_awareness=data['carer_awareness'],comment=data['comment'],element=data['element'],protocol_review_date=data['protocol_review_date'])
-            db.session.add(entry1)
-            db.session.commit()
-            return jsonify({'success':True,'message':'history added successfully'})
-            # else:
-            #     return jsonify({'success':False,'message':'history already present'}), 404
+            #patient verification
+            patient = Patient_details.query.filter_by(id = data['patient_id']).first()
+            if patient:
+                #advance_care_directive
+                advance_care_directive = Advance_care_directive.query.filter_by().first()
+                if advance_care_directive:
+                    advance_care_directive.type_of_directive=data['type_of_directive']
+                    advance_care_directive.status=data['a_status'],description=data['description']
+                    advance_care_directive.condition=data['condition']
+                    advance_care_directive.directive_location=data['directive_location']
+                    advance_care_directive.comment=data['a_comment']
+                    advance_care_directive.valid_period_start=data['valid_period_start']
+                    advance_care_directive.valid_period_end=data['valid_period_end']
+                    advance_care_directive.review_due_date=data['review_due_date']
+                    advance_care_directive.last_updated=data['last_updated']
+                    advance_care_directive.mandate=data['mandate']
+                    
+                else:
+                    entry = Advance_care_directive(
+                            patient_id=data['patient_id'],
+                            type_of_directive=data['type_of_directive'],
+                            status=data['a_status'],description=data['description'],
+                            condition=data['condition'],
+                            directive_location=data['directive_location'],
+                            comment=data['a_comment'],
+                            valid_period_start=data['valid_period_start'],
+                            valid_period_end=data['valid_period_end'],
+                            review_due_date=data['review_due_date'],
+                            last_updated=data['last_updated'],
+                            mandate=data['mandate'])
+                    db.session.add(entry)
+
+
+                #limitation_of_treatment
+                limitation_of_treatment = Limitation_of_treatment.query.filter_by().first() 
+                if limitation_of_treatment:
+                    limitation_of_treatment.status=data['status']
+                    limitation_of_treatment.type_of_limitation=data['type_of_limitation']
+                    limitation_of_treatment.decision=data['decision']
+                    limitation_of_treatment.qualification=data['qualification']
+                    limitation_of_treatment.rationale=data['rationale']
+                    limitation_of_treatment.patient_awareness=data['patient_awareness']
+                    limitation_of_treatment.carer_awareness=data['carer_awareness']
+                    limitation_of_treatment.comment=data['comment']
+                    limitation_of_treatment.element=data['element']
+                    limitation_of_treatment.protocol_review_date=data['protocol_review_date']
+                else:
+                    entry1=Limitation_of_treatment(
+                            patient_id=data['patient_id'],
+                            status=data['status'],
+                            type_of_limitation=data['type_of_limitation'],
+                            decision=data['decision'],
+                            qualification=data['qualification'],
+                            rationale=data['rationale'],
+                            patient_awareness=data['patient_awareness'],
+                            carer_awareness=data['carer_awareness'],
+                            comment=data['comment'],
+                            element=data['element'],
+                            protocol_review_date=data['protocol_review_date'])
+                    db.session.add(entry1)
+
+                db.session.commit()
+                return jsonify({'success':True,'message':'history added successfully'})
+            else:
+                return jsonify({'success':False,'message':'Invalid patient'}), 404
         else:
-            return jsonify({'success':False,'message':'Not Authorised'}), 404
+            return jsonify({'success':False,'message':'Not Authorised'}), 401
     except:
         return jsonify({'success':False,'message':'Request misses token/json data'}), 400
   
-
+#13. Social History
 @app.route('/api/getsocialhistoryforpatient',methods=['GET'])
 def getSocialHistoryPatient():
     try:
         token=request.headers['token']
         value = jwt.decode(token, options={"verify_signature": False})
         res = Patient_details.query.filter_by(email=value['email'], password=value['password']).first()
+        
         if res:
-            result1 = db.session.query(Tobacco_smoking).filter(Tobacco_smoking.patient_uid==res.id).all()
-            result2 = db.session.query(Alcohol_consumption).filter(Alcohol_consumption.patient_uid==res.id).all()
-            output=[]     
-            for value in result1:
-                pat = {}
-                pat['patient_id']=value.patient_uid
-                pat['status']=value.status
-            for value in result2:    
-                pat['alcohol_status']=value.status
-                pat['typical_consumption_alcohol_unit']=value.typical_consumption_alcohol_unit
-                output.append(pat)
-                #print(output)    
-            return jsonify({"history":output})
+            pat = {}   
+
+            result1 = db.session.query(Tobacco_smoking).filter(Tobacco_smoking.patient_uid==res.id).first()  
+            if result1:
+                pat['patient_id']=result1.patient_uid
+                pat['status']=result1.status
+
+            result2 = db.session.query(Alcohol_consumption).filter(Alcohol_consumption.patient_uid==res.id).first()
+            if result2:    
+                pat['alcohol_status']=result2.status
+                pat['typical_consumption_alcohol_unit']=result2.typical_consumption_alcohol_unit
+                
+            return jsonify({"success":True,"history":pat}), 200
+
         else:
             return jsonify({'success':False,'message':'invalid email/password'}), 404       
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'not recieved JSON data'}),400 
+
 
 @app.route('/api/getsocialhistoryfordoctor/<int:patient_id>',methods=['GET'])
 def getSocialHistoryDoctor(patient_id):
@@ -2236,55 +2535,76 @@ def getSocialHistoryDoctor(patient_id):
         value = jwt.decode(token, options={"verify_signature": False})
         res = doctor_details.query.filter_by(email=value['email'], password=value['password']).first()
         if res:
-            
-            result1 = db.session.query(Tobacco_smoking).filter(Tobacco_smoking.patient_uid==patient_id).all()
-            result2 = db.session.query(Alcohol_consumption).filter(Alcohol_consumption.patient_uid==patient_id).all()
-            output=[]     
-            for value in result1:
-                pat = {}
-                pat['patient_id']=value.patient_uid
-                pat['status']=value.status
-            for value in result2:    
-                pat['alcohol_status']=value.status
-                pat['typical_consumption_alcohol_unit']=value.typical_consumption_alcohol_unit
-                output.append(pat)
-                #print(output)   
-            return jsonify({"history":output})
+            #patient verification
+            patient = Patient_details.query.filter_by(id = patient_id).first()
+            if patient:
+                pat = {}   
+
+                result1 = db.session.query(Tobacco_smoking).filter(Tobacco_smoking.patient_uid==res.id).first()  
+                if result1:
+                    pat['patient_id']=result1.patient_uid
+                    pat['status']=result1.status
+
+                result2 = db.session.query(Alcohol_consumption).filter(Alcohol_consumption.patient_uid==res.id).first()
+                if result2:    
+                    pat['alcohol_status']=result2.status
+                    pat['typical_consumption_alcohol_unit']=result2.typical_consumption_alcohol_unit
+                    
+                return jsonify({"success":True,"history":pat}), 200
+
+            else:
+                return jsonify({"success":False, "message":"Invalid patient"}), 404
         else:
-            return jsonify({'success':False,'message':'not authorised'}), 404       
+            return jsonify({'success':False,'message':'not authorised'}), 401       
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'not recieved JSON data'}),400 
 
+
 @app.route('/api/createsocialhistoryofpatient',methods=['POST'])
-def createSocialHistoryOfPatient():
+def createSocialHistoryOfPatient(): #tobacco_smoking and alcohol_consumption
     try:
+        #Admin Verification
         token = request.headers['token']
         decoded = jwt.decode(token, options={"verify_signature": False})
         admin_check= Admin_Login.query.filter_by(email=decoded["email"], password=decoded['password']).first()
+        
         if admin_check:
             data=request.get_json()
-            p_id = Tobacco_smoking.query.filter_by(patient_uid=data['patient_id']).first()
-            p_id1 = Alcohol_consumption.query.filter_by(patient_uid=data['patient_id']).first()
-            if p_id and p_id1:
-                p_id.status=data['smoking_status']
-                p_id1.status=data['alcohol_status']
-                p_id1.typical_consumption_alcohol_unit=data['typical_consumption_alcohol_unit']
+            #patient verification
+            patient = Patient_details.query_filter_by(id = data['patient_id']).first()
+
+            if patient:
+
+                #tobacco_smoking
+                tobacco_smoking = Tobacco_smoking.query.filter_by(patient_uid=data['patient_id']).first()
+                if tobacco_smoking:
+                    tobacco_smoking.status=data['smoking_status']
+                else:
+                    entry = Tobacco_smoking(patient_uid=data['patient_id'],status=data['smoking_status'])
+                    db.session.add(entry)
+
+                #alcohol_consumption
+                alcohol_consumption = Alcohol_consumption.query.filter_by(patient_uid=data['patient_id']).first()
+                if alcohol_consumption:
+                    alcohol_consumption.status=data['alcohol_status']
+                    alcohol_consumption.typical_consumption_alcohol_unit=data['typical_consumption_alcohol_unit']
+                else:
+                    entry = Alcohol_consumption(patient_uid=data['patient_id'],status=data['alcohol_status'],typical_consumption_alcohol_unit=data['typical_consumption_alcohol_unit'])
+                    db.session.add(entry)
+
+                db.session.commit()
+                return jsonify({'success':True,'message':'social history added successfully'})
+
             else:
-                entry = Tobacco_smoking(patient_uid=data['patient_id'],status=data['smoking_status'])
-                db.session.add(entry)
-                entry = Alcohol_consumption(patient_uid=data['patient_id'],status=data['alcohol_status'],typical_consumption_alcohol_unit=data['typical_consumption_alcohol_unit'])
-                db.session.add(entry)
-            db.session.commit()
-            return jsonify({'success':True,'message':'social history added successfully'})
-            # else:
-            #     return jsonify({'success':False,'message':'history already present'}), 404
+                return jsonify({'success':False,'message':'Invalid Patient'}), 404
         else:
-            return jsonify({'success':False,'message':'Not Authorised'}), 404
+            return jsonify({'success':False,'message':'Not Authorised'}), 401
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'Request misses token/json data'}), 400
 
+#14. Plan of Care
 @app.route('/api/getplanofcareforpatient',methods=['GET'])
 def getplanofcare():
     try:
@@ -2321,15 +2641,13 @@ def getplanofcare():
                 pat['receiver_order_identifier']=value.receiver_order_identifier
                 pat['request_status']=value.request_status
                 
-                #print(output)
-            if pat:    
-                return jsonify({"planofcare":pat})
-            else:
-                return jsonify({'success':False,'message':'patient_id is not present'}) 
+            return jsonify({"success":True, "planofcare":pat}), 200
+             
         else:
-            return jsonify({'success':False,'message':'invalid email/password'}), 404       
+            return jsonify({'success':False,'message':'not authorised'}), 401     
     except:
         return jsonify({'success':False,'message':'not recieved JSON data'}),400 
+
 
 @app.route('/api/getplanofcarefordoctor/<int:patient_id>',methods=['GET'])
 def getplanofcarefordoctor(patient_id):
@@ -2337,110 +2655,149 @@ def getplanofcarefordoctor(patient_id):
         token=request.headers['token']
         value = jwt.decode(token, options={"verify_signature": False})
         res = doctor_details.query.filter_by(email=value['email'], password=value['password']).first()
+       
         if res:
-            
             patient_uid = patient_id
-            result1 = db.session.query(Care_plan).filter(Care_plan.patient_uid==patient_uid).all()
-            result2 = db.session.query(Service_request).filter(Service_request.patient_uid==patient_uid).all()
-            pat = {}   
-            for value in result1:
-                pat['patient_id']=value.patient_uid
-                pat['care_plan_name']=value.care_plan_name
-                pat['care_plan_description']=value.care_plan_description
-                pat['care_plan_reason']=value.care_plan_reason
-                pat['care_plan_expiry_date']=value.care_plan_expiry_date
-            for value in result2:    
-                pat['service_name']=value.service_name
-                pat['service_type']=value.service_type
-                pat['description']=value.description
-                pat['reason_for_request']=value.reason_for_request
-                pat['reason_description']=value.reason_description
-                pat['clinical_indication']=value.clinical_indication
-                pat['intent']=value.intent
-                pat['urgency']=value.urgency
-                pat['service_due']=value.service_due
-                pat['service_period_start']=value.service_period_start
-                pat['service_period_expiry']=value.service_period_expiry
-                pat['indefinite']=value.indefinite
-                pat['supplementary_information']=value.supplementary_information
-                pat['information_description']=value.information_description
-                pat['comment']=value.comment
-                pat['requester_order_identifier']=value.requester_order_identifier
-                pat['receiver_order_identifier']=value.receiver_order_identifier
-                pat['request_status']=value.request_status
-                
-                #print(output)
-            if pat:    
-                return jsonify({"planofcare":pat})
+            #patient verification
+            patient = Patient_details.query.filter_by(id = patient_uid).first()
+            if patient:
+                result1 = db.session.query(Care_plan).filter(Care_plan.patient_uid==patient_uid).all()
+                result2 = db.session.query(Service_request).filter(Service_request.patient_uid==patient_uid).all()
+                pat = {}   
+                for value in result1:
+                    pat['patient_id']=value.patient_uid
+                    pat['care_plan_name']=value.care_plan_name
+                    pat['care_plan_description']=value.care_plan_description
+                    pat['care_plan_reason']=value.care_plan_reason
+                    pat['care_plan_expiry_date']=value.care_plan_expiry_date
+                for value in result2:    
+                    pat['service_name']=value.service_name
+                    pat['service_type']=value.service_type
+                    pat['description']=value.description
+                    pat['reason_for_request']=value.reason_for_request
+                    pat['reason_description']=value.reason_description
+                    pat['clinical_indication']=value.clinical_indication
+                    pat['intent']=value.intent
+                    pat['urgency']=value.urgency
+                    pat['service_due']=value.service_due
+                    pat['service_period_start']=value.service_period_start
+                    pat['service_period_expiry']=value.service_period_expiry
+                    pat['indefinite']=value.indefinite
+                    pat['supplementary_information']=value.supplementary_information
+                    pat['information_description']=value.information_description
+                    pat['comment']=value.comment
+                    pat['requester_order_identifier']=value.requester_order_identifier
+                    pat['receiver_order_identifier']=value.receiver_order_identifier
+                    pat['request_status']=value.request_status
+                    
+                return jsonify({"planofcare":pat}), 200
+
             else:
-                return jsonify({'success':False,'message':'patient_id is not present'}) 
+                return jsonify({'success':False,'message':'Invalid Patient'}), 404
         else:
-            return jsonify({'success':False,'message':'invalid email/password'}), 404       
+            return jsonify({'success':False,'message':'Not authorised'}), 401       
     except:
         return jsonify({'success':False,'message':'not recieved JSON data'}),400 
 
 
 @app.route('/api/createplanofcareofpatient',methods=['POST'])
-def createplanofcareOfPatient():
+def createplanofcareOfPatient(): #service_request and care_plan
     try:
         token = request.headers['token']
         decoded = jwt.decode(token, options={"verify_signature": False})
         admin_check= Admin_Login.query.filter_by(email=decoded["email"], password=decoded['password']).first()
+        
         if admin_check:
             data=request.get_json()
-            p_id1 = Care_plan.query.filter_by(patient_uid=data['patient_id']).first()
-            p_id = Service_request.query.filter_by(patient_uid=data['patient_id']).first()
-            if p_id and p_id1:
-                p_id1.patient_uid=data['patient_id']
-                p_id1.care_plan_name=data['care_plan_name']
-                p_id1.care_plan_description=data['care_plan_description']
-                p_id1.care_plan_reason=data['care_plan_reason']
-                p_id1.care_plan_expiry_date=data['care_plan_expiry_date']
-                p_id.service_name=data['service_name']
-                p_id.service_type=data['service_type']
-                p_id.description=data['description']
-                p_id.reason_for_request=data['reason_for_request']
-                p_id.reason_description=data['reason_description']
-                p_id.clinical_indication=data['clinical_indication']
-                p_id.intent=data['intent'],
-                p_id.urgency=data['urgency']
-                p_id.service_due=data['service_due']
-                p_id.service_period_start=data['service_period_start']
-                p_id.service_period_expiry=data['service_period_expiry']
-                p_id.indefinite=data['indefinite']
-                p_id.supplementary_information=data['supplementary_information']
-                p_id.information_description=data['information_description']
-                p_id.comment=data['comment']
-                p_id.requester_order_identifier=data['requester_order_identifier']
-                p_id.receiver_order_identifier=data['receiver_order_identifier']
-                p_id.request_status=data['request_status']
+            #patient verification
+            patient = Patient_details.query.filter_by(id = data['patient_id']).first()
+
+            if patient:
+
+                #care_plan
+                care_plan = Care_plan.query.filter_by(patient_uid=data['patient_id']).first()
+                if care_plan:
+                    care_plan.patient_uid=data['patient_id']
+                    care_plan.care_plan_name=data['care_plan_name']
+                    care_plan.care_plan_description=data['care_plan_description']
+                    care_plan.care_plan_reason=data['care_plan_reason']
+                    care_plan.care_plan_expiry_date=data['care_plan_expiry_date']
+                else:
+                    entry = Care_plan(
+                            patient_uid=data['patient_id'],
+                            care_plan_name=data['care_plan_name'],
+                            care_plan_description=data['care_plan_description'],
+                            care_plan_reason=data['care_plan_reason'],
+                            care_plan_expiry_date=data['care_plan_expiry_date'])
+                    db.session.add(entry)
+
+                #service_request
+                service_request = Service_request.query.filter_by(patient_uid=data['patient_id']).first()
+                if service_request:
+                    service_request.service_name=data['service_name']
+                    service_request.service_type=data['service_type']
+                    service_request.description=data['description']
+                    service_request.reason_for_request=data['reason_for_request']
+                    service_request.reason_description=data['reason_description']
+                    service_request.clinical_indication=data['clinical_indication']
+                    service_request.intent=data['intent'],
+                    service_request.urgency=data['urgency']
+                    service_request.service_due=data['service_due']
+                    service_request.service_period_start=data['service_period_start']
+                    service_request.service_period_expiry=data['service_period_expiry']
+                    service_request.indefinite=data['indefinite']
+                    service_request.supplementary_information=data['supplementary_information']
+                    service_request.information_description=data['information_description']
+                    service_request.comment=data['comment']
+                    service_request.requester_order_identifier=data['requester_order_identifier']
+                    service_request.receiver_order_identifier=data['receiver_order_identifier']
+                    service_request.request_status=data['request_status']
+                else:
+                    entry = Service_request(
+                            patient_uid=data['patient_id'],
+                            service_name=data['service_name'],
+                            service_type=data['service_type'],
+                            description=data['description'],
+                            reason_for_request=data['reason_for_request'],
+                            reason_description=data['reason_description'],
+                            clinical_indication=data['clinical_indication'],
+                            intent=data['intent'],
+                            urgency=data['urgency'],
+                            service_due=data['service_due'],
+                            service_period_start=data['service_period_start'],
+                            service_period_expiry=data['service_period_expiry'],
+                            indefinite=data['indefinite'],
+                            supplementary_information=data['supplementary_information'],
+                            information_description=data['information_description'],
+                            comment=data['comment'],
+                            requester_order_identifier=data['requester_order_identifier'],
+                            receiver_order_identifier=data['receiver_order_identifier'],
+                            request_status=data['request_status'])
+                    db.session.add(entry)
+                    
+                db.session.commit()
+                return jsonify({'success':True,'message':'social history added successfully'})
+                
             else:
-                entry = Care_plan(patient_uid=data['patient_id'],care_plan_name=data['care_plan_name'],care_plan_description=data['care_plan_description'],care_plan_reason=data['care_plan_reason'],care_plan_expiry_date=data['care_plan_expiry_date'])
-                db.session.add(entry)
-                entry = Service_request(patient_uid=data['patient_id'],service_name=data['service_name'],service_type=data['service_type'],description=data['description'],reason_for_request=data['reason_for_request'],reason_description=data['reason_description'],clinical_indication=data['clinical_indication'],intent=data['intent'],
-                urgency=data['urgency'],service_due=data['service_due'],service_period_start=data['service_period_start'],service_period_expiry=data['service_period_expiry'],indefinite=data['indefinite'],supplementary_information=data['supplementary_information'],information_description=data['information_description'],comment=data['comment'],
-                requester_order_identifier=data['requester_order_identifier'],receiver_order_identifier=data['receiver_order_identifier'],request_status=data['request_status'])
-                db.session.add(entry)
-            db.session.commit()
-            return jsonify({'success':True,'message':'social history added successfully'})
-            # else:
-            #     return jsonify({'success':False,'message':'history already present'}), 404
+                return jsonify({'success':False,'message':'Inavlid Patient'}), 404
         else:
-            return jsonify({'success':False,'message':'Not Authorised'}), 404
+            return jsonify({'success':False,'message':'Not Authorised'}), 401
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'Request misses token/json data'}), 400
 
-
+#15. functional status
 @app.route('/api/getfunctionalstatusforpatient',methods=['GET'])
 def getfunctionalstatus():
     try:
         token=request.headers['token']
         value = jwt.decode(token, options={"verify_signature": False})
         res = Patient_details.query.filter_by(email=value['email'], password=value['password']).first()
+        
         if res:
             result1 = db.session.query(Functional_status).filter(Care_plan.patient_uid==res.id).all()
             pat = {}   
+
             for value in result1:
                 pat['patient_id']=value.patient_uid
                 pat['diagnosis_name']=value.diagnosis_name
@@ -2455,14 +2812,11 @@ def getfunctionalstatus():
                 pat['diagnostic_certainty']=value.diagnostic_certainty
                 pat['protocol_last_updated']=value.protocol_last_updated
                 pat['clinical_impression']=value.clinical_impression
-                
-                #print(output)
-            if pat:    
-                return jsonify({"functionalstatus":pat})
-            else:
-                return jsonify({'success':False,'message':'patient_id is not present'}) 
+            
+            return jsonify({"functionalstatus":pat})
+            
         else:
-            return jsonify({'success':False,'message':'invalid email/password'}), 404       
+            return jsonify({'success':False,'message':'not authorised'}), 401     
     except:
         return jsonify({'success':False,'message':'not recieved JSON data'}),400 
 
@@ -2474,68 +2828,91 @@ def getfunctionalstatusfordoctor(patient_id):
         value = jwt.decode(token, options={"verify_signature": False})
         res = doctor_details.query.filter_by(email=value['email'], password=value['password']).first()
         if res:
-            result1 = db.session.query(Functional_status).filter(Care_plan.patient_uid==patient_id).all()
-            pat = {}   
-            for value in result1:
-                pat['patient_id']=value.patient_uid
-                pat['diagnosis_name']=value.diagnosis_name
-                pat['body_site']=value.body_site
-                pat['date_of_onset']=value.date_of_onset
-                pat['severity']=value.severity   
-                pat['date_of_abatement']=value.date_of_abatement
-                pat['active_inactive']=value.active_inactive
-                pat['resolution_phase']=value.resolution_phase
-                pat['remission_status']=value.remission_status
-                pat['occurrence']=value.occurrence
-                pat['diagnostic_certainty']=value.diagnostic_certainty
-                pat['protocol_last_updated']=value.protocol_last_updated
-                pat['clinical_impression']=value.clinical_impression
+            #patient verification
+            patient = Patient_details.query.filter_by(id = patient_id).first()
+            
+            if patient:
+                result1 = db.session.query(Functional_status).filter(Care_plan.patient_uid==patient_id).all()
+                pat = {}   
                 
-                #print(output)
-            if pat:    
-                return jsonify({"functionalstatus":pat})
+                for value in result1:
+                    pat['patient_id']=value.patient_uid
+                    pat['diagnosis_name']=value.diagnosis_name
+                    pat['body_site']=value.body_site
+                    pat['date_of_onset']=value.date_of_onset
+                    pat['severity']=value.severity   
+                    pat['date_of_abatement']=value.date_of_abatement
+                    pat['active_inactive']=value.active_inactive
+                    pat['resolution_phase']=value.resolution_phase
+                    pat['remission_status']=value.remission_status
+                    pat['occurrence']=value.occurrence
+                    pat['diagnostic_certainty']=value.diagnostic_certainty
+                    pat['protocol_last_updated']=value.protocol_last_updated
+                    pat['clinical_impression']=value.clinical_impression
+                
+                return jsonify({"functionalstatus":pat}), 200
+
             else:
-                return jsonify({'success':False,'message':'patient_id is not present'}) 
+                return jsonify({'success':False,'message':'Invalid patient'}), 404
         else:
-            return jsonify({'success':False,'message':'invalid email/password'}), 404       
+            return jsonify({'success':False,'message':'not authorised'}), 401       
     except:
         return jsonify({'success':False,'message':'not recieved JSON data'}),400 
+
+
 @app.route('/api/createfunctionalstatus',methods=['POST'])
 def createfunctionalOfPatient():
     try:
+        #Admin Verification
         token = request.headers['token']
         decoded = jwt.decode(token, options={"verify_signature": False})
         admin_check= Admin_Login.query.filter_by(email=decoded["email"], password=decoded['password']).first()
+        
         if admin_check:
             data=request.get_json()
-            p_id = Functional_status.query.filter_by(patient_uid=data['patient_id']).first()
-            #p_id = Service_request.query.filter_by(patient_uid=data['patient_id']).first()
-            if p_id:
-                p_id.diagnosis_name=data['diagnosis_name']
-                p_id.body_site=data['body_site']
-                p_id.date_of_onset=data['date_of_onset']
-                p_id.severity=data['severity']
-                p_id.date_of_abatement=data['date_of_abatement']
-                p_id.active_inactive=data['active_inactive']
-                p_id.resolution_phase=data['resolution_phase']
-                p_id.remission_status=data['remission_status']
-                p_id.occurrence=data['occurrence']
-                p_id.diagnostic_certainty=data['diagnostic_certainty']
-                p_id.protocol_last_updated=data['protocol_last_updated']
-                p_id.clinical_impression=data['clinical_impression']
-            else:
-                entry = Functional_status(patient_uid=data['patient_id'],diagnosis_name=data['diagnosis_name'],body_site=data['body_site'],date_of_onset=data['date_of_onset']
-                ,severity=data['severity'],date_of_abatement=data['date_of_abatement'],active_inactive=data['active_inactive'],resolution_phase=data['resolution_phase'],
-                remission_status=data['remission_status'],occurrence=data['occurrence'],diagnostic_certainty=data['diagnostic_certainty'],protocol_last_updated=data['protocol_last_updated'],clinical_impression=data['clinical_impression'])
-                db.session.add(entry)
+            #patient verification
+            patient = Patient_details.query.filter_by(id = data['patient_id']).first()
+
+            if patient:
                 
-    
-            db.session.commit()
-            return jsonify({'success':True,'message':'functional status added successfully'})
-            # else:
-            #     return jsonify({'success':False,'message':'history already present'}), 404
+                functional_status = Functional_status.query.filter_by(patient_uid=data['patient_id']).first()
+                if functional_status:
+                    functional_status.diagnosis_name=data['diagnosis_name']
+                    functional_status.body_site=data['body_site']
+                    functional_status.date_of_onset=data['date_of_onset']
+                    functional_status.severity=data['severity']
+                    functional_status.date_of_abatement=data['date_of_abatement']
+                    functional_status.active_inactive=data['active_inactive']
+                    functional_status.resolution_phase=data['resolution_phase']
+                    functional_status.remission_status=data['remission_status']
+                    functional_status.occurrence=data['occurrence']
+                    functional_status.diagnostic_certainty=data['diagnostic_certainty']
+                    functional_status.protocol_last_updated=data['protocol_last_updated']
+                    functional_status.clinical_impression=data['clinical_impression']
+                else:
+                    entry = Functional_status(
+                            patient_uid=data['patient_id'],
+                            diagnosis_name=data['diagnosis_name'],
+                            body_site=data['body_site'],
+                            date_of_onset=data['date_of_onset'],
+                            severity=data['severity'],
+                            date_of_abatement=data['date_of_abatement'],
+                            active_inactive=data['active_inactive'],
+                            resolution_phase=data['resolution_phase'],
+                            remission_status=data['remission_status'],
+                            occurrence=data['occurrence'],
+                            diagnostic_certainty=data['diagnostic_certainty'],
+                            protocol_last_updated=data['protocol_last_updated'],
+                            clinical_impression=data['clinical_impression'])
+                    db.session.add(entry)
+                    
+                db.session.commit()
+                return jsonify({'success':True,'message':'functional status added successfully'})
+
+            else:
+                return jsonify({'success':False,'message':'Invalid Patient'}), 404
         else:
-            return jsonify({'success':False,'message':'Not Authorised'}), 404
+            return jsonify({'success':False,'message':'Not Authorised'}), 401
     except:
         return jsonify({'success':False,'message':'Request misses token/json data'}), 400
 

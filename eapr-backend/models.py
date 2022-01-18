@@ -3,11 +3,11 @@ from flask_sqlalchemy import SQLAlchemy
 import datetime
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:postgres@localhost/sample6"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:12345@localhost/sample6"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
 
-#Model for patient Details
+#1. Model for patient Details
 class Patient_details(db.Model):
     tablename ='patient_details'
     id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
@@ -19,7 +19,7 @@ class Patient_details(db.Model):
     gender = db.Column(db.Text, unique=False, nullable=False)
     address=db.Column(db.String(100), unique=False, nullable=False)
 
-#Model for Doctor Details
+#2. Model for Doctor Details
 class doctor_details(db.Model):
     tablename ='doctor_details'
     id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
@@ -28,14 +28,14 @@ class doctor_details(db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(500), unique = False, nullable=False)
 
-#Model for Admin Login
+#3. Model for Admin Login
 class Admin_Login(db.Model):
     tablename='admin_login'
     id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False) 
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(500), unique = False, nullable=False)
 
-# Models for Prescription
+#4. Model for Prescription
 class Prescription(db.Model):
     __tablename__ = 'prescription'
     id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
@@ -51,6 +51,7 @@ class Medication_Order(db.Model):
     patientId = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
     doctorId = db.Column(db.Integer, db.ForeignKey('doctor_details.id'),nullable=False)
     dateWritten = db.Column(db.Text, unique = False, nullable=False)
+    #medication
     medicationItem = db.Column(db.Text, unique=False, nullable=False)
     route = db.Column(db.String(300), unique=False, nullable=False)    
     dosageInstruction = db.Column(db.Text, unique = False, nullable=False)
@@ -69,19 +70,18 @@ class Medication_Order(db.Model):
     dispenseAmount = db.Column(db.Text, unique=False, nullable=False)
     dispenseAmountUnit = db.Column(db.Text, unique=False, nullable=False)
     comment = db.Column(db.Text, unique=False, nullable=False)
-
-# dose 
+    # dose 
     dose_unit   =  db.Column(db.Text, unique=False, nullable=False)
     dose_frequency = db.Column(db.Text, unique=False, nullable=False)
     dose_timing   = db.Column(db.Text, unique = False, nullable=False)
     dose_duration = db.Column(db.Text, unique=False, nullable=False)
-# repetition
+    # repetition
     repetition_interval = db.Column(db.Text, unique=False, nullable=False)
     Specific_date = db.Column(db.Text, unique = False, nullable=False)
     specific_day_of_week = db.Column(db.Text, unique=False, nullable=True)
     Specific_day_of_month = db.Column(db.Text, unique=False, nullable=True)
     specific_Event = db.Column(db.Text, unique=False, nullable=True)
-# preparation
+    # preparation
     substance_name = db.Column(db.Text, unique=False, nullable=True)
     form = db.Column(db.Text, unique=False, nullable=True)
     strength = db.Column(db.Text, unique=False, nullable=False)
@@ -91,9 +91,7 @@ class Medication_Order(db.Model):
     description = db.Column(db.Text, unique=False, nullable=True)
 
     
-# Models for medication
-
-
+#5. Model for medication summary
 class Medication_summary(db.Model):
     tablename = 'medication_summary'
     medication_summary_id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
@@ -107,7 +105,6 @@ class Medication_statement(db.Model):
     tablename = 'medication_statement'
     order_id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
     patient_id = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
-
     #medication
     medication_item = db.Column(db.Text, unique=False, nullable=False)
     medication_name = db.Column(db.Text, unique=False, nullable=True)
@@ -129,8 +126,6 @@ class Medication_statement(db.Model):
     alternate_amount_unit = db.Column(db.Text, unique=False, nullable=True)
     role = db.Column(db.Text, unique=False, nullable=True)
     description = db.Column(db.Text, unique=False, nullable=True)
-
-
     #dosage
     dose_amount = db.Column(db.Text, unique=False, nullable=True)
     dose_unit = db.Column(db.Text, unique=False, nullable=True)
@@ -152,14 +147,10 @@ class Medication_statement(db.Model):
     dose_time_offset = db.Column(db.Text, unique=False, nullable=True)
     dose_on = db.Column(db.Text, unique=False, nullable=True)
     dose_off = db.Column(db.Text, unique=False, nullable=True)
-    dose_repetetions = db.Column(db.Text, unique=False, nullable=True)
-
-    
+    dose_repetetions = db.Column(db.Text, unique=False, nullable=True)    
     #administration_details
     route = db.Column(db.Text, unique=False, nullable=True)
     body_site = db.Column(db.Text, unique=False, nullable=True)
-
-
     #timing_non_daily
     time_repetetion_interval = db.Column(db.Text, unique=False, nullable=True)
     time_frequency_lower = db.Column(db.Text, unique=False, nullable=True)
@@ -178,7 +169,7 @@ class Medication_statement(db.Model):
     timing_off = db.Column(db.Text, unique=False, nullable=True)
     timing_repetetions = db.Column(db.Text, unique=False, nullable=True)
     
- # Model for Advance care Directive
+ #6. Model for Advance care Directive
 class Advance_care_directive(db.Model):
     __tablename__ = 'advance_care_directive'
     id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
@@ -196,7 +187,7 @@ class Advance_care_directive(db.Model):
     mandate = db.Column(db.Text, unique=False, nullable=True)      
 
 
-# Model for Limitation of Treatment
+#7. Model for Limitation of Treatment
 
 class Limitation_of_treatment(db.Model):
     __tablename__ ='limitation_of_treatment'
@@ -214,7 +205,7 @@ class Limitation_of_treatment(db.Model):
     protocol_review_date = db.Column(db.Text, unique=False, nullable=True)
     
 
-# Model For Problem List
+#8. Model For Problem List
 
 class Problem_list(db.Model):
     __tablename__ = 'problem_list'
@@ -224,7 +215,6 @@ class Problem_list(db.Model):
     absence_of_information_statement = db.Column(db.Text, unique=False, nullable=True)
     absence_of_information_protocol_last_updated = db.Column(db.Text, unique=False, nullable=True)
 
-# Model for Problem
 
 class Problem(db.Model):
     __tablename__ = 'problem'
@@ -242,7 +232,7 @@ class Problem(db.Model):
     diagnostic_certainity = db.Column(db.Text, unique=False, nullable=True) 
     protocol_last_updated = db.Column(db.Text, unique=False, nullable=True)
     
-# Model for past history of illnesses
+#9. Model for past history of illnesses
 
 class Past_history_of_illnesses(db.Model):
     __tablename__ = 'past_history_of_illnesses'
@@ -260,7 +250,7 @@ class Past_history_of_illnesses(db.Model):
     diagnostic_certainity = db.Column(db.Text, unique=False, nullable=True) 
     protocol_last_updated = db.Column(db.Text, unique=False, nullable=True)
 
-# Model for tobacco smoking
+#10. Model for Social History
    
 class Tobacco_smoking(db.Model):
     __tablename__ = 'tobacco_smoking'
@@ -268,7 +258,6 @@ class Tobacco_smoking(db.Model):
     patient_uid = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
     status = db.Column(db.Text, unique=False, nullable=True)
 
-# Model for alcohol consumption
 class Alcohol_consumption(db.Model):
     __tablename__ = 'alcohol_consumption'
     id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
@@ -276,7 +265,7 @@ class Alcohol_consumption(db.Model):
     status = db.Column(db.Text, unique=False, nullable=True)
     typical_consumption_alcohol_unit = db.Column(db.Text, unique=False, nullable=True)
 
-# Model for care plan
+#11. Model for plan of care
 class Care_plan(db.Model):
     __tablename__ = 'care_plan'
     care_plan_id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
@@ -285,7 +274,8 @@ class Care_plan(db.Model):
     care_plan_description = db.Column(db.Text, unique=False, nullable=True)
     care_plan_reason = db.Column(db.Text, unique=False, nullable=True)
     care_plan_expiry_date= db.Column(db.Text, unique=False, nullable=True)
-# Model for service request
+
+
 class Service_request(db.Model):
     __tablename__ = 'service_request'
     id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
@@ -309,7 +299,8 @@ class Service_request(db.Model):
     receiver_order_identifier = db.Column(db.Text, unique=False, nullable=True)
     request_status = db.Column(db.Text, unique=False, nullable=True)
 
-#Model for functional status
+
+#12. Model for functional status
 class Functional_status(db.Model):
     __tablename__ = 'functional_status'
     id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
@@ -342,7 +333,7 @@ class Pregnancy(db.Model):
     exclusion_of_pregnancy_statement = db.Column(db.Text, unique=False, nullable=True)
 
 
-# history_of_procedures
+#13. Model for history_of_procedures
 class history_of_procedures(db.Model):
     __tablename__ = 'history_of_procedures'
     id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
@@ -351,7 +342,6 @@ class history_of_procedures(db.Model):
     absence_of_info_protocol_last_updated = db.Column(db.Text, unique=False, nullable=True)
     global_exclusion_of_procedures = db.Column(db.Text, unique=False, nullable=True)
 
-# procedure table
 class Procedure(db.Model):
     __tablename__ = 'procedure'
     id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
@@ -359,7 +349,7 @@ class Procedure(db.Model):
     procedure_name = db.Column(db.Text, unique=False, nullable=True)
     body_site = db.Column(db.Text, unique=False, nullable=True)
 
-# innunizations table
+#14. Model for immunizations
 class Immunizations(db.Model):
     __tablename__ = 'immunizations'
     id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
@@ -367,7 +357,6 @@ class Immunizations(db.Model):
     absence_of_info_absence_statement = db.Column(db.Text, unique=False, nullable=True)
     absence_of_info_protocol_last_updated = db.Column(db.Text, unique=False, nullable=True)
 
-# immunization table
 class Immunization(db.Model):
     __tablename__ = "immunization"
     id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
@@ -376,7 +365,7 @@ class Immunization(db.Model):
     administration_details_target_site = db.Column(db.Text, unique=False, nullable=True)
     sequence_number = db.Column(db.Text, unique=False, nullable=True)
 
-# medical device  table
+#15. Model for medical device
 class Medical_devices(db.Model):
     __tablename__ = "medical_devices"
     id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
@@ -397,7 +386,7 @@ class Medical_devices(db.Model):
     other_identifier = db.Column(db.Text, unique=False, nullable=True)
     comment = db.Column(db.Text, unique=False, nullable=True)
 
-#Model for allergies_and_intolerances
+#16. Model for allergies_and_intolerances
 class allergies_and_intolerances(db.Model):
     __tablename__ = 'allergies_and_intolerances'
     id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
@@ -420,7 +409,7 @@ class Allergy(db.Model):
     severity = db.Column(db.Text, unique=False, nullable=True)
     protocol_last_updated = db.Column(db.Text, unique=False, nullable=True)
 
-#Model for diagnostic_lab_test_result
+#17. Model for diagnostic_test_results
 class dignostic_test_result(db.Model):
     __tablename__ = 'diagnostic_test_result'
     id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
@@ -463,7 +452,7 @@ class dignostic_test_result(db.Model):
     image_datetime = db.Column(db.Text, unique=False, nullable=True)
     image = db.Column(db.Text, unique=False, nullable=True)      
 
-#vital_signs
+#18. Model for vital_signs
 class vital_signs(db.Model):
     __tablename__ = 'vital_signs'
     id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
