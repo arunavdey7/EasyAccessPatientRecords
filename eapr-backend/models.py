@@ -9,7 +9,7 @@ db = SQLAlchemy(app)
 
 #1. Model for patient Details
 class Patient_details(db.Model):
-    tablename ='patient_details'
+    __tablename__ ='patient_details'
     id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
     name = db.Column(db.Text, unique=False, nullable=False)
     age = db.Column(db.Text,unique=False,nullable = False)
@@ -21,7 +21,7 @@ class Patient_details(db.Model):
 
 #2. Model for Doctor Details
 class doctor_details(db.Model):
-    tablename ='doctor_details'
+    __tablename__ ='doctor_details'
     id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
     name = db.Column(db.Text, unique=False, nullable=False)
     category = db.Column(db.Text,unique=False,nullable = False)
@@ -30,7 +30,7 @@ class doctor_details(db.Model):
 
 #3. Model for Admin Login
 class Admin_Login(db.Model):
-    tablename='admin_login'
+    __tablename__='admin_login'
     id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False) 
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(500), unique = False, nullable=False)
@@ -93,7 +93,7 @@ class Medication_Order(db.Model):
     
 #5. Model for medication summary
 class Medication_summary(db.Model):
-    tablename = 'medication_summary'
+    __tablename__ = 'medication_summary'
     medication_summary_id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
     patient_id = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False,unique=True)
     global_exclusion_of_medication_use = db.Column(db.Text, unique=False)
@@ -102,7 +102,7 @@ class Medication_summary(db.Model):
 
 
 class Medication_statement(db.Model):
-    tablename = 'medication_statement'
+    __tablename__ = 'medication_statement'
     order_id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
     patient_id = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
     #medication
