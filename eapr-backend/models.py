@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 import datetime
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:12345@localhost/sample6"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:postgres@localhost/sample6"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
 
@@ -361,8 +361,11 @@ class Immunization(db.Model):
     __tablename__ = "immunization"
     id = db.Column(db.Integer, primary_key = True, unique=True, nullable=False)
     patient_uid = db.Column(db.Integer, db.ForeignKey('patient_details.id'),nullable=False)
+    # add in api
+    immunization_item = db.Column(db.Text, unique=False, nullable=True) 
     administration_details_route = db.Column(db.Text, unique=False, nullable=True)
     administration_details_target_site = db.Column(db.Text, unique=False, nullable=True)
+    # add in api
     sequence_number = db.Column(db.Text, unique=False, nullable=True)
 
 #15. Model for medical device

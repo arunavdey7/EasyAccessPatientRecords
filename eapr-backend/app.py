@@ -592,7 +592,7 @@ def getAllPrescriptionsForPatient():
                 obj['prescriptionId'] = prescription.id
                 obj['date_written']=prescription.dateWritten
                 result.append(obj)
-            return jsonify({'allPrescriptions':result})        
+            return jsonify({'success':True,'allPrescriptions':result})        
             
         else:
             return jsonify({'success':False,'message':'Not Authorised'}),401
@@ -626,7 +626,7 @@ def getAllPrescriptionsForDoctor():
                 obj['prescriptionId'] = prescription.id
                 obj['date_written']=prescription.dateWritten
                 result.append(obj)
-            return jsonify({'allPrescriptions':result})
+            return jsonify({'success':True,'allPrescriptions':result})
             
         else:
             return jsonify({'success':False,'message':'Not Authorised'}),401
@@ -653,23 +653,20 @@ def getPrescriptionByIdForDoct(presId):
             docverfify = Prescription.query.filter_by(id=presId, doctorId =docRes.id).first()
             if docverfify:
                 result = Medication_Order.query.filter_by(doctorId=docRes.id,patientId=docverfify.patientId,dateWritten=docverfify.dateWritten).all()
-                if len(result):
-                    output = []
-                    for item in result:
-                        detail = {}
-                        detail['medicationItem'] = item.medicationItem
-                        detail['medId'] = item.medId
-                        detail['date_written']=item.dateWritten
-                        detail['patient_id']=item.patientId
+                output = []
+                for item in result:
+                    detail = {}
+                    detail['medicationItem'] = item.medicationItem
+                    detail['medId'] = item.medId
+                    detail['date_written']=item.dateWritten
+                    detail['patient_id']=item.patientId
 
-                        output.append(detail)
-                    return jsonify({'Prescription':output})
-                else:
-                    return jsonify({'success':False,'message':'Invalid prescription id'}),404
+                    output.append(detail)
+                return jsonify({'Prescription':output})
             else:
                 return jsonify({'success':False,'message':'Not Authorised'}),401
         else:
-            return jsonify({'success':False,'message':'Not Authorised, Not a Doctor'}),404
+            return jsonify({'success':False,'message':'Not Authorised, Not a Doctor'}),401
 
     except Exception as e:
         print(e)
@@ -690,22 +687,19 @@ def getPrescriptionByIdForPat(presId):
             patverfify = Prescription.query.filter_by(id=presId, patientId =patRes.id).first()
             if patverfify:
                 result = Medication_Order.query.filter_by(doctorId=patverfify.doctorId,patientId=patRes.id,dateWritten=patverfify.dateWritten).all()
-                if len(result):
-                    output = []
-                    for item in result:
-                        detail = {}
-                        detail['medicationItem'] = item.medicationItem
-                        detail['medId'] = item.medId
-                        detail['date_written']=item.dateWritten
-                        detail['patient_id']=item.patientId
-                        output.append(detail)
-                    return jsonify({'Prescription':output})
-                else:
-                    return jsonify({'success':False,'message':'Invalid prescription id'}),404
+                output = []
+                for item in result:
+                    detail = {}
+                    detail['medicationItem'] = item.medicationItem
+                    detail['medId'] = item.medId
+                    detail['date_written']=item.dateWritten
+                    detail['patient_id']=item.patientId
+                    output.append(detail)
+                return jsonify({'Prescription':output})
             else:
                 return jsonify({'success':False,'message':'Not Authorised'}),401
         else:
-            return jsonify({'success':False,'message':'Not Authorised, Not a Patient'}),404
+            return jsonify({'success':False,'message':'Not Authorised, Not a Patient'}),401
 
     except Exception as e:
         print(e)
@@ -771,7 +765,7 @@ def getMedicationOrderByIdForDoctor(medId):
             else:
                 return jsonify({'success':False,'message':'Not Authorised'}),401
         else:
-            return jsonify({'success':False,'message':'Not Authorised, Not a Doctor'}),404
+            return jsonify({'success':False,'message':'Not Authorised, Not a Doctor'}),401
 
     except Exception as e:
         print(e)
@@ -838,7 +832,7 @@ def getMedicationOrderByIdForPatient(medId):
             else:
                 return jsonify({'success':False,'message':'Not Authorised'}),401
         else:
-            return jsonify({'success':False,'message':'Not Authorised, Not a Patient'}),404
+            return jsonify({'success':False,'message':'Not Authorised, Not a Patient'}),401
 
     except Exception as e:
         print(e)
@@ -1083,7 +1077,7 @@ def getHistoryOfProcedureForPatient():
             return jsonify({"history_of_procedure":pat})
 
         else:
-            return jsonify({'success':False,'message':'Not Authorised, Not a Patient'}), 404
+            return jsonify({'success':False,'message':'Not Authorised, Not a Patient'}), 401
 
     except Exception as e:
         print(e)
@@ -1121,6 +1115,7 @@ def addImmunizations():
 
                 entry1=Immunization(
                     patient_uid=data['patient_id'],
+                    immunization_item=data['immunization_item'],
                     administration_details_route = data['administration_details_route'],
                     administration_details_target_site = data['administration_details_target_site'],
                     sequence_number = data['sequence_number']
@@ -1164,6 +1159,7 @@ def getImmunizationsForPatient():
                 for value in result2:  
                     obj={}  
                     obj['patient_id']=value.patient_uid
+                    obj['immunization_item']=value.immunization_item
                     obj['administration_details_route']=value.administration_details_route
                     obj['administration_details_target_site']=value.administration_details_target_site
                     obj['sequence_number']=value.sequence_number
@@ -1173,7 +1169,7 @@ def getImmunizationsForPatient():
             return jsonify({"immunization":pat})
             
         else:
-            return jsonify({'success':False,'message':'Not Authorised, Not a Patient'}), 404
+            return jsonify({'success':False,'message':'Not Authorised, Not a Patient'}), 401
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'not recieved JSON data'}),400
@@ -1209,6 +1205,7 @@ def getImmunizationsForDoctor(patient_id):
                     for value in result2:  
                         obj={}  
                         obj['patient_id']=value.patient_uid
+                        obj['immunization_item']=value.immunization_item
                         obj['administration_details_route']=value.administration_details_route
                         obj['administration_details_target_site']=value.administration_details_target_site
                         obj['sequence_number']=value.sequence_number
@@ -1391,7 +1388,7 @@ def add_allergies_and_intolerances():
             else:
                 return jsonify({'success':False,'message':'patient with this id doesent exist'}), 404
         else:
-            return jsonify({'success':False,'message':'Not Authorised, not Admin'}), 404
+            return jsonify({'success':False,'message':'Not Authorised, not Admin'}), 401
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'not recieved JSON data'}),400 
@@ -1476,7 +1473,7 @@ def getallAllergiesForPatient():
             return jsonify({'all_allergies_and_intolerances':output}), 200
             
         else:
-            return jsonify({'success':False,'message':'Not Authorised, not a Patient'}), 404
+            return jsonify({'success':False,'message':'Not Authorised, not a Patient'}), 401
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'not recieved JSON data'}),400 
@@ -1594,7 +1591,7 @@ def add_vital_signs():
             else:
                 return jsonify({'success':False,'message':'patient with this id doesent exist'}), 404
         else:
-            return jsonify({'success':False,'message':'Not Authorised, not Admin'}), 404
+            return jsonify({'success':False,'message':'Not Authorised, not Admin'}), 401
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'not recieved JSON data'}),400 
@@ -1745,7 +1742,7 @@ def add_dignostics_results():
             else:
                 return jsonify({'success':False,'message':'patient with this id doesent exist'}), 404
         else:
-            return jsonify({'success':False,'message':'Not Authorised, not Admin'}), 404
+            return jsonify({'success':False,'message':'Not Authorised, not Admin'}), 401
     except Exception as e:
         print(e)
         return jsonify({'success':False,'message':'not recieved JSON data'}),400 
