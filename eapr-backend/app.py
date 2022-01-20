@@ -2913,4 +2913,4 @@ def createfunctionalOfPatient():
         return jsonify({'success':False,'message':'Request misses token/json data'}), 400
 
 if __name__ == "__main__":
-    app.run(debug=True, port=7000)
+    app.run(debug=True,port=7000)
