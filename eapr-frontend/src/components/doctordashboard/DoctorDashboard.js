@@ -9,6 +9,7 @@ import MedicationSummary from '../ipscollectives/medicationsummary/MedicationSum
 import { toast } from 'react-toastify'
 import { getPatientInfo } from '../../utilities/PatientUtility'
 import { logout } from '../../utilities/LogoutUtility'
+import {getVitalSignsForDoctor} from '../../utilities/VitalSignsUtility'
 
 const DoctorDashboard = ({
     selectedIPSCollective,
@@ -20,6 +21,14 @@ const DoctorDashboard = ({
         age:'',
         gender:'',
         contact:''
+    })
+    const [vitals, setVitals] = useState({
+        oxygenSaturation:'',
+        bloodPressure:'',
+        bodyTemperature:'',
+        bodyWeight:'',
+        respirationRate:'',
+        bodyMassIndex:''
     })
     const handleClick = () => {
         console.log('Search Button Clicked')
@@ -33,7 +42,22 @@ const DoctorDashboard = ({
     }
     const setPatientContext = async () => {
         var result = await getPatientInfo(patientEmail)
-        console.log(result)
+        var patientId = parseInt(JSON.parse(localStorage.getItem('patient_info')).id)
+        var vitalsRes = await getVitalSignsForDoctor(patientId)
+        if(vitals !== null)
+        {
+            setVitals(
+                {
+                    ...vitals,
+                    oxygenSaturation : vitalsRes.pulse_oximetry + ' %',
+                    bloodPressure : vitalsRes.blood_pressure_diastolic+' / '+vitalsRes.blood_pressure_systolic,
+                    bodyTemperature : vitalsRes.body_temperature + ' ' + vitalsRes.body_temperature_unit,
+                    bodyWeight : vitalsRes.body_weight + ' ' +vitalsRes.body_weight_unit,
+                    respirationRate : vitalsRes.respiration_rate,
+                    bodyMassIndex : vitalsRes.body_mass_index + ' ' + vitalsRes.body_mass_index_unit
+                }
+            )
+        }
         if(result === true)
         {
 
@@ -81,15 +105,20 @@ const DoctorDashboard = ({
                     </div>
                 </div>
                 <div className='search_form_container'>
-                    <div className='patient_info_secn'>
-                        <h3>Patient Name: {patientInfo.name}</h3>
-                        <h3>Patient Age: {patientInfo.age}</h3>
-                        <h3>Patient Gender: {patientInfo.gender}</h3>
-                        <h3>Patient Contact: {patientInfo.contact}</h3>
-                    </div>
+                    {patientInfo.name !== '' ?
+                        <div className='patient_info_secn'>
+                            <h3>Patient Name: <span className='info_val_span'>{patientInfo.name}</span></h3>
+                            <h3>Patient Age: <span className='info_val_span'>{patientInfo.age}</span></h3>
+                            <h3>Patient Gender: <span className='info_val_span'>{patientInfo.gender}</span></h3>
+                            <h3>Patient Contact: <span className='info_val_span'>{patientInfo.contact}</span></h3>
+                        </div> :
+                        <div className='err_card'>
+                            <h1 style={{textAlign:"center"}}>Enter the patient email first.</h1>
+                        </div>
+                    }
                 </div>
             </div>
-            <h1 style={{textAlign:"center"}}>Detailed Medical record of patient</h1>
+            <h1 className='med_head' style={{textAlign:"center"}}>Detailed Medical record of patient</h1>
             <div className='patient_info_container'>
                 <div className='section_1'>
                     
@@ -111,32 +140,32 @@ const DoctorDashboard = ({
                             <div className='vital_signs_thumbnail_label_container'>
                                 <div className='vital_sign_tumbnail_label'>
                                     <h2>Oxygen Saturation:
-                                        <span className='vital_values'>99%</span>
+                                        <span className='vital_values'>{vitals.oxygenSaturation}</span>
                                     </h2>
                                 </div>
                                 <div className='vital_sign_tumbnail_label'>
                                     <h2>Blood Pressure:
-                                    <span className='vital_values'>99%</span>
+                                    <span className='vital_values'>{vitals.bloodPressure}</span>
                                     </h2>
                                 </div>
                                 <div className='vital_sign_tumbnail_label'>
                                     <h2>Body Temperature:
-                                    <span className='vital_values'>99%</span>
+                                    <span className='vital_values'>{vitals.bodyTemperature}</span>
                                     </h2>
                                 </div>
                                 <div className='vital_sign_tumbnail_label'>
                                     <h2>Body Weight:
-                                    <span className='vital_values'>99%</span>
+                                    <span className='vital_values'>{vitals.bodyWeight}</span>
                                     </h2>
                                 </div>
                                 <div className='vital_sign_tumbnail_label'>
                                     <h2>Respiration Rate:
-                                    <span className='vital_values'>99%</span>
+                                    <span className='vital_values'>{vitals.respirationRate}</span>
                                     </h2>
                                 </div>
                                 <div className='vital_sign_tumbnail_label'>
                                     <h2>Body Mass Index:
-                                    <span className='vital_values'>99%</span>
+                                    <span className='vital_values'>{vitals.bodyMassIndex}</span>
                                     </h2>
                                 </div>
                             </div>

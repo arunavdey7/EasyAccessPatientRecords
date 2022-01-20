@@ -205,3 +205,26 @@
     margin: 0px;
     padding: 5%;
 }
+.err_card
+{
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    padding: 1%;
+    width: fit-content;
+    border-radius: 0px 0px 4px 4px;
+    height: 8vh;
+    position: relative;
+    left: 14vw;
+    color: lightcoral;
+}
+.info_val_span
+{
+    padding-left: 5px;
+    color: steelblue;
+}
+.med_head
+{
+    background-color:#d0eefe;
+    padding : 3%;
+    color: cornflowerblue;
+    margin: 0px;
+}

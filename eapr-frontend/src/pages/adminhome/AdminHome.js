@@ -107,18 +107,23 @@ const AdminHome = () => {
                 </div>
             </div>
             <div className='search_form_container'>
-                <div className='patient_info_secn'>
-                    <h3>Patient Name: {patientInfo.name}</h3>
-                    <h3>Patient Age: {patientInfo.age}</h3>
-                    <h3>Patient Gender: {patientInfo.gender}</h3>
-                    <h3>Patient Contact: {patientInfo.contact}</h3>
-                </div>
+            {patientInfo.name !== '' ?
+                        <div className='patient_info_secn'>
+                            <h3>Patient Name: <span className='info_val_span'>{patientInfo.name}</span></h3>
+                            <h3>Patient Age: <span className='info_val_span'>{patientInfo.age}</span></h3>
+                            <h3>Patient Gender: <span className='info_val_span'>{patientInfo.gender}</span></h3>
+                            <h3>Patient Contact: <span className='info_val_span'>{patientInfo.contact}</span></h3>
+                        </div> :
+                        <div className='err_card'>
+                            <h1 style={{textAlign:"center"}}>Enter the patient email first.</h1>
+                        </div>
+                    }
             </div>
         </div>
         <h1 style={{textAlign:"center"}}>Choose which category record is to be added:</h1>
         <div className='patient_info_container'>
             
-            <div className='section_2'>
+            <div className='admin_section_2'>
                <div id='1' onClick = {handleCreateMedicationStatement} className='cat_card'>
                     <h3 style={{textAlign:"center"}}>Medication Summary</h3>
                </div>
