@@ -1,6 +1,6 @@
-.container
+.vitals_container
 {
-    height: 5vh;
+    height: max-content;
     margin: 1%;
     border-radius: 4px;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;

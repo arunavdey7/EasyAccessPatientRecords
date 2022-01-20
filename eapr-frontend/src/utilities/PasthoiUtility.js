@@ -40,8 +40,7 @@ export const getAllPastHistoryForDoctor = async (patientId) => {
     
     if(history !== undefined)
     {
-        localStorage.setItem('all_past_hoi',JSON.stringify(history["problem list"]))
-        return history["problem list"]
+        return history
     }
     else
     {
@@ -65,8 +64,7 @@ export const getAllPastHistoryForPatient = async () => {
     
     if(history !== undefined)
     {
-        localStorage.setItem('all_past_hoi',JSON.stringify(history["problem list"]))
-        return history["problem list"]
+        return history
     }
     else
     {

@@ -16,7 +16,7 @@ const IpsContainer = (
             gotoUrl:'/allmedicationstatements'
         },
         {
-            fieldName:'Allergies and Intolerances',
+            fieldName:'Allergies & Intolerances',
             gotoUrl:'/allergiesandintolerances'
         },
         {
@@ -25,7 +25,7 @@ const IpsContainer = (
         },
         {
             fieldName:'Immunizations',
-            gotoUrl:'/medicationstatements'
+            gotoUrl:'/getallimmunizations'
         },
         {
             fieldName:'History of Procedures',
@@ -37,7 +37,7 @@ const IpsContainer = (
         },
         {
             fieldName:'Vital Signs',
-            gotoUrl:'/medicationstatements'
+            gotoUrl:'/showvitalsigns'
         },
         {
             fieldName:'Past History of Illnesses',
@@ -53,11 +53,11 @@ const IpsContainer = (
         },
         {
             fieldName:'Social History',
-            gotoUrl:'/medicationstatements'
+            gotoUrl:'/getallsocialhistory'
         },
         {
             fieldName:'Plan of Care',
-            gotoUrl:'/medicationstatements'
+            gotoUrl:'/getallplanofcare'
         },
         {
             fieldName:'Functional Status',
@@ -70,14 +70,20 @@ const IpsContainer = (
 
     ]
     return(
-        <div className='ips_container'>
-            <div className='ips_inner_container'>
-                {
-                    headings.map((data) => <IpsItem {...data}
-                                                    selectedIPSCollective={selectedIPSCollective}
-                                                    selectedIPSCollective={setSelectedIPSCollective}
-                    />)
-                }
+        <div className='a'>
+            <div>
+                <h1 className='h_text'>Medical Record Categories</h1>
+            </div>
+            <div className='ips_container'>
+                
+                <div className='ips_inner_container'>
+                    {
+                        headings.map((data) => <IpsItem {...data}
+                                                        selectedIPSCollective={selectedIPSCollective}
+                                                        selectedIPSCollective={setSelectedIPSCollective}
+                        />)
+                    }
+                </div>
             </div>
         </div>
     )

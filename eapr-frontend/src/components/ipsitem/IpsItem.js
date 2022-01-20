@@ -19,7 +19,7 @@ const IpsItem = ({
     }
     return(
         <div onClick = {handleClick} className='ips_item_container' id={gotoUrl}>
-            <h1>{fieldName}</h1>
+            <h1 className='text_content'>{fieldName}</h1>
         </div>
     )
 }

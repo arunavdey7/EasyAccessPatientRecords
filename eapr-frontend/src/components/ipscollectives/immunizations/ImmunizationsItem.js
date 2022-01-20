@@ -1,13 +1,12 @@
 import React from 'react' 
 import Immunizations from './Immunizations'
 
-import './medSummaryItemStyles.css'
 const ImmunizationsItem = ({
-    orderId,
-    medicationName
+    id
 }) => {
     const handleClick = () => {
-        window.location.href = '/showmedicationstatement'
+        localStorage.setItem('immunization_item_id',id)
+        window.location.href = '/showimmunization'
     }
     return(
         <div onClick={handleClick} className='container'>

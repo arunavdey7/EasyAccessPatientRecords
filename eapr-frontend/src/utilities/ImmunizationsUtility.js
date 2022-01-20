@@ -1,4 +1,4 @@
-export const addVitalSigns = async (data) => {
+export const addImmunization = async (data) => {
     var requestOptions = {
         method: 'POST',
         mode:'cors',
@@ -8,7 +8,7 @@ export const addVitalSigns = async (data) => {
             'token': localStorage.getItem('token')
         }
       }
-    const response = await fetch("/api/add_vital_signs", requestOptions)
+    const response = await fetch("/api/addImmunizations", requestOptions)
     const {
         success
     } = await response.json()
@@ -20,7 +20,7 @@ export const addVitalSigns = async (data) => {
     return false
 }
 
-export const getVitalSignsForDoctor = async (patientId) => {
+export const getAllImmunizationsForDoctor = async (patientId) => {
     var requestOptions = {
         method: 'GET',
         mode:'cors',
@@ -29,22 +29,19 @@ export const getVitalSignsForDoctor = async (patientId) => {
             'token': localStorage.getItem('token')
         }
       }
-    const response = await fetch("/api/get_vital_signs_for_doctor/"+patientId, requestOptions)
+    const response = await fetch("/api/getImmunizationsForDoctor/"+patientId, requestOptions)
     const {
-        data
+        immunization
     } = await response.json()
     
-    if(data !== undefined)
+    if(immunization !== undefined)
     {
-        return data
+        return immunization["immunizations"]
     }
-    else
-    {
-        return null
-    }
+    return null
 }
 
-export const getVitalSignsForPatient = async () => {
+export const getAllImmunizationsForPatient = async () => {
     var requestOptions = {
         method: 'GET',
         mode:'cors',
@@ -53,17 +50,14 @@ export const getVitalSignsForPatient = async () => {
             'token': localStorage.getItem('token')
         }
       }
-    const response = await fetch("/api/get_vital_signs_for_patient", requestOptions)
-    const {
-        data
-    } = await response.json()
-    console.log(data)
-    if(data !== undefined)
-    {
-        return data
-    }
-    else
-    {
-        return null
-    }
+      const response = await fetch("/api/getImmunizationsForPatient", requestOptions)
+      const {
+          immunization
+      } = await response.json()
+      
+      if(immunization !== undefined)
+      {
+          return immunization["immunizations"]
+      }
+      return null
 }

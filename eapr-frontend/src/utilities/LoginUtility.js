@@ -21,16 +21,13 @@ export const loginDoctor = async (email,password) => {
 
     } = await response.json()
 
-    if(success)
+    if(success === true)
     {
         localStorage.setItem('token',token)
         localStorage.setItem('user', doctor_info)
         return true
     }
-    else
-    {
-        return false
-    }
+   return false
 }
 
 export const loginPatient = async (email,password) => {
@@ -56,16 +53,13 @@ export const loginPatient = async (email,password) => {
 
     } = await response.json()
 
-    if(success)
+    if(success === true)
     {
         localStorage.setItem('token',token)
         localStorage.setItem('patient_info', JSON.stringify(patient_info))
         return true
     }
-    else
-    {
-        return false
-    }
+    return false
 }
 
 export const loginAdmin = async (email,password) => {
@@ -90,13 +84,10 @@ export const loginAdmin = async (email,password) => {
 
     } = await response.json()
 
-    if(success)
+    if(success === true)
     {
         localStorage.setItem('token',token)
         return true
     }
-    else
-    {
-        return false
-    }
+    return false
 }

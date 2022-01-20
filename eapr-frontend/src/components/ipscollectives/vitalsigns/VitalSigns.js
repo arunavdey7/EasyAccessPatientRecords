@@ -32,7 +32,7 @@ const VitalSigns = () => {
     return(
         <div>
             {
-                data.map((info) => <VitalSignsItem {...info}/>)
+                <VitalSignsItem {...data}/>
             }
         </div>
     )

@@ -26,8 +26,8 @@ const PastHoi = () =>
         }
     }, [])
     
-    
-    if(data.length === 0)
+    console.log(data)
+    if(data === undefined)
     {
         return(<h1 style={{textAlign:"center"}}>
             No Past history of illness record found.

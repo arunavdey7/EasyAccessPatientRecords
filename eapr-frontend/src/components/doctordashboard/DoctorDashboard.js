@@ -93,9 +93,58 @@ const DoctorDashboard = ({
             <div className='patient_info_container'>
                 <div className='section_1'>
                     
-                    
                 </div>
                 <div className='section_2'>
+                <div className='vital_signs_dashboard'>
+                        <div className='vital_signs_container_heading'>
+                            <h1 className='vital_sign_heading_text' style={{textAlign:"center"}}>Vital signs</h1>
+                        </div>
+                        <div className='vital_signs_container_content'>
+                            <div className='vital_signs_thumbnail_container'>
+                                <div id='oxygen_saturation' className='vital_sign_tumbnail'></div>
+                                <div id='blood_pressure' className='vital_sign_tumbnail'></div>
+                                <div id='body_temperature' className='vital_sign_tumbnail'></div>
+                                <div id='body_weight' className='vital_sign_tumbnail'></div>
+                                <div id='respiration_rate' className='vital_sign_tumbnail'></div>
+                                <div id='body_mass_index' className='vital_sign_tumbnail'></div>
+                            </div>
+                            <div className='vital_signs_thumbnail_label_container'>
+                                <div className='vital_sign_tumbnail_label'>
+                                    <h2>Oxygen Saturation:
+                                        <span className='vital_values'>99%</span>
+                                    </h2>
+                                </div>
+                                <div className='vital_sign_tumbnail_label'>
+                                    <h2>Blood Pressure:
+                                    <span className='vital_values'>99%</span>
+                                    </h2>
+                                </div>
+                                <div className='vital_sign_tumbnail_label'>
+                                    <h2>Body Temperature:
+                                    <span className='vital_values'>99%</span>
+                                    </h2>
+                                </div>
+                                <div className='vital_sign_tumbnail_label'>
+                                    <h2>Body Weight:
+                                    <span className='vital_values'>99%</span>
+                                    </h2>
+                                </div>
+                                <div className='vital_sign_tumbnail_label'>
+                                    <h2>Respiration Rate:
+                                    <span className='vital_values'>99%</span>
+                                    </h2>
+                                </div>
+                                <div className='vital_sign_tumbnail_label'>
+                                    <h2>Body Mass Index:
+                                    <span className='vital_values'>99%</span>
+                                    </h2>
+                                </div>
+                            </div>
+                            <div className='vital_signs_values_container'>
+    
+                            </div>
+                        </div>
+                    </div>
                     <IpsContainer setSelectedIPSCollective={setSelectedIPSCollective}
                                   selectedIPSCollective={selectedIPSCollective}
                     />

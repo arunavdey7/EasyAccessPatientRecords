@@ -52,6 +52,34 @@ const AdminHome = () => {
     const handleCreateDiagnosticResult = () => {
         window.location.href = '/creatediagnosticresult'
     }
+    const handleCreateVitalSigns = () => {
+        window.location.href = '/createvitalsigns'
+    }
+    const handleCreatePastHOI = () => {
+        window.location.href = '/createpasthoi'
+    }
+    const handleCreatePregnancy = () => {
+        window.location.href = '/createpregnancy'
+    }
+    const handleCreateFunctionalStatus = () => {
+        window.location.href = '/createfunctionalstatus'
+    }
+    const handleCreateMedicalDevices = () => {
+        window.location.href = '/createmedicaldevices'
+    }
+    const handleCreateImmunizations = () => {
+        window.location.href = '/createimmunizations'
+    }
+    const handleCreateSocialHistory = () => {
+        window.location.href = '/createsocialhistory'
+    }
+    const handleCreateHistoryOfProcedures = () => {
+        window.location.href = '/createhistoryofprocedures'
+    }
+    const handleCreatePlanOfCare = () => {
+        window.location.href = '/createplanofcare'
+    }
+
     if(localStorage.getItem('token') === null)
         return(
             <h1>You need to be logged in first</h1>
@@ -97,40 +125,40 @@ const AdminHome = () => {
                <div onClick = {handleCreateAllergiesAndIntolerances} className='cat_card'>
                 <h3 style={{textAlign:"center"}}>Allergies and Intolerances</h3>
                </div>
-               <div className='cat_card'>
-               <h3 onClick = {handleCreateProblemList} style={{textAlign:"center"}}>Problem List </h3>
+               <div onClick = {handleCreateProblemList} className='cat_card'>
+               <h3 style={{textAlign:"center"}}>Problem List </h3>
                </div>
-               <div className='cat_card'>
+               <div onClick = {handleCreateImmunizations} className='cat_card'>
                <h3 style={{textAlign:"center"}}>Immunizations</h3>
                </div>
-               <div className='cat_card'>
+               <div onClick = {handleCreateHistoryOfProcedures} className='cat_card'>
                <h3 style={{textAlign:"center"}}>History of Procedures</h3>
                </div>
-               <div className='cat_card'>
+               <div onClick = {handleCreateMedicalDevices} className='cat_card'>
                <h3 style={{textAlign:"center"}}>Medical Devices</h3>
                </div>
-               <div className='cat_card'>
-               <h3 onClick={handleCreateDiagnosticResult} style={{textAlign:"center"}}>Diagnostic Results</h3>
+               <div onClick = {handleCreateDiagnosticResult} className='cat_card'>
+               <h3 style={{textAlign:"center"}}>Diagnostic Results</h3>
                </div>
-               <div className='cat_card'>
+               <div onClick = {handleCreateVitalSigns} className='cat_card'>
                <h3 style={{textAlign:"center"}}>Vital Signs</h3>
                </div>
-               <div className='cat_card'>
+               <div onClick = {handleCreatePastHOI} className='cat_card'>
                <h3 style={{textAlign:"center"}}>Past History of Illnesses</h3>
                </div>
-               <div className='cat_card'>
+               <div onClick = {handleCreatePregnancy} className='cat_card'>
                <h3 style={{textAlign:"center"}}>Pregnancy</h3>
                </div>
-               <div className='cat_card'>
+               <div onClick = {handleCreateSocialHistory} className='cat_card'>
                <h3 style={{textAlign:"center"}}>Social History</h3>
                </div>
-               <div className='cat_card'>
+               <div onClick = {handleCreatePlanOfCare} className='cat_card'>
                <h3 style={{textAlign:"center"}}>Plan of Care</h3>
                </div>
-               <div className='cat_card'>
+               <div onClick = {handleCreateFunctionalStatus} className='cat_card'>
                <h3 style={{textAlign:"center"}}>Functional Status</h3>
                </div>
-               <div className='cat_card'>
+               <div onClick = {handleCreateAdvanceDirectives} className='cat_card'>
                <h3 style={{textAlign:"center"}}>Advanced Directives</h3>
                </div>
             </div>

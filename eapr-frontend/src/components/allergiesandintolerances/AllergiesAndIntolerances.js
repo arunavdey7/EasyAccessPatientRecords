@@ -27,7 +27,7 @@ const CreateAllergiesAndIntolerances = () => {
     const [aiabsenceOfInformationProtocolLastUpdated, setAiAbsenceOfInformationProtocolLastUpdated] = useState("");
 
     var data = {
-        "patient_id" : 1,
+        "patient_id" : parseInt(JSON.parse(localStorage.getItem('patient_info')).id),
         "global_exclusion_of_adverse_reactions":"frvgtbh",
         "absence_of_information_statement" :"sdfgh",
         "absence_of_information_protocol_last_updated" :"asdfg",
@@ -44,8 +44,6 @@ const CreateAllergiesAndIntolerances = () => {
     }
     const sendData = async () => {
        const result = await addAllergiesAndIntolerances(data)
-       
-        
     }
     
     return(

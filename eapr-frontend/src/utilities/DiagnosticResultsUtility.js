@@ -1,5 +1,4 @@
 export const addDiagnosticResult = async (data) => {
-    console.log('DATA',data)
     var requestOptions = {
         method: 'POST',
         mode:'cors',
@@ -80,7 +79,7 @@ export const getDiagnosticResultByIdForDoctor = async (patientId,diagnostic_id) 
             'token': localStorage.getItem('token')
         }
       }
-    const response = await fetch("/api/get_dognostics_by_id_for_doctor/"+diagnostic_id, requestOptions)
+    const response = await fetch("/api/get_dognostics_by_id_for_doctor/"+diagnostic_id+"/"+patientId, requestOptions)
     const {
         dignostic_test_result
     } = await response.json()
@@ -96,7 +95,7 @@ export const getDiagnosticResultByIdForDoctor = async (patientId,diagnostic_id) 
     }
 }
 
-export const getDiagnosticResultByIdForPatient = async () => {
+export const getDiagnosticResultByIdForPatient = async (diagnosticId) => {
     var requestOptions = {
         method: 'GET',
         mode:'cors',
@@ -105,19 +104,18 @@ export const getDiagnosticResultByIdForPatient = async () => {
             'token': localStorage.getItem('token')
         }
       }
-    const response = await fetch("/api/get_dignosis_results_for_patient", requestOptions)
+    const response = await fetch("/api/get_dognostics_by_id_for_patient/"+diagnosticId, requestOptions)
     const {
-        dignostic_test_result
+        dignostic
     } = await response.json()
     
-    if(dignostic_test_result !== undefined)
+    if(dignostic !== undefined)
     {
-        localStorage.setItem('all_diag_results',JSON.stringify(dignostic_test_result))
-        return dignostic_test_result
+        return dignostic
     }
     else
     {
-        return []
+        return null
     }
 }
 

@@ -32,6 +32,8 @@
 .section_2
 {
     width: 100%;
+    display: flex;
+    flex-direction: row;
 }
 .search_form_container
 {
@@ -106,4 +108,100 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
+}
+.vital_signs_dashboard
+{
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 5%;
+    border-radius: 4px;
+    padding: 3%;
+
+}
+.vital_signs_container_heading
+{
+    
+}
+.vital_sign_tumbnail
+{
+    
+    height: 100px;
+    width: 100px;
+    margin-top: 27%;
+    margin-bottom: 27%;
+    
+}
+#oxygen_saturation
+{
+    background-image: url('../../assets/oxygen-saturation.png');
+    background-size: contain;
+}
+
+#blood_pressure
+{
+    background-image: url('../../assets/blood-pressure.png');
+    background-size: contain;
+}
+
+#body_temperature
+{
+    background-image: url('../../assets/thermometers.png');
+    background-size: contain;
+}
+
+#body_weight
+{
+    background-image: url('../../assets/scale.png');
+    background-size: contain;
+}
+
+#respiration_rate
+{
+    background-image: url('../../assets/respiration.png');
+    background-size: contain;
+}
+
+#body_mass_index
+{
+    background-image: url('../../assets/body-mass-index.png');
+    background-size: contain;
+}
+.vital_signs_thumbnail_label_container
+{
+    
+}
+.vital_signs_container_content
+{
+    display: flex;
+    flex-direction: row;
+}
+.vital_sign_tumbnail_label
+{
+    border:1px solid white;
+    margin-top: 15%;
+    margin-bottom: 15%;
+    margin-left: 5%;
+}
+.vital_signs_values_container
+{
+
+}
+.vital_signs_label_values
+{
+    color: green;
+}
+.vital_values
+{
+    padding-left: 10px;
+    color: green;
+}
+.vital_sign_heading_text
+{
+    color: white;
+    background-color: darkslategrey;
+    margin: 0px;
+    padding: 5%;
 }

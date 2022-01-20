@@ -1,4 +1,5 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
+import { getAllPastHistoryForDoctor, getAllPastHistoryForPatient } from '../../utilities/PasthoiUtility';
 
 const ShowPastHistoryofIllness = () => {
 
@@ -31,38 +32,60 @@ const ShowPastHistoryofIllness = () => {
         <div className='form_container'>
             <h1>Problem/Diagnosis</h1>
             <h2>Data</h2>
-            <label>Problem/Diagnosis name</label>
+            <label>Problem/Diagnosis Name
+                <span className='values'>{data.problem_name}</span>
+            </label>
             
             <br/>
-            <label>Body site</label>
+            <label>Body site
+                <span className='values'>{data.body_site}</span>
+            </label>
             
             <br/>
-            <label>Date/Time of onset</label>
+            <label>Date/Time of onset
+                <span className='values'>{data.datetime_of_onset}</span>
+            </label>
             
             <br/>
-            <label>Severity</label> 
+            <label>Severity
+                <span className='values'>{data.severity}</span>
+            </label> 
             <br/>
-            <label>Date of abatement</label>
+            <label>Date of abatement
+                <span className='values'>{data.date_of_abatebent}</span>
+            </label>
             
             <br/>
             <h2>Problem/Diagnosis qualifier</h2>
-            <label>Active/Inactive?</label> 
+            <label>Active/Inactive?
+                <span className='values'>{data.active_or_inactive}</span>
+            </label> 
         
             <br/>
-            <label>Resolution phase</label> 
+            <label>Resolution phase
+                <span className='values'>{data.resolution_phase}</span>
+            </label> 
             
             <br/>
-            <label>Remission status</label> 
+            <label>Remission status
+                <span className='values'>{data.remission_status}</span>
+            </label> 
             
             <br/>
-            <label>Occurence</label> 
+            <label>Occurence
+                <span className='values'>{data.occurrence}</span>
+            </label> 
             
             <br/>
-            <label>Diagnostic certainty</label> 
+            <label>Diagnostic certainty
+                <span className='values'>{data.diagnostic_certainity}</span>
+            </label> 
 
             <br/>
             <h2>Protocol</h2>
-            <label>Last updated</label>
+            <label>Last updated
+                <span className='values'>{data.protocol_last_updated}</span>
+            </label>
             
             <br/>
         </div>

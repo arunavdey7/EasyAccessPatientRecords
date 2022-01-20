@@ -2,12 +2,14 @@ import React from 'react'
 import DiagnosticResults from './ListDiagnosticResults'
 
 const DiagnosticResultsItem = ({
-    diagnostic_id,
+    dignosis_id,
     imaging_test_name,
     lab_test_name
 }) => {
     const handleClick = () => {
-        window.location.href = '/showdiagnosticresult'
+        window.location.href = '/showdiagnosticresults'
+        localStorage.setItem('dignosis_id',dignosis_id)
+
     }
     return(
         <div onClick={handleClick} className='container'>
