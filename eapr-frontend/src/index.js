@@ -46,7 +46,12 @@ import Immunizations from './components/ipscollectives/immunizations/Immunizatio
 import ShowImmunizations from './components/Immunizations/ShowImmunizations';
 import CreateImmunizations from './components/Immunizations/CreateImmunizations'
 import ShowPastHistoryofIllness from './components/pasthistoryofillness/ShowPastHistoryOfIllness';
-
+import CreateHistoryofProcedures from './components/historyofprocedures/CreateHistoryofProcedures';
+import ShowHistoryofProcedures from './components/historyofprocedures/ShowHistoryOfProcedures';
+import HistoryofProcedures from './components/ipscollectives/historyofprocedures/HistroyofProcedures';
+import CreateMedicalDevices from './components/medicaldevices/CreateMedicalDevices';
+import MedicalDevices from './components/ipscollectives/medicaldevices/MedicalDevices'
+import ShowMedicalDevices from './components/medicaldevices/ShowMedicalDevices';
 
 const MainComponent = () => {
 
@@ -170,14 +175,14 @@ const MainComponent = () => {
                 </Route>
 
                 {/* History of procedures */}
-                <Route exact path='/createhistoryofprocedure'>
-                  
+                <Route exact path='/createhistoryofprocedures'>
+                  <CreateHistoryofProcedures/>
                 </Route>
                 <Route exact path='/getallhistoryofprocedures'>
-                  
+                  <HistoryofProcedures/>
                 </Route>
                 <Route exact path='/showhistoryofprocedures'>
-                  
+                  <ShowHistoryofProcedures/>
                 </Route>
 
                 {/* Social History */}
@@ -238,13 +243,13 @@ const MainComponent = () => {
                 
                 {/* Medical Devices */}
                 <Route exact path='/createmedicaldevices'>
-                  
+                  <CreateMedicalDevices/>
                 </Route>
                 <Route exact path='/getallmedicaldevices'>
-                  
+                  <MedicalDevices/>
                 </Route>
                 <Route exact path='/showmedicaldevice'>
-                  
+                  <ShowMedicalDevices/>
                 </Route>
 
                 {/* Immunizations */}

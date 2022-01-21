@@ -1,6 +1,6 @@
-.container
+.hop_container
 {
-    height: 5vh;
+    height: 10vh;
     margin: 1%;
     border-radius: 4px;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
@@ -9,11 +9,11 @@
     justify-content: center;
     padding-left: 1%;
 }
-.name_container
+.hop_name_container
 {
     
 }
-.container:hover 
+.hop_container:hover 
 {
     cursor: pointer;
 }

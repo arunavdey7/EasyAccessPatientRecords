@@ -29,11 +29,11 @@ const IpsContainer = (
         },
         {
             fieldName:'History of Procedures',
-            gotoUrl:'/medicationstatements'
+            gotoUrl:'/getallhistoryofprocedures'
         },
         {
             fieldName:'Medical Devices',
-            gotoUrl:'/medicationstatements'
+            gotoUrl:'/getallmedicaldevices'
         },
         {
             fieldName:'Vital Signs',

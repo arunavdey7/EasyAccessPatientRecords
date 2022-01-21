@@ -1,18 +1,17 @@
 import React from 'react' 
-import HistoryofProcedures from './HistoryofProcedures'
-
-import './medSummaryItemStyles.css'
+import './HistoryofProceduresItemStyles.css'
 const HistoryofProceduresItem = ({
-    orderId,
-    medicationName
+   procedure_name,
+   body_site
 }) => {
     const handleClick = () => {
         window.location.href = '/showmedicationstatement'
     }
     return(
-        <div onClick={handleClick} className='container'>
-            <div className='name_container'>
-                <h3>History of Procedures</h3>
+        <div className='hop_container'>
+            <div className='hop_name_container'>
+                <h3>Procedure name: {procedure_name}</h3>
+                <p>Body site: {body_site}</p>
             </div>
         </div>
     )

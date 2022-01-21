@@ -130,45 +130,63 @@ const DoctorDashboard = ({
                         </div>
                         <div className='vital_signs_container_content'>
                             <div className='vital_signs_thumbnail_container'>
-                                <div id='oxygen_saturation' className='vital_sign_tumbnail'></div>
-                                <div id='blood_pressure' className='vital_sign_tumbnail'></div>
-                                <div id='body_temperature' className='vital_sign_tumbnail'></div>
-                                <div id='body_weight' className='vital_sign_tumbnail'></div>
-                                <div id='respiration_rate' className='vital_sign_tumbnail'></div>
-                                <div id='body_mass_index' className='vital_sign_tumbnail'></div>
+                                
+                                <div style={{display:"flex"}}>
+                                    <div id='oxygen_saturation' className='vital_sign_tumbnail'></div>
+                                    <div className='vital_sign_tumbnail_label'>
+                                        <h2>Body Temperature:
+                                            <span className='vital_values'>{vitals.bodyTemperature}</span>
+                                        </h2>
+                                    </div>
+                                </div>
+
+                                <div style={{display:"flex"}}>
+                                    <div id='blood_pressure' className='vital_sign_tumbnail'></div>
+                                    <div className='vital_sign_tumbnail_label'>
+                                        <h2>Blood Pressure:
+                                            <span className='vital_values'>{vitals.bloodPressure}</span>
+                                        </h2>
+                                    </div>
+                                </div>
+
+                                <div style={{display:"flex"}}>
+                                    <div id='respiration_rate' className='vital_sign_tumbnail'></div>
+                                    <div className='vital_sign_tumbnail_label'>
+                                        <h2>Respiration Rate:
+                                            <span className='vital_values'>{vitals.respirationRate}</span>
+                                        </h2>
+                                    </div>
+                                </div>
+
+                                <div style={{display:"flex"}}>
+                                    <div id='pulse_rate' className='vital_sign_tumbnail'></div>
+                                    <div className='vital_sign_tumbnail_label'>
+                                        <h2>Pulse rate:
+                                            <span className='vital_values'>{vitals.bodyTemperature}</span>
+                                        </h2>
+                                    </div>
+                                </div>
+
+                                <div style={{display:"flex"}}>
+                                    <div id='body_weight' className='vital_sign_tumbnail'></div>
+                                    <div className='vital_sign_tumbnail_label'>
+                                        <h2>Body Weight:
+                                            <span className='vital_values'>{vitals.bodyWeight}</span>
+                                        </h2>
+                                    </div>
+                                </div>
+
+                                <div style={{display:"flex"}}>
+                                    <div id='body_mass_index' className='vital_sign_tumbnail'></div>
+                                    <div className='vital_sign_tumbnail_label'>
+                                        <h2>Body Mass Index:
+                                            <span className='vital_values'>{vitals.bodyMassIndex}</span>
+                                        </h2>
+                                    </div>
+                                </div>
+                                
                             </div>
-                            <div className='vital_signs_thumbnail_label_container'>
-                                <div className='vital_sign_tumbnail_label'>
-                                    <h2>Oxygen Saturation:
-                                        <span className='vital_values'>{vitals.oxygenSaturation}</span>
-                                    </h2>
-                                </div>
-                                <div className='vital_sign_tumbnail_label'>
-                                    <h2>Blood Pressure:
-                                    <span className='vital_values'>{vitals.bloodPressure}</span>
-                                    </h2>
-                                </div>
-                                <div className='vital_sign_tumbnail_label'>
-                                    <h2>Body Temperature:
-                                    <span className='vital_values'>{vitals.bodyTemperature}</span>
-                                    </h2>
-                                </div>
-                                <div className='vital_sign_tumbnail_label'>
-                                    <h2>Body Weight:
-                                    <span className='vital_values'>{vitals.bodyWeight}</span>
-                                    </h2>
-                                </div>
-                                <div className='vital_sign_tumbnail_label'>
-                                    <h2>Respiration Rate:
-                                    <span className='vital_values'>{vitals.respirationRate}</span>
-                                    </h2>
-                                </div>
-                                <div className='vital_sign_tumbnail_label'>
-                                    <h2>Body Mass Index:
-                                    <span className='vital_values'>{vitals.bodyMassIndex}</span>
-                                    </h2>
-                                </div>
-                            </div>
+                            
                             <div className='vital_signs_values_container'>
     
                             </div>

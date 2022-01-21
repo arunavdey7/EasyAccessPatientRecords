@@ -130,20 +130,22 @@
     
     height: 100px;
     width: 100px;
-    margin-top: 27%;
-    margin-bottom: 27%;
+    margin-top: 5%;
+    margin-bottom: 5%;
     
 }
 #oxygen_saturation
 {
     background-image: url('../../assets/oxygen-saturation.png');
     background-size: contain;
+    background-repeat: no-repeat;
 }
 
 #blood_pressure
 {
     background-image: url('../../assets/blood-pressure.png');
     background-size: contain;
+    background-repeat: no-repeat;
 }
 
 #body_temperature
@@ -169,6 +171,13 @@
     background-image: url('../../assets/body-mass-index.png');
     background-size: contain;
 }
+
+#pulse_rate
+{
+    background-image: url('../../assets/pulse.png');
+    background-size: contain;
+}
+
 .vital_signs_thumbnail_label_container
 {
     
@@ -181,8 +190,8 @@
 .vital_sign_tumbnail_label
 {
     border:1px solid white;
-    margin-top: 15%;
-    margin-bottom: 15%;
+    margin-top: 5%;
+    margin-bottom: 5%;
     margin-left: 5%;
 }
 .vital_signs_values_container
