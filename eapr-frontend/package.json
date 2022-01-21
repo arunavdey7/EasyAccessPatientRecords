@@ -1,6 +1,6 @@
 {
   "name": "eapr-frontend",
-  "proxy": "http://testflaskapp-env.eba-xdrnw66m.us-east-2.elasticbeanstalk.com/",
+  "proxy": "https://testflaskapp-env.eba-xdrnw66m.us-east-2.elasticbeanstalk.com/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
