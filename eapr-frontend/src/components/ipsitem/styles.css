@@ -1,0 +1,17 @@
+.ips_item_container
+{
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    height: max-content;
+    width:100%;
+    margin: 1%;
+    padding: 1%;
+    text-align: center;
+    border-radius: 4px;
+    transition: transform .2s;
+    color: darkslategrey;
+}
+.ips_item_container:hover
+{
+    cursor: pointer;
+    transform: scale(1.03);
+}

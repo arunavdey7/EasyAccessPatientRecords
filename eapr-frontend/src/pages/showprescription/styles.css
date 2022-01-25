@@ -1,0 +1,40 @@
+.ans
+{
+    color: blueviolet;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300&family=Ubuntu:wght@300&display=swap');
+
+.values
+{
+    font-weight: 600;
+    color:blueviolet;
+}
+.main_heading
+{
+    background-color: darkslategrey;
+    padding:1%;
+    color: white;
+    margin:0px;
+}
+label
+{
+    font-size: larger;
+    font-family: 'Outfit', sans-serif;
+    font-family: 'Ubuntu', sans-serif;
+}
+.form_container
+{
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    border-radius: 10px;
+    padding: 5%;
+}
+.values 
+{
+    font-weight:bold;
+    font-size: larger;
+}
+.bb:hover
+{
+    cursor: pointer;
+}

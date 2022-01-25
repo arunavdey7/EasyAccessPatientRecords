@@ -1,0 +1,152 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@600&display=swap');
+
+.container-x
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    height: 40vh;
+}
+.container-y
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 80%;
+}
+.inner-container-y
+{
+    
+    display: flex;
+    justify-content: center;
+}
+.input_fields
+{
+    border-radius: 4px;
+    height: 3vh;
+    border-width:2.5px;
+    border-color: lightblue;
+    border-style: solid;
+    font-family: 'Open Sans', sans-serif;
+    color: lightslategrey;
+    width: 100%;
+}
+.header_background
+{ 
+    width: 100%;
+    background-image: url('../../assets/header_pic.jpg');
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position-x: center;
+}
+
+.role_container
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    transition: transform .2s;
+}
+.role_card
+{
+    height: 100px;
+    width: 100px;
+    margin: 1%;
+    overflow: hidden;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    border-radius: 4px;
+}
+#role_doctor
+{
+    background-image: url('../../assets/doctor_role.jpg');
+    background-size: contain;
+}
+#role_patient
+{
+    background-image: url('../../assets/user_role.jpg');
+    background-size: cover;
+    background-position: center;
+}
+#role_admin
+{
+    background-image: url('../../assets/60111.jpg');
+    background-size: contain;
+}
+
+.login_form_container
+{
+    margin: 2%;
+    width: 40%;
+    padding: 5%;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    border-radius: 4px;
+}
+input
+{
+    margin: 5px;
+    padding: 2px;
+}
+.login_btn_container
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+.login_btn
+{
+    border-radius: 4px;
+    height: 5vh;
+    border-width:2.5px;
+    border-color: lightblue;
+    border-style: solid;
+    font-family: 'Open Sans', sans-serif;
+    color: lightslategrey;
+    padding-bottom: 22px;
+    margin:5% !important;
+    font-size: larger;
+}
+.chooser_container
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+.footer
+{
+    height: 30vh;
+    width: 100%;
+    border: 1px solid red;
+    background-color: royalblue;
+}
+.choose_heading
+{
+    padding: 0px;
+    margin: 0px;
+    font-family: 'Open Sans', sans-serif;
+}
+.role_card:hover
+{
+    transform: scale(1.05);
+    cursor: pointer;
+}
+.login_btn:hover
+{
+    cursor: pointer;
+}
+.credential_labels
+{
+    padding-left: 5px;
+    font-weight: 600;
+    font-family: 'Open Sans', sans-serif;
+    
+}
+@media screen and (min-width: 1024px){
+    .header_background
+    {
+        height: 42vh;
+    }
+    .chooser_container
+    {
+        justify-content: center;
+    }
+}

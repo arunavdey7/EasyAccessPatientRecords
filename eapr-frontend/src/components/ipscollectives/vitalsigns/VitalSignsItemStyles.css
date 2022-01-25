@@ -1,0 +1,19 @@
+.vitals_container
+{
+    height: max-content;
+    margin: 1%;
+    border-radius: 4px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 1%;
+}
+.name_container
+{
+    
+}
+.container:hover 
+{
+    cursor: pointer;
+}

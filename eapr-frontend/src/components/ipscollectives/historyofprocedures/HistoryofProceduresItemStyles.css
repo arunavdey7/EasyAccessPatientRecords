@@ -1,0 +1,19 @@
+.hop_container
+{
+    height: 10vh;
+    margin: 1%;
+    border-radius: 4px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 1%;
+}
+.hop_name_container
+{
+    
+}
+.hop_container:hover 
+{
+    cursor: pointer;
+}

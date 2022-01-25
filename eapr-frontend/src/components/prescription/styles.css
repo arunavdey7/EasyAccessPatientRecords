@@ -1,0 +1,39 @@
+.prescription_container
+{
+    margin: 5%;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    border-radius: 10px;
+    padding: 5%;
+}
+.prescription_heading
+{
+    text-align: center;
+    background-color: darkslategrey;
+    padding: 1%;
+    color: white;
+}
+input
+{
+    border-radius: 4px;
+    height: 3vh;
+    border-width:2.5px;
+    border-color: lightblue;
+    border-style: solid;
+    font-family: 'Open Sans', sans-serif;
+    color: lightslategrey;
+    width: 100%;
+}
+button
+{
+    border-radius: 4px;
+    height: 5vh;
+    border-width:2.5px;
+    border-color: lightblue;
+    border-style: solid;
+    font-family: 'Open Sans', sans-serif;
+    color: lightslategrey;
+    padding-bottom: 22px;
+    margin:5% !important;
+    font-size: larger;
+}
+

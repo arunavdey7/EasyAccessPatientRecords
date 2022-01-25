@@ -1,0 +1,23 @@
+.ips_container
+{
+    height: 100vh;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    overflow-x: hidden;
+    width: max-content;
+    padding:5%;
+}
+.a 
+{
+    display: flex;
+    flex-direction: column;
+}
+.h_text
+{
+    margin: 0px;
+    background-color: darkslategrey;
+    color: white;
+    padding: 5%
+}
