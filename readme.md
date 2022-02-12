@@ -1,7 +1,3 @@
-# To be taken care of by the collaborators:
+# Screenshots:
 
-1. Please create a seperate branch for yourselves and keep updating your work there.
-
-2. Create a PR when a particular module is fully functional.
-
-3. Repo structure change should be discussed with everyone beforehand.
+<img src="https://github.com/arunavdey7/EasyAccessPatientRecords/blob/final/1.jpeg" width="600" height="300"></img>
